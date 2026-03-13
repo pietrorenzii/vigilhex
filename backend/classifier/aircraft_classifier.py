@@ -307,7 +307,3 @@ if __name__ == "__main__":
             f"squawk={result.get('special_squawk') or '-'}"
         )
 ```
-
-Commit con messaggio:
-```
-feat: add aircraft classifier with military/state/commercial detection
