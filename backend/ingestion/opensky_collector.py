@@ -224,7 +224,3 @@ if __name__ == "__main__":
     else:
         print("No flights fetched — check connection")
 ```
-
-Commit con messaggio:
-```
-feat: add OpenSky Network real-time collector
