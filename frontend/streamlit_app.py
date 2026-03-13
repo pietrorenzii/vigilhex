@@ -389,7 +389,3 @@ if auto_refresh:
     st.cache_data.clear()
     st.rerun()
 ```
-
-Commit:
-```
-feat: add Streamlit MVP dashboard with live map and layer controls
