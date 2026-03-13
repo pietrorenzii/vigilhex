@@ -464,7 +464,3 @@ if __name__ == "__main__":
         for a in result["anomalies"]:
             print(f"   [{a['severity']}] {a['type']}: {a['description']}")
 ```
-
-Commit:
-```
-feat: add rule-based anomaly detection engine
