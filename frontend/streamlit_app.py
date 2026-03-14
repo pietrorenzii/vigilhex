@@ -1,59 +1,34 @@
 """
-VigilHex - Streamlit MVP Dashboard
-Real-time global flight anomaly detection interface.
+VigilHex - Streamlit Dashboard (standalone test version)
 """
 
 import streamlit as st
 import folium
 from streamlit_folium import st_folium
-import sys
-import os
-import time
+import requests
 from datetime import datetime, timezone
 
-# Add backend to path
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
-
-from backend.ingestion.opensky_collector import fetch_europe_flights
-from backend.classifier.aircraft_classifier import classify_batch
-from backend.anomaly.anomaly_detector import process_flights
-
-# ── Page config ──────────────────────────────────────────────────────────────
 st.set_page_config(
     page_title="VIGILHEX — Global Airspace Intelligence",
     page_icon="🛡️",
     layout="wide",
-    initial_sidebar_state="expanded",
 )
 
-# ── Custom CSS — dark ops theme ───────────────────────────────────────────────
 st.markdown("""
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@600;700&display=swap');
-
   html, body, [class*="css"] {
     background-color: #040506 !important;
     color: #7A8A8A !important;
     font-family: 'Share Tech Mono', monospace !important;
   }
   .stApp { background-color: #040506 !important; }
-
-  /* Sidebar */
   [data-testid="stSidebar"] {
     background-color: #070A0B !important;
     border-right: 1px solid #141E22 !important;
   }
-
-  /* Metrics */
-  [data-testid="stMetric"] {
-    background-color: #0A0E10;
-    border: 1px solid #141E22;
-    border-radius: 0px;
-    padding: 12px;
-  }
   [data-testid="stMetricValue"] {
     color: #C8D4D4 !important;
-    font-family: 'Rajdhani', sans-serif !important;
     font-size: 28px !important;
     font-weight: 700 !important;
   }
@@ -63,159 +38,175 @@ st.markdown("""
     letter-spacing: 2px !important;
     text-transform: uppercase !important;
   }
-
-  /* Header */
-  .vigilhex-header {
+  .hdr {
     font-family: 'Rajdhani', sans-serif;
-    font-size: 28px;
-    font-weight: 700;
-    letter-spacing: 4px;
-    color: #C8D4D4;
+    font-size: 26px; font-weight: 700;
+    letter-spacing: 4px; color: #C8D4D4;
     border-bottom: 1px solid #141E22;
-    padding-bottom: 8px;
-    margin-bottom: 16px;
+    padding-bottom: 8px; margin-bottom: 16px;
   }
-  .vigilhex-header span { color: #E8500A; }
-
-  /* Alert boxes */
+  .hdr span { color: #E8500A; }
   .alert-critical {
     background: rgba(204,34,0,0.08);
     border: 1px solid #CC2200;
     border-left: 3px solid #CC2200;
-    padding: 10px 14px;
-    margin: 6px 0;
-    font-size: 11px;
-    color: #C8D4D4;
+    padding: 10px 14px; margin: 6px 0;
+    font-size: 11px; color: #C8D4D4;
   }
   .alert-warning {
     background: rgba(232,80,10,0.06);
     border: 1px solid #E8500A;
     border-left: 3px solid #E8500A;
-    padding: 10px 14px;
-    margin: 6px 0;
-    font-size: 11px;
-    color: #C8D4D4;
+    padding: 10px 14px; margin: 6px 0;
+    font-size: 11px; color: #C8D4D4;
   }
-  .tag {
-    display: inline-block;
-    font-size: 9px;
-    padding: 1px 6px;
-    border: 1px solid;
-    margin-right: 6px;
-    letter-spacing: 1px;
-  }
-  .tag-mil  { color: #FF3311; border-color: #CC2200; }
-  .tag-ano  { color: #E8500A; border-color: #E8500A; }
-  .tag-sta  { color: #886600; border-color: #664400; }
-  .tag-unk  { color: #4A5E68; border-color: #2A3840; }
-  .section-label {
-    font-size: 9px; color: #2A3840; letter-spacing: 3px;
-    text-transform: uppercase; margin: 14px 0 8px;
-  }
-  div[data-testid="stCheckbox"] label {
-    font-size: 11px !important;
-    color: #7A8A8A !important;
-  }
-  .stButton button {
-    background: #0A0E10 !important;
-    border: 1px solid #1A2830 !important;
-    color: #7A8A8A !important;
-    border-radius: 0px !important;
-    font-family: 'Share Tech Mono', monospace !important;
-    font-size: 10px !important;
-    letter-spacing: 2px !important;
-  }
-  .stButton button:hover {
-    border-color: #E8500A !important;
-    color: #E8500A !important;
-  }
+  .sec { font-size: 9px; color: #2A3840;
+    letter-spacing: 3px; text-transform: uppercase;
+    margin: 14px 0 8px; }
 </style>
 """, unsafe_allow_html=True)
 
-
 # ── Header ────────────────────────────────────────────────────────────────────
 st.markdown("""
-<div class="vigilhex-header">
-  ● VIGIL<span>HEX</span> &nbsp;/&nbsp; GLOBAL AIRSPACE INTELLIGENCE
-</div>
+<div class="hdr">● VIGIL<span>HEX</span> / GLOBAL AIRSPACE INTELLIGENCE</div>
 """, unsafe_allow_html=True)
 
-
-# ── Sidebar — Layer Controls ──────────────────────────────────────────────────
+# ── Sidebar ───────────────────────────────────────────────────────────────────
 with st.sidebar:
-    st.markdown('<div class="section-label">// system</div>', unsafe_allow_html=True)
-    auto_refresh = st.toggle("AUTO REFRESH (60s)", value=False)
-    if st.button("⟳  REFRESH NOW"):
+    st.markdown('<div class="sec">// layer control</div>', unsafe_allow_html=True)
+    show_commercial = st.checkbox("✈  COMMERCIAL",   value=True)
+    show_military   = st.checkbox("⬡  MILITARY",     value=True)
+    show_state      = st.checkbox("◈  STATE / GOV",  value=True)
+    show_cargo      = st.checkbox("▣  CARGO",        value=True)
+    show_unknown    = st.checkbox("■  UNKNOWN",      value=True)
+    show_anomalies  = st.checkbox("🚨 ANOMALIES ONLY", value=False)
+    st.markdown('<div class="sec">// sensitive areas</div>', unsafe_allow_html=True)
+    show_bases   = st.checkbox("MILITARY BASES", value=True)
+    show_nuclear = st.checkbox("NUCLEAR SITES",  value=True)
+    st.markdown('<div class="sec">// controls</div>', unsafe_allow_html=True)
+    if st.button("⟳  REFRESH"):
         st.cache_data.clear()
         st.rerun()
 
-    st.markdown('<div class="section-label">// layer control</div>', unsafe_allow_html=True)
-    show_commercial = st.checkbox("✈  COMMERCIAL",  value=True)
-    show_military   = st.checkbox("⬡  MILITARY",    value=True)
-    show_state      = st.checkbox("◈  STATE / GOV", value=True)
-    show_cargo      = st.checkbox("▣  CARGO",       value=True)
-    show_private    = st.checkbox("◇  PRIVATE / GA",value=True)
-    show_unknown    = st.checkbox("■  UNKNOWN",     value=True)
-    show_anomalies  = st.checkbox("🚨 ANOMALIES ONLY (override)", value=False)
-
-    st.markdown('<div class="section-label">// sensitive areas</div>', unsafe_allow_html=True)
-    show_mil_bases  = st.checkbox("MILITARY BASES",  value=True)
-    show_nuclear    = st.checkbox("NUCLEAR SITES",   value=True)
-
-    st.markdown('<div class="section-label">// presets</div>', unsafe_allow_html=True)
-    col1, col2 = st.columns(2)
-    with col1:
-        if st.button("ISR MODE"):
-            show_military = True
-            show_anomalies = True
-    with col2:
-        if st.button("FULL VIEW"):
-            show_commercial = True
-
-
-# ── Data Loading ──────────────────────────────────────────────────────────────
+# ── Data fetch (inline, no imports from backend) ──────────────────────────────
 @st.cache_data(ttl=60)
-def load_flights():
-    """Fetch, classify and score all flights. Cached 60s."""
-    raw = fetch_europe_flights()
-    if not raw:
+def fetch_flights():
+    try:
+        r = requests.get(
+            "https://opensky-network.org/api/states/all",
+            params={"lamin": 35.0, "lamax": 72.0, "lomin": -15.0, "lomax": 45.0},
+            timeout=20,
+            headers={"User-Agent": "VigilHex/0.1"}
+        )
+        r.raise_for_status()
+        data = r.json()
+        if not data or not data.get("states"):
+            return []
+        flights = []
+        for s in data["states"]:
+            if s[5] is None or s[6] is None:
+                continue
+            callsign = (s[1] or "").strip()
+            silent = None
+            if s[4]:
+                silent = int(datetime.now(timezone.utc).timestamp()) - s[4]
+            flights.append({
+                "icao24":    s[0],
+                "callsign":  callsign or None,
+                "country":   s[2],
+                "lon":       s[5],
+                "lat":       s[6],
+                "alt_ft":    round(s[7] * 3.28084) if s[7] else None,
+                "spd_kts":   round(s[9] * 1.94384, 1) if s[9] else None,
+                "on_ground": s[8],
+                "squawk":    s[14],
+                "silent_sec": silent,
+            })
+        return flights
+    except Exception as e:
+        st.error(f"Feed error: {e}")
         return []
-    classified = classify_batch(raw)
-    processed  = process_flights(classified)
-    return processed
 
+# ── Classify inline ───────────────────────────────────────────────────────────
+MIL_CALLSIGNS = ["RRR","GAF","FAF","USAF","REACH","DUKE","STEEL","NATO","MMM","JAKE","NAVY"]
+STATE_CALLSIGNS = ["SAM","AF1","AF2","EXEC","GOVT","USCG","FRON"]
+CARGO_PREFIXES  = ["UPS","FDX","CLX","BOX","GTI","DHL","MPH","ABX"]
 
+MIL_HEX = [
+    (0xAE0000, 0xAFFFFF),
+    (0x43C000, 0x43CFFF),
+    (0x3B0000, 0x3BFFFF),
+    (0x140000, 0x157FFF),
+]
+
+def classify(f):
+    icao = f["icao24"].upper()
+    cs   = (f["callsign"] or "").upper()
+    try:
+        h = int(icao, 16)
+        for lo, hi in MIL_HEX:
+            if lo <= h <= hi:
+                return "MILITARY"
+    except Exception:
+        pass
+    if any(cs.startswith(p) for p in MIL_CALLSIGNS):   return "MILITARY"
+    if any(cs.startswith(p) for p in STATE_CALLSIGNS):  return "STATE"
+    if len(cs) >= 3 and cs[:3] in CARGO_PREFIXES:       return "CARGO"
+    if not cs:                                           return "UNKNOWN"
+    return "COMMERCIAL"
+
+def is_anomaly(f, cat):
+    if (f["silent_sec"] or 0) > 300 and not f["on_ground"]: return True
+    if f["squawk"] in ("7500","7600","7700"):                return True
+    if cat in ("MILITARY","UNKNOWN") and not f["callsign"]:  return True
+    return False
+
+# ── Load & process ────────────────────────────────────────────────────────────
 with st.spinner("FETCHING LIVE FEED..."):
-    flights = load_flights()
+    raw = fetch_flights()
 
+flights = []
+for f in raw:
+    cat = classify(f)
+    ano = is_anomaly(f, cat)
+    flights.append({**f, "category": cat, "anomaly": ano})
 
-# ── Compute stats ─────────────────────────────────────────────────────────────
-total      = len(flights)
-military   = sum(1 for f in flights if f.get("category") == "MILITARY")
-anomalies  = sum(1 for f in flights if f.get("is_anomaly"))
-critical   = sum(1 for f in flights
-               if any(a["severity"] == "CRITICAL"
-                      for a in f.get("anomalies", [])))
-unknown    = sum(1 for f in flights if f.get("category") == "UNKNOWN")
-xpdr_off   = sum(1 for f in flights
-               if (f.get("transponder_silent_sec") or 0) > 300)
+# ── Stats ─────────────────────────────────────────────────────────────────────
+total    = len(flights)
+military = sum(1 for f in flights if f["category"] == "MILITARY")
+anomalies= sum(1 for f in flights if f["anomaly"])
+unknown  = sum(1 for f in flights if f["category"] == "UNKNOWN")
+xpdr_off = sum(1 for f in flights if (f["silent_sec"] or 0) > 300)
 
-
-# ── Top metrics bar ───────────────────────────────────────────────────────────
-c1, c2, c3, c4, c5, c6 = st.columns(6)
-c1.metric("TRACKED",    f"{total:,}")
-c2.metric("MILITARY",   f"{military}",  delta=None)
-c3.metric("ANOMALIES",  f"{anomalies}", delta=f"+{anomalies}" if anomalies else None)
-c4.metric("CRITICAL",   f"{critical}",  delta="ALERT" if critical else None)
-c5.metric("UNKNOWN",    f"{unknown}")
-c6.metric("XPDR OFF",   f"{xpdr_off}",  delta="⚠" if xpdr_off else None)
-
+c1,c2,c3,c4,c5 = st.columns(5)
+c1.metric("TRACKED",   f"{total:,}")
+c2.metric("MILITARY",  f"{military}")
+c3.metric("ANOMALIES", f"{anomalies}")
+c4.metric("UNKNOWN",   f"{unknown}")
+c5.metric("XPDR OFF",  f"{xpdr_off}")
 
 # ── Map ───────────────────────────────────────────────────────────────────────
-st.markdown('<div class="section-label">// live world map</div>',
-            unsafe_allow_html=True)
+st.markdown('<div class="sec">// live world map</div>', unsafe_allow_html=True)
 
-# Build folium map — dark tiles
+COLORS = {
+    "COMMERCIAL": "#2A4050",
+    "MILITARY":   "#CC2200",
+    "STATE":      "#886600",
+    "CARGO":      "#4A2A6A",
+    "UNKNOWN":    "#2A3840",
+}
+RADIUS = {"COMMERCIAL":3,"MILITARY":6,"STATE":5,"CARGO":4,"UNKNOWN":4}
+
+SENSITIVE = [
+    ("Ramstein AFB",     49.44,  7.60,  50, "military"),
+    ("RAF Lakenheath",   52.41,  0.56,  40, "military"),
+    ("Aviano AFB",       46.03, 12.60,  40, "military"),
+    ("Incirlik AFB",     37.00, 35.43,  60, "military"),
+    ("Kaliningrad",      54.71, 20.45,  80, "military"),
+    ("Zaporizhzhia NPP", 47.51, 34.59, 100, "nuclear"),
+    ("Cattenom NPP",     49.41,  6.22,  60, "nuclear"),
+]
+
 m = folium.Map(
     location=[48.0, 14.0],
     zoom_start=5,
@@ -223,169 +214,84 @@ m = folium.Map(
     prefer_canvas=True,
 )
 
-# ── Color & icon mapping ──────────────────────────────────────────────────────
-CATEGORY_COLORS = {
-    "COMMERCIAL": "#2A4050",
-    "MILITARY":   "#CC2200",
-    "STATE":      "#886600",
-    "CARGO":      "#4A2A6A",
-    "PRIVATE":    "#1A3A2A",
-    "UNKNOWN":    "#2A3840",
-}
+# Sensitive areas
+for name, clat, clon, rkm, atype in SENSITIVE:
+    if atype == "military" and not show_bases:   continue
+    if atype == "nuclear"  and not show_nuclear: continue
+    color = "#CC2200" if atype == "nuclear" else "#1A4060"
+    folium.Circle(
+        location=[clat, clon],
+        radius=rkm * 1000,
+        color=color, weight=1,
+        fill=True, fill_color=color, fill_opacity=0.12,
+        tooltip=f"{name}",
+    ).add_to(m)
 
-CATEGORY_RADIUS = {
-    "COMMERCIAL": 3,
-    "MILITARY":   5,
-    "STATE":      5,
-    "CARGO":      4,
-    "PRIVATE":    3,
-    "UNKNOWN":    4,
-}
-
-# ── Sensitive area overlays ───────────────────────────────────────────────────
-from backend.anomaly.anomaly_detector import SENSITIVE_AREAS
-
-if show_mil_bases or show_nuclear:
-    for name, clat, clon, radius_km, area_type in SENSITIVE_AREAS:
-        if area_type == "military_base" and not show_mil_bases:
-            continue
-        if area_type == "nuclear" and not show_nuclear:
-            continue
-
-        color = "#1A2830" if area_type == "nuclear" else "#1A2A30"
-        border = "#CC2200" if area_type == "nuclear" else "#1A4060"
-
-        folium.Circle(
-            location=[clat, clon],
-            radius=radius_km * 1000,
-            color=border,
-            weight=1,
-            fill=True,
-            fill_color=color,
-            fill_opacity=0.15,
-            tooltip=f"{name} ({area_type})",
-        ).add_to(m)
-
-
-# ── Plot aircraft ─────────────────────────────────────────────────────────────
-def should_show(flight: dict) -> bool:
-    if show_anomalies:
-        return flight.get("is_anomaly", False)
-    cat = flight.get("category", "")
-    if cat == "COMMERCIAL" and not show_commercial: return False
-    if cat == "MILITARY"   and not show_military:   return False
-    if cat == "STATE"      and not show_state:      return False
-    if cat == "CARGO"      and not show_cargo:      return False
-    if cat == "PRIVATE"    and not show_private:    return False
-    if cat == "UNKNOWN"    and not show_unknown:    return False
-    return True
-
-
+# Aircraft
 plotted = 0
-for flight in flights:
-    lat = flight.get("latitude")
-    lon = flight.get("longitude")
-    if lat is None or lon is None:
-        continue
-    if not should_show(flight):
-        continue
+for f in flights:
+    cat = f["category"]
+    ano = f["anomaly"]
 
-    cat       = flight.get("category", "UNKNOWN")
-    is_anomaly= flight.get("is_anomaly", False)
-    callsign  = flight.get("callsign") or "NO CALLSIGN"
-    icao24    = flight.get("icao24", "").upper()
-    score     = flight.get("anomaly_score", 0.0)
-    alt       = flight.get("baro_altitude_ft")
-    spd       = flight.get("velocity_kts")
-    summary   = flight.get("anomaly_summary", "NOMINAL")
+    if show_anomalies and not ano: continue
+    if not show_anomalies:
+        if cat == "COMMERCIAL" and not show_commercial: continue
+        if cat == "MILITARY"   and not show_military:   continue
+        if cat == "STATE"      and not show_state:      continue
+        if cat == "CARGO"      and not show_cargo:      continue
+        if cat == "UNKNOWN"    and not show_unknown:    continue
+    if f["on_ground"]: continue
 
-    color  = "#E8500A" if is_anomaly else CATEGORY_COLORS.get(cat, "#2A3840")
-    radius = (CATEGORY_RADIUS.get(cat, 3) + 3) if is_anomaly else CATEGORY_RADIUS.get(cat, 3)
+    color  = "#E8500A" if ano else COLORS.get(cat, "#2A3840")
+    radius = (RADIUS.get(cat, 3) + 3) if ano else RADIUS.get(cat, 3)
 
-    tooltip_html = f"""
-    <div style='font-family:monospace;font-size:11px;background:#040506;
-                color:#C8D4D4;padding:8px;border:1px solid #E8500A;
-                min-width:200px'>
-      <b style='color:#E8500A'>{callsign}</b><br>
-      ICAO: {icao24}<br>
-      CAT: {cat} &nbsp;|&nbsp; SCORE: {score:.2f}<br>
-      ALT: {alt or '—'}ft &nbsp;|&nbsp; SPD: {spd or '—'}kts<br>
-      <span style='color:{"#CC2200" if is_anomaly else "#2A3840"}'>
-        {summary}
-      </span>
-    </div>
-    """
+    tip = (
+        f"<div style='font-family:monospace;font-size:11px;"
+        f"background:#040506;color:#C8D4D4;padding:8px;"
+        f"border:1px solid #E8500A;min-width:180px'>"
+        f"<b style='color:#E8500A'>{f['callsign'] or 'NO CALLSIGN'}</b><br>"
+        f"ICAO: {f['icao24'].upper()}<br>"
+        f"CAT: {cat}<br>"
+        f"ALT: {f['alt_ft'] or '—'}ft · SPD: {f['spd_kts'] or '—'}kts<br>"
+        f"COUNTRY: {f['country']}<br>"
+        f"{'<span style=color:#CC2200>⚠ ANOMALY</span>' if ano else 'NOMINAL'}"
+        f"</div>"
+    )
 
     folium.CircleMarker(
-        location=[lat, lon],
+        location=[f["lat"], f["lon"]],
         radius=radius,
-        color=color,
-        fill=True,
-        fill_color=color,
-        fill_opacity=0.85,
-        weight=1 if not is_anomaly else 2,
-        tooltip=folium.Tooltip(tooltip_html, sticky=True),
+        color=color, fill=True,
+        fill_color=color, fill_opacity=0.85,
+        weight=2 if ano else 1,
+        tooltip=folium.Tooltip(tip, sticky=True),
     ).add_to(m)
     plotted += 1
 
-# Render map
 st_folium(m, width=None, height=560, returned_objects=[])
-
 st.caption(
     f"Showing {plotted} aircraft · "
-    f"Last update: {datetime.now(timezone.utc).strftime('%H:%M:%S')} UTC · "
+    f"Updated: {datetime.now(timezone.utc).strftime('%H:%M:%S')} UTC · "
     f"Source: OpenSky Network"
 )
 
-
-# ── Anomaly Feed ──────────────────────────────────────────────────────────────
-flagged = [f for f in flights if f.get("is_anomaly")]
-
+# ── Anomaly feed ──────────────────────────────────────────────────────────────
+flagged = [f for f in flights if f["anomaly"]]
 if flagged:
-    st.markdown(
-        '<div class="section-label">// active anomalies</div>',
-        unsafe_allow_html=True
-    )
-    for f in flagged[:20]:
-        sev = "critical" if any(
-            a["severity"] == "CRITICAL" for a in f.get("anomalies", [])
-        ) else "warning"
-
-        cat_tag = f"<span class='tag tag-mil'>{f.get('category')}</span>"
-        cs  = f.get("callsign") or "NO CALLSIGN"
-        ic  = (f.get("icao24") or "").upper()
-        sc  = f.get("anomaly_score", 0)
-        sm  = f.get("anomaly_summary", "")
-        alt = f.get("baro_altitude_ft")
-        spd = f.get("velocity_kts")
-        cty = f.get("origin_country", "")
-
+    st.markdown('<div class="sec">// active anomalies</div>', unsafe_allow_html=True)
+    for f in flagged[:15]:
+        sev = "critical" if (f["silent_sec"] or 0) > 600 or f["squawk"] in ("7500","7700") else "warning"
         st.markdown(f"""
         <div class="alert-{sev}">
-          {cat_tag}
-          <b style='color:#C8D4D4'>{cs}</b>
-          &nbsp;·&nbsp; {ic}
-          &nbsp;·&nbsp; {cty}
-          &nbsp;&nbsp;
-          <span style='color:#E8500A'>SCORE: {sc:.2f}</span>
-          <br>
+          <b style='color:#C8D4D4'>{f['callsign'] or 'NO CALLSIGN'}</b>
+          · {f['icao24'].upper()} · {f['category']} · {f['country']}<br>
           <span style='color:#4A5E68;font-size:10px'>
-            {sm}
-            &nbsp;·&nbsp; ALT: {alt or '—'}ft
-            &nbsp;·&nbsp; SPD: {spd or '—'}kts
+            ALT: {f['alt_ft'] or '—'}ft · SPD: {f['spd_kts'] or '—'}kts
+            {f'· XPDR SILENT {f["silent_sec"]}s' if (f["silent_sec"] or 0) > 300 else ''}
+            {f'· SQUAWK {f["squawk"]}' if f["squawk"] in ("7500","7600","7700") else ''}
           </span>
         </div>
         """, unsafe_allow_html=True)
 else:
-    st.markdown(
-        '<div class="section-label">// no anomalies detected</div>',
-        unsafe_allow_html=True
-    )
-
-
-# ── Auto refresh ──────────────────────────────────────────────────────────────
-if auto_refresh:
-    time.sleep(60)
-    st.cache_data.clear()
-    st.rerun()
+    st.markdown('<div class="sec">// no anomalies detected</div>', unsafe_allow_html=True)
 ```
