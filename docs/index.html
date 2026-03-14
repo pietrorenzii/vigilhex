@@ -158,7 +158,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(
   <div style="display:flex;align-items:center;gap:14px">
     <div class="logo">
       <div class="logo-hex"><svg viewBox="0 0 24 24"><path d="M12 2L22 8v8l-10 6L2 16V8z"/></svg></div>
-      <div><div>VIGIL<span>HEX</span></div><div class="logo-sub">GLOBAL AIRSPACE INTELLIGENCE</div></div>
+      <div><div>VIGIL<span>HEX</span></div><div class="logo-sub">TACTICAL AIRSPACE INTELLIGENCE</div></div>
     </div>
   </div>
   <div class="hdr-stats">
@@ -178,10 +178,6 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(
   <div id="sidebar">
     <div class="sec">
       <div class="sec-title">// layer control</div>
-      <div class="layer" onclick="toggleLayer('commercial',this)">
-        <div class="layer-l"><div class="ldot-i" style="background:#3A6080"></div><div><div class="layer-name">COMMERCIAL</div><div class="layer-count" id="c-commercial">0 ACTIVE</div></div></div>
-        <div class="tog on" id="t-commercial"></div>
-      </div>
       <div class="layer" onclick="toggleLayer('military',this)">
         <div class="layer-l"><div class="ldot-i" style="background:#CC2200;box-shadow:0 0 4px rgba(204,34,0,.5)"></div><div><div class="layer-name">MILITARY</div><div class="layer-count" id="c-military">0 TRACKED</div></div></div>
         <div class="tog on" id="t-military"></div>
@@ -223,7 +219,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(
       <div class="preset" onclick="setPreset('isr')">ISR WATCH MODE</div>
       <div class="preset" onclick="setPreset('mil')">MILITARY ONLY</div>
       <div class="preset" onclick="setPreset('ano')">ANOMALIES ONLY</div>
-      <div class="preset" onclick="setPreset('full')">FULL VIEW</div>
+      <div class="preset" onclick="setPreset('full')">FULL VIEW (NO COMM)</div>
     </div>
   </div>
 
@@ -269,22 +265,19 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(
     </div>
     <div class="tab-content" id="tab-about">
       <div style="color:var(--grey3);line-height:1.8;font-size:9px">
-        <div style="color:var(--white);font-family:'Orbitron',monospace;font-size:11px;margin-bottom:5px">VIGILHEX v0.1</div>
-        <div style="color:var(--grey2);margin-bottom:8px;font-size:7px;letter-spacing:1px">GLOBAL AIRSPACE INTELLIGENCE</div>
-        <div style="margin-bottom:8px">Real-time flight anomaly detection. Europe + NATO coverage.</div>
+        <div style="color:var(--white);font-family:'Orbitron',monospace;font-size:11px;margin-bottom:5px">VIGILHEX v0.2 LITE</div>
+        <div style="color:var(--grey2);margin-bottom:8px;font-size:7px;letter-spacing:1px">TACTICAL AIRSPACE INTELLIGENCE</div>
+        <div style="margin-bottom:8px">Real-time tactical flight anomaly detection. Europe + NATO coverage. Commercial flights filtered.</div>
         <div style="color:var(--grey2);font-size:7px;margin-bottom:3px">SOURCE</div>
         <div>· OpenSky Network ADS-B</div>
         <div>· Coverage: Europe + Mediterranean</div>
-        <div style="margin-top:8px;border-top:1px solid var(--border);padding-top:8px">
-          <a href="https://github.com/pietrorenzii/vigilhex" target="_blank" style="color:var(--orange);text-decoration:none">⭐ github.com/pietrorenzii/vigilhex</a>
-        </div>
       </div>
     </div>
   </div>
 </div>
 
 <div id="bot">
-  <div class="bstat"><div class="ldot" style="width:5px;height:5px;background:#00FF88;box-shadow:0 0 5px #00FF88;animation:blink 1.2s infinite"></div>VIGILHEX</div>
+  <div class="bstat"><div class="ldot" style="width:5px;height:5px;background:#00FF88;box-shadow:0 0 5px #00FF88;animation:blink 1.2s infinite"></div>VIGILHEX LITE</div>
   <div class="bstat">SOURCE <span class="v">OPENSKY NETWORK</span></div>
   <div class="bstat">ZONE <span class="v">EUROPE + NATO</span></div>
   <div class="bstat">REFRESH <span class="v">60s</span></div>
@@ -295,17 +288,16 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(
 
 <script>
 // ══════════════════════════════════════
-// CONFIG — bbox Europa funziona su GitHub Pages
+// CONFIG
 // ══════════════════════════════════════
 const MAX_AC = 2000;
 const REFRESH_MS = 60000;
 
-// Questo URL con bbox funzionava prima — è la versione che usavamo
-// OpenSky permette richieste bbox da browser, blocca solo worldwide
+// Utilizziamo chiamate proxy più stabili o la chiamata diretta
 const OPENSKY_URLS = [
-  'https://api.allorigins.win/raw?url=' + encodeURIComponent('https://opensky-network.org/api/states/all?lamin=30&lamax=72&lomin=-25&lomax=50'),
-  'https://thingproxy.freeboard.io/fetch/https://opensky-network.org/api/states/all?lamin=30&lamax=72&lomin=-25&lomax=50',
-  'https://api.codetabs.com/v1/proxy?quest=https://opensky-network.org/api/states/all?lamin=30&lamax=72&lomin=-25&lomax=50',
+  'https://opensky-network.org/api/states/all?lamin=30&lamax=72&lomin=-25&lomax=50',
+  'https://corsproxy.io/?' + encodeURIComponent('https://opensky-network.org/api/states/all?lamin=30&lamax=72&lomin=-25&lomax=50'),
+  'https://api.allorigins.win/raw?url=' + encodeURIComponent('https://opensky-network.org/api/states/all?lamin=30&lamax=72&lomin=-25&lomax=50')
 ];
 
 const SENSITIVE=[
@@ -324,24 +316,7 @@ const MIL_HEX=[[0xAE0000,0xAFFFFF],[0x43C000,0x43CFFF],[0x3B0000,0x3BFFFF],[0x14
 const MIL_CS=['RRR','GAF','FAF','USAF','REACH','DUKE','STEEL','NATO','MMM','JAKE','NAVY','TURC','CTM','CASA','EVY','BAFE'];
 const STATE_CS=['SAM','AF1','AF2','EXEC','GOVT','USCG','FRON','EU'];
 const CARGO_CS=['UPS','FDX','CLX','BOX','GTI','DHL','MPH','ABX','KMI','PAC'];
-const CAT_COLOR={COMMERCIAL:'#3A6080',MILITARY:'#CC2200',STATE:'#886600',CARGO:'#6A3A8A',UNKNOWN:'#2E4450'};
-
-const AIRLINES={
-  RYR:{n:'Ryanair',hub:'DUB',hc:'Dublin'},EZY:{n:'easyJet',hub:'LTN',hc:'Luton'},
-  BAW:{n:'British Airways',hub:'LHR',hc:'London Heathrow'},DLH:{n:'Lufthansa',hub:'FRA',hc:'Frankfurt'},
-  AFR:{n:'Air France',hub:'CDG',hc:'Paris CDG'},KLM:{n:'KLM',hub:'AMS',hc:'Amsterdam'},
-  UAE:{n:'Emirates',hub:'DXB',hc:'Dubai'},QTR:{n:'Qatar Airways',hub:'DOH',hc:'Doha'},
-  AAL:{n:'American Airlines',hub:'DFW',hc:'Dallas/FW'},UAL:{n:'United Airlines',hub:'ORD',hc:"Chicago O'Hare"},
-  DAL:{n:'Delta Air Lines',hub:'ATL',hc:'Atlanta'},THY:{n:'Turkish Airlines',hub:'IST',hc:'Istanbul'},
-  TAP:{n:'TAP Air Portugal',hub:'LIS',hc:'Lisbon'},IBE:{n:'Iberia',hub:'MAD',hc:'Madrid'},
-  VLG:{n:'Vueling',hub:'BCN',hc:'Barcelona'},AEE:{n:'Aegean Airlines',hub:'ATH',hc:'Athens'},
-  WZZ:{n:'Wizz Air',hub:'BUD',hc:'Budapest'},FIN:{n:'Finnair',hub:'HEL',hc:'Helsinki'},
-  SAS:{n:'SAS',hub:'CPH',hc:'Copenhagen'},NOR:{n:'Norwegian',hub:'OSL',hc:'Oslo'},
-  LOT:{n:'LOT Polish',hub:'WAW',hc:'Warsaw'},ACA:{n:'Air Canada',hub:'YYZ',hc:'Toronto'},
-  EIN:{n:'Aer Lingus',hub:'DUB',hc:'Dublin'},VIR:{n:'Virgin Atlantic',hub:'LHR',hc:'Heathrow'},
-  SIA:{n:'Singapore Airlines',hub:'SIN',hc:'Singapore'},QFA:{n:'Qantas',hub:'SYD',hc:'Sydney'},
-  MSR:{n:'EgyptAir',hub:'CAI',hc:'Cairo'},ETH:{n:'Ethiopian',hub:'ADD',hc:'Addis Ababa'},
-};
+const CAT_COLOR={MILITARY:'#CC2200',STATE:'#886600',CARGO:'#6A3A8A',UNKNOWN:'#2E4450'};
 
 const APT={
   LHR:{n:'Heathrow',c:'London',lat:51.47,lon:-0.46},CDG:{n:'Charles de Gaulle',c:'Paris',lat:49.01,lon:2.55},
@@ -349,39 +324,28 @@ const APT={
   MAD:{n:'Adolfo Suárez Barajas',c:'Madrid',lat:40.47,lon:-3.57},FCO:{n:'Leonardo da Vinci',c:'Rome',lat:41.80,lon:12.24},
   MUC:{n:'Franz Josef Strauss',c:'Munich',lat:48.35,lon:11.79},BCN:{n:'El Prat',c:'Barcelona',lat:41.30,lon:2.08},
   IST:{n:'Istanbul Airport',c:'Istanbul',lat:41.27,lon:28.75},ATH:{n:'Eleftherios Venizelos',c:'Athens',lat:37.94,lon:23.95},
-  JFK:{n:'John F. Kennedy Intl',c:'New York',lat:40.64,lon:-73.78},LAX:{n:'Los Angeles Intl',c:'Los Angeles',lat:33.94,lon:-118.41},
-  ORD:{n:"O'Hare International",c:'Chicago',lat:41.98,lon:-87.91},ATL:{n:'Hartsfield-Jackson',c:'Atlanta',lat:33.64,lon:-84.43},
-  DFW:{n:'Dallas/Fort Worth',c:'Dallas',lat:32.90,lon:-97.04},DXB:{n:'Dubai International',c:'Dubai',lat:25.25,lon:55.36},
-  DOH:{n:'Hamad International',c:'Doha',lat:25.27,lon:51.61},SIN:{n:'Changi Airport',c:'Singapore',lat:1.36,lon:103.99},
-  NRT:{n:'Narita International',c:'Tokyo',lat:35.77,lon:140.39},PEK:{n:'Beijing Capital',c:'Beijing',lat:40.08,lon:116.59},
-  SYD:{n:'Kingsford Smith',c:'Sydney',lat:-33.94,lon:151.18},GRU:{n:'Guarulhos Intl',c:'São Paulo',lat:-23.43,lon:-46.47},
-  CAI:{n:'Cairo International',c:'Cairo',lat:30.12,lon:31.41},JNB:{n:'OR Tambo',c:'Johannesburg',lat:-26.13,lon:28.24},
-  ICN:{n:'Incheon International',c:'Seoul',lat:37.46,lon:126.44},DEL:{n:'Indira Gandhi Intl',c:'New Delhi',lat:28.56,lon:77.10},
-  YYZ:{n:'Toronto Pearson',c:'Toronto',lat:43.68,lon:-79.63},MEX:{n:'Benito Juárez',c:'Mexico City',lat:19.43,lon:-99.07},
   VIE:{n:'Vienna International',c:'Vienna',lat:48.11,lon:16.57},ZRH:{n:'Zurich Airport',c:'Zurich',lat:47.46,lon:8.55},
   BRU:{n:'Brussels Airport',c:'Brussels',lat:50.90,lon:4.48},CPH:{n:'Copenhagen Kastrup',c:'Copenhagen',lat:55.62,lon:12.66},
   ARN:{n:'Stockholm Arlanda',c:'Stockholm',lat:59.65,lon:17.92},WAW:{n:'Chopin Airport',c:'Warsaw',lat:52.17,lon:20.97},
   HEL:{n:'Helsinki-Vantaa',c:'Helsinki',lat:60.32,lon:24.96},PRG:{n:'Václav Havel',c:'Prague',lat:50.10,lon:14.26},
   BUD:{n:'Ferenc Liszt Intl',c:'Budapest',lat:47.44,lon:19.26},OSL:{n:'Oslo Gardermoen',c:'Oslo',lat:60.20,lon:11.08},
   LIS:{n:'Humberto Delgado',c:'Lisbon',lat:38.78,lon:-9.13},DUB:{n:'Dublin Airport',c:'Dublin',lat:53.43,lon:-6.27},
-  ADD:{n:'Bole International',c:'Addis Ababa',lat:8.98,lon:38.80},LTN:{n:'Luton Airport',c:'London',lat:51.87,lon:-0.37},
+  LTN:{n:'Luton Airport',c:'London',lat:51.87,lon:-0.37},
 };
 
 const COUNTRY_HUB={
   'United Kingdom':'LHR','France':'CDG','Germany':'FRA','Italy':'FCO','Spain':'MAD',
-  'Netherlands':'AMS','Turkey':'IST','United States':'JFK','United Arab Emirates':'DXB',
-  'Japan':'NRT','China':'PEK','Australia':'SYD','Brazil':'GRU','Canada':'YYZ',
-  'India':'DEL','South Korea':'ICN','Singapore':'SIN','Egypt':'CAI','South Africa':'JNB',
-  'Mexico':'MEX','Austria':'VIE','Switzerland':'ZRH','Belgium':'BRU','Denmark':'CPH',
+  'Netherlands':'AMS','Turkey':'IST','United States':'JFK',
+  'Austria':'VIE','Switzerland':'ZRH','Belgium':'BRU','Denmark':'CPH',
   'Sweden':'ARN','Poland':'WAW','Finland':'HEL','Czech Republic':'PRG','Greece':'ATH',
-  'Hungary':'BUD','Norway':'OSL','Portugal':'LIS','Ireland':'DUB','Qatar':'DOH',
+  'Hungary':'BUD','Norway':'OSL','Portugal':'LIS','Ireland':'DUB',
 };
 
 // ══════════════════════════════════════
 // STATE
 // ══════════════════════════════════════
 let map2d, markerLayer, routeLayer, sensitiveCircles=[];
-let layerVis={commercial:true,military:true,state:true,cargo:true,unknown:true,anomaly:true};
+let layerVis={military:true,state:true,cargo:true,unknown:true,anomaly:true};
 let sensitiveVis={military:true,nuclear:true};
 let allFlights=[], prevPos={}, animMarkers={};
 let anomalyHist=Array(24).fill(0);
@@ -436,11 +400,10 @@ function gc(la1,lo1,la2,lo2,n=60){
 
 function resolveRoute(f){
   const cs=(f.cs||'').toUpperCase();
-  const airline=AIRLINES[cs.slice(0,3)]||null;
-  const origCode=airline?airline.hub:(COUNTRY_HUB[f.country||'']||null);
+  const origCode=COUNTRY_HUB[f.country||'']||null;
   const orig=origCode?APT[origCode]:null;
   const destInfo=estimateDest(f,origCode);
-  return{airline,origCode,orig,destCode:destInfo?.code||null,dest:destInfo?.apt||null};
+  return{origCode,orig,destCode:destInfo?.code||null,dest:destInfo?.apt||null};
 }
 
 function estimateDest(f,skip){
@@ -462,7 +425,7 @@ function estimateDest(f,skip){
 }
 
 // ══════════════════════════════════════
-// FETCH — usa bbox Europa che funzionava
+// FETCH
 // ══════════════════════════════════════
 async function fetchFlights(){
   setLive('connecting');
@@ -472,7 +435,7 @@ async function fetchFlights(){
   for(const url of OPENSKY_URLS){
     try{
       const res=await fetch(url,{
-        headers:{'User-Agent':'VigilHex/0.1'},
+        headers:{'User-Agent':'VigilHex/0.2'},
         signal:AbortSignal.timeout(15000),
       });
       if(!res.ok)throw new Error('HTTP '+res.status);
@@ -488,7 +451,6 @@ async function fetchFlights(){
   if(!data){
     setLive('error');
     document.getElementById('loading').style.display='none';
-    // Mostra errore utile
     document.getElementById('feed-list').innerHTML=`
       <div style="color:var(--red2);font-size:9px;padding:8px;border:1px solid var(--red);background:rgba(204,34,0,.06)">
         ⚠ Feed error: ${lastErr}<br>
@@ -501,7 +463,11 @@ async function fetchFlights(){
   let fl=[];
   for(const s of data.states){
     if(s[5]==null||s[6]==null)continue;
+    
+    // FILTRO COMMERCIALE: Classifichiamo l'aereo, se è commerciale lo ignoriamo completamente.
     const cat=classify(s);
+    if(cat === 'COMMERCIAL') continue; 
+
     const f={
       icao:s[0],cs:(s[1]||'').trim()||null,country:s[2],
       lon:s[5],lat:s[6],
@@ -580,7 +546,7 @@ function makeIcon(f){
 function openPanel(f){
   const route=resolveRoute(f);
   const near=nearSens(f.lat,f.lon);
-  const tc={MILITARY:'mil',STATE:'sta',COMMERCIAL:'com',CARGO:'crg',UNKNOWN:'unk'}[f.cat]||'com';
+  const tc={MILITARY:'mil',STATE:'sta',CARGO:'crg',UNKNOWN:'unk'}[f.cat]||'com';
   document.getElementById('fp-call').textContent=f.cs||'NO CALLSIGN';
   document.getElementById('fp-sub').innerHTML=`ICAO: <b style="color:var(--white)">${f.icao.toUpperCase()}</b> &nbsp;·&nbsp; ${f.country||'Unknown'}`;
   let html='';
@@ -592,14 +558,13 @@ function openPanel(f){
   html+=`<div style="margin-bottom:12px">
     <span class="fp-badge ${tc}">${f.cat}</span>
     ${f.ano?'<span class="fp-badge ano">ANOMALY</span>':''}
-    ${route.airline?`<span class="fp-badge com">${route.airline.n}</span>`:''}
   </div>`;
   const oC=route.origCode||'???',oA=route.orig;
   const dC=route.destCode||'???',dA=route.dest;
   html+=`<div class="fp-route">
     <div class="fp-apt">
       <div class="fp-apt-code">${oC}</div>
-      <div class="fp-apt-name">${oA?.n||'Unknown airport'}</div>
+      <div class="fp-apt-name">${oA?.n||'Unknown'}</div>
       <div class="fp-apt-city">${oA?.c||''}</div>
     </div>
     <div class="fp-route-mid">
@@ -647,7 +612,6 @@ function openPanel(f){
     <div class="fp-cell"><div class="lbl">ICAO24 HEX</div><div class="val" style="font-size:14px">${f.icao.toUpperCase()}</div></div>
     <div class="fp-cell"><div class="lbl">CALLSIGN</div><div class="val" style="font-size:14px">${f.cs||'BLOCKED'}</div></div>
     <div class="fp-cell full"><div class="lbl">REGISTRATION COUNTRY</div><div class="val" style="font-size:13px">${f.country||'Unknown'}</div></div>
-    ${route.airline?`<div class="fp-cell full"><div class="lbl">OPERATOR</div><div class="val" style="font-size:12px">${route.airline.n}</div><div class="sub">Hub: ${route.airline.hub} · ${route.airline.hc}</div></div>`:''}
     <div class="fp-cell full"><div class="lbl">CLASSIFICATION</div><div class="val" style="font-size:12px;color:${CAT_COLOR[f.cat]||'var(--white)'}">${f.cat}</div></div>
   </div></div>`;
   html+=`<div class="fp-sec"><div class="fp-sec-title">// position</div>
@@ -715,7 +679,7 @@ function animStep(){
 // STATS
 // ══════════════════════════════════════
 function updateStats(fl){
-  const C={commercial:0,military:0,state:0,cargo:0,unknown:0};
+  const C={military:0,state:0,cargo:0,unknown:0};
   let ano=0,xp=0,cr=0;
   fl.forEach(f=>{
     if(!f.gnd){C[f.cat.toLowerCase()]=(C[f.cat.toLowerCase()]||0)+1;
@@ -789,10 +753,10 @@ function toggleSensitive(type,el){
 }
 function setPreset(p){
   const P={
-    isr:{commercial:false,military:true,state:true,cargo:false,unknown:true,anomaly:true},
-    mil:{commercial:false,military:true,state:false,cargo:false,unknown:false,anomaly:true},
-    ano:{commercial:false,military:false,state:false,cargo:false,unknown:false,anomaly:true},
-    full:{commercial:true,military:true,state:true,cargo:true,unknown:true,anomaly:true},
+    isr:{military:true,state:true,cargo:false,unknown:true,anomaly:true},
+    mil:{military:true,state:false,cargo:false,unknown:false,anomaly:true},
+    ano:{military:false,state:false,cargo:false,unknown:false,anomaly:true},
+    full:{military:true,state:true,cargo:true,unknown:true,anomaly:true},
   };
   layerVis={...(P[p]||P.full)};
   Object.keys(layerVis).forEach(k=>{
