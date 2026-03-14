@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VIGILHEX — Global Airspace Intelligence</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+:root {
+  --bg:      #030405;
+  --bg1:     #060809;
+  --bg2:     #080C0E;
+  --bg3:     #0C1214;
+  --border:  #111A1E;
+  --border2: #172228;
+  --orange:  #E8500A;
+  --orange2: #FF6B2B;
+  --red:     #CC2200;
+  --red2:    #FF3311;
+  --grey1:   #1E2C34;
+  --grey2:   #364E5A;
+  --grey3:   #6A8090;
+  --white:   #B8CCCC;
+  --cyan:    #004466;
+}
+html,body { width:100%; height:100%; overflow:hidden; background:var(--bg); color:var(--grey3); font-family:'Share Tech Mono',monospace; font-size:11px; }
+
+/* ── HEADER ── */
+#hdr {
+  position:fixed; top:0; left:0; right:0; height:40px; z-index:1000;
+  background:var(--bg1); border-bottom:1px solid var(--border);
+  display:flex; align-items:center; justify-content:space-between; padding:0 16px;
+}
+.logo { font-family:'Orbitron',monospace; font-size:15px; font-weight:900; color:var(--white); letter-spacing:4px; display:flex; align-items:center; gap:10px; }
+.logo-hex { width:26px; height:26px; clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%); background:var(--orange); display:flex; align-items:center; justify-content:center; animation:hpulse 3s ease-in-out infinite; }
+.logo-hex svg { width:12px; height:12px; fill:#fff; }
+@keyframes hpulse { 0%,100%{box-shadow:0 0 10px rgba(232,80,10,.4)} 50%{box-shadow:0 0 24px rgba(232,80,10,.8)} }
+.logo span { color:var(--orange); }
+.logo-sub { font-size:8px; color:var(--grey2); letter-spacing:3px; margin-top:2px; }
+.hdr-stats { display:flex; gap:0; }
+.hdr-stat { padding:0 14px; border-left:1px solid var(--border); text-align:center; }
+.hdr-stat .lbl { font-size:7px; color:var(--grey2); letter-spacing:2px; }
+.hdr-stat .val { font-family:'Orbitron',monospace; font-size:14px; color:var(--white); }
+.hdr-stat .val.r { color:var(--red2); }
+.hdr-stat .val.o { color:var(--orange); }
+.hdr-right { display:flex; align-items:center; gap:12px; }
+.live-badge { display:flex; align-items:center; gap:6px; font-size:9px; color:var(--grey3); }
+.ldot { width:6px; height:6px; border-radius:50%; background:#00FF88; box-shadow:0 0 8px #00FF88; animation:blink 1.2s infinite; }
+.ldot.red { background:var(--red2); box-shadow:0 0 8px var(--red2); }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:.15} }
+#clock { font-size:12px; color:var(--orange); border:1px solid var(--border2); padding:3px 10px; letter-spacing:2px; }
+
+/* ── LAYOUT ── */
+#layout { position:fixed; top:40px; left:0; right:0; bottom:28px; display:flex; }
+
+/* ── SIDEBAR LEFT ── */
+#sidebar {
+  width:220px; min-width:220px;
+  background:var(--bg1); border-right:1px solid var(--border);
+  overflow-y:auto; display:flex; flex-direction:column;
+}
+.sec { padding:10px 12px; border-bottom:1px solid var(--border); }
+.sec-title { font-size:7px; color:var(--grey1); letter-spacing:3px; text-transform:uppercase; margin-bottom:8px; }
+.layer { display:flex; align-items:center; justify-content:space-between; padding:6px 8px; margin-bottom:2px; background:var(--bg2); border:1px solid var(--border); cursor:pointer; transition:.15s; user-select:none; }
+.layer:hover { border-color:var(--border2); }
+.layer-l { display:flex; align-items:center; gap:8px; }
+.ldot-icon { width:8px; height:8px; border-radius:50%; flex-shrink:0; }
+.layer-name { font-size:10px; color:var(--grey3); }
+.layer-count { font-size:8px; color:var(--grey2); }
+.tog { width:26px; height:13px; border-radius:7px; background:var(--grey1); position:relative; transition:.2s; flex-shrink:0; }
+.tog.on { background:var(--orange); }
+.tog::after { content:''; position:absolute; top:2px; left:2px; width:9px; height:9px; border-radius:50%; background:#fff; transition:.2s; }
+.tog.on::after { left:15px; }
+.threat { padding:7px 8px; margin-bottom:3px; background:var(--bg2); border:1px solid var(--border); border-left:2px solid var(--red); }
+.threat.w { border-left-color:var(--orange); }
+.threat-tag { font-size:7px; color:var(--red2); letter-spacing:1px; margin-bottom:3px; }
+.threat-tag.w { color:var(--orange); }
+.threat-body { font-size:9px; color:var(--grey3); line-height:1.5; }
+.threat-body b { color:var(--white); display:block; }
+.preset { padding:5px 8px; margin-bottom:2px; background:var(--bg2); border:1px solid var(--border); cursor:pointer; font-size:9px; color:var(--grey3); transition:.15s; }
+.preset:hover { border-color:var(--orange); color:var(--orange); }
+
+/* ── MAP ── */
+#map-wrap { flex:1; position:relative; }
+#map { width:100%; height:100%; background:#020304; }
+.leaflet-container { background:#020304 !important; }
+.corner { position:absolute; width:14px; height:14px; z-index:500; pointer-events:none; }
+.corner.tl { top:10px; left:10px; border-top:1px solid var(--orange); border-left:1px solid var(--orange); }
+.corner.tr { top:10px; right:10px; border-top:1px solid var(--orange); border-right:1px solid var(--orange); }
+.corner.bl { bottom:10px; left:10px; border-bottom:1px solid var(--orange); border-left:1px solid var(--orange); }
+.corner.br { bottom:10px; right:10px; border-bottom:1px solid var(--orange); border-right:1px solid var(--orange); }
+.map-lbl { position:absolute; z-index:400; font-size:8px; color:rgba(50,80,100,.7); letter-spacing:2px; text-transform:uppercase; pointer-events:none; }
+
+/* ── POPUP ── */
+.ac-popup { background:rgba(3,4,5,.97) !important; border:1px solid var(--orange) !important; border-radius:0 !important; box-shadow:0 0 20px rgba(232,80,10,.2) !important; }
+.ac-popup .leaflet-popup-content-wrapper { background:transparent !important; border-radius:0 !important; padding:0 !important; }
+.ac-popup .leaflet-popup-tip-container { display:none; }
+.ac-popup .leaflet-popup-content { margin:0 !important; }
+.pop-inner { padding:10px 14px; min-width:200px; }
+.pop-call { font-family:'Orbitron',monospace; font-size:15px; color:var(--white); letter-spacing:2px; }
+.pop-sub { font-size:8px; color:var(--grey2); margin:2px 0 8px; }
+.pop-grid { display:grid; grid-template-columns:1fr 1fr 1fr; gap:6px; }
+.pop-s .lbl { font-size:7px; color:var(--grey2); letter-spacing:1px; }
+.pop-s .val { font-size:12px; color:var(--white); font-weight:700; }
+.pop-s .val.r { color:var(--red2); }
+.pop-s .val.o { color:var(--orange); }
+.pop-tag { display:inline-block; font-size:7px; padding:1px 5px; border:1px solid; margin-bottom:6px; }
+.pop-tag.mil { color:var(--red2); border-color:var(--red); background:rgba(204,34,0,.1); }
+.pop-tag.ano { color:var(--orange); border-color:var(--orange); background:rgba(232,80,10,.08); }
+.pop-tag.com { color:var(--grey3); border-color:var(--grey2); }
+.pop-tag.sta { color:#886600; border-color:#664400; }
+.pop-tag.unk { color:var(--grey2); border-color:var(--grey1); }
+
+/* ── SIDEBAR RIGHT ── */
+#rpanel {
+  width:240px; min-width:240px;
+  background:var(--bg1); border-left:1px solid var(--border);
+  display:flex; flex-direction:column; overflow:hidden;
+}
+.tabs { display:flex; border-bottom:1px solid var(--border); }
+.tab { flex:1; padding:9px 4px; text-align:center; font-size:8px; color:var(--grey2); cursor:pointer; border-bottom:1px solid transparent; transition:.2s; letter-spacing:1px; }
+.tab.on { color:var(--orange); border-bottom-color:var(--orange); background:rgba(232,80,10,.04); }
+.tab-content { display:none; flex:1; overflow-y:auto; padding:12px; }
+.tab-content.on { display:block; }
+.metrics { display:grid; grid-template-columns:1fr 1fr; gap:5px; margin-bottom:12px; }
+.mbox { background:var(--bg2); border:1px solid var(--border); padding:8px; }
+.ml { font-size:7px; color:var(--grey2); letter-spacing:2px; }
+.mv { font-family:'Orbitron',monospace; font-size:18px; color:var(--white); margin:3px 0 2px; }
+.mv.r { color:var(--red2); }
+.mv.o { color:var(--orange); }
+.md { font-size:8px; color:var(--grey3); }
+.bars-lbl { font-size:7px; color:var(--grey2); letter-spacing:2px; margin-bottom:5px; }
+#sparkbars { display:flex; align-items:flex-end; gap:2px; height:36px; margin-bottom:12px; }
+.bar { flex:1; background:var(--grey1); min-height:2px; transition:height .3s; }
+.bar.hi { background:var(--grey2); }
+.bar.al { background:var(--orange); box-shadow:0 0 4px rgba(232,80,10,.5); }
+.feed-lbl { font-size:7px; color:var(--grey2); letter-spacing:2px; margin-bottom:8px; }
+.fi { display:flex; gap:7px; padding-bottom:7px; margin-bottom:7px; border-bottom:1px solid var(--border); }
+.ft { font-size:7px; color:var(--grey2); white-space:nowrap; padding-top:1px; min-width:46px; }
+.fb { font-size:9px; color:var(--grey3); line-height:1.4; }
+.fb b { color:var(--white); display:block; margin-bottom:1px; }
+.ftag { display:inline-block; font-size:7px; padding:0 4px; border:1px solid; margin-right:3px; }
+.ftag.m { color:var(--red2); border-color:var(--red); background:rgba(204,34,0,.08); }
+.ftag.a { color:var(--orange); border-color:var(--orange); background:rgba(232,80,10,.06); }
+.ftag.s { color:#886600; border-color:#664400; }
+.ftag.u { color:var(--grey2); border-color:var(--grey1); }
+#feed-list .fi:first-child { border-color:var(--orange); }
+
+/* ── BOTTOM ── */
+#bot {
+  position:fixed; bottom:0; left:0; right:0; height:28px; z-index:1000;
+  background:var(--bg1); border-top:1px solid var(--border);
+  display:flex; align-items:center;
+}
+.bstat { font-size:8px; color:var(--grey3); padding:0 14px; border-right:1px solid var(--border); height:100%; display:flex; align-items:center; gap:6px; white-space:nowrap; }
+.bstat .v { color:var(--white); }
+.bstat .v.r { color:var(--red2); }
+.bstat .v.o { color:var(--orange); }
+#last-update { margin-left:auto; padding-right:14px; font-size:8px; color:var(--grey2); }
+
+/* ── LOADING OVERLAY ── */
+#loading {
+  position:fixed; inset:0; z-index:9999;
+  background:var(--bg); display:flex; flex-direction:column;
+  align-items:center; justify-content:center; gap:16px;
+}
+.load-hex { width:60px; height:60px; clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%); background:var(--orange); animation:hpulse 1s ease-in-out infinite; }
+.load-txt { font-family:'Orbitron',monospace; font-size:13px; color:var(--white); letter-spacing:4px; }
+.load-sub { font-size:9px; color:var(--grey2); letter-spacing:3px; }
+.load-bar { width:200px; height:2px; background:var(--border); position:relative; overflow:hidden; }
+.load-bar::after { content:''; position:absolute; top:0; left:-50%; width:50%; height:100%; background:var(--orange); animation:scan 1.2s linear infinite; }
+@keyframes scan { 0%{left:-50%} 100%{left:150%} }
+
+/* Leaflet overrides */
+.leaflet-control-zoom { border:1px solid var(--border) !important; border-radius:0 !important; }
+.leaflet-control-zoom a { background:var(--bg2) !important; color:var(--grey3) !important; border-bottom:1px solid var(--border) !important; border-radius:0 !important; }
+.leaflet-control-zoom a:hover { background:var(--bg3) !important; color:var(--orange) !important; }
+.leaflet-control-attribution { background:rgba(3,4,5,.8) !important; color:var(--grey1) !important; font-size:7px !important; }
+.leaflet-control-attribution a { color:var(--grey2) !important; }
+</style>
+</head>
+<body>
+
+<!-- LOADING -->
+<div id="loading">
+  <div class="load-hex"></div>
+  <div class="load-txt">VIGILHEX</div>
+  <div class="load-sub">INITIALIZING FEED...</div>
+  <div class="load-bar"></div>
+</div>
+
+<!-- HEADER -->
+<div id="hdr">
+  <div style="display:flex;align-items:center;gap:16px">
+    <div class="logo">
+      <div class="logo-hex"><svg viewBox="0 0 24 24"><path d="M12 2L22 8v8l-10 6L2 16V8z"/></svg></div>
+      <div>
+        <div>VIGIL<span>HEX</span></div>
+        <div class="logo-sub">GLOBAL AIRSPACE INTELLIGENCE</div>
+      </div>
+    </div>
+  </div>
+  <div class="hdr-stats">
+    <div class="hdr-stat"><div class="lbl">TRACKED</div><div class="val" id="s-total">—</div></div>
+    <div class="hdr-stat"><div class="lbl">MILITARY</div><div class="val r" id="s-mil">—</div></div>
+    <div class="hdr-stat"><div class="lbl">ANOMALIES</div><div class="val o" id="s-ano">—</div></div>
+    <div class="hdr-stat"><div class="lbl">UNKNOWN</div><div class="val" id="s-unk">—</div></div>
+    <div class="hdr-stat"><div class="lbl">XPDR OFF</div><div class="val r" id="s-xpdr">—</div></div>
+  </div>
+  <div class="hdr-right">
+    <div class="live-badge"><div class="ldot" id="live-dot"></div><span id="live-txt">CONNECTING</span></div>
+    <div id="clock">--:--:-- UTC</div>
+  </div>
+</div>
+
+<!-- LAYOUT -->
+<div id="layout">
+
+  <!-- LEFT SIDEBAR -->
+  <div id="sidebar">
+    <div class="sec">
+      <div class="sec-title">// layer control</div>
+      <div class="layer" onclick="toggleLayer('commercial',this)">
+        <div class="layer-l"><div class="ldot-icon" style="background:#2A4050"></div><div><div class="layer-name">COMMERCIAL</div><div class="layer-count" id="c-commercial">0</div></div></div>
+        <div class="tog on" id="t-commercial"></div>
+      </div>
+      <div class="layer" onclick="toggleLayer('military',this)">
+        <div class="layer-l"><div class="ldot-icon" style="background:#CC2200;box-shadow:0 0 5px rgba(204,34,0,.6)"></div><div><div class="layer-name">MILITARY</div><div class="layer-count" id="c-military">0</div></div></div>
+        <div class="tog on" id="t-military"></div>
+      </div>
+      <div class="layer" onclick="toggleLayer('state',this)">
+        <div class="layer-l"><div class="ldot-icon" style="background:#886600"></div><div><div class="layer-name">STATE / GOV</div><div class="layer-count" id="c-state">0</div></div></div>
+        <div class="tog on" id="t-state"></div>
+      </div>
+      <div class="layer" onclick="toggleLayer('cargo',this)">
+        <div class="layer-l"><div class="ldot-icon" style="background:#4A2A6A"></div><div><div class="layer-name">CARGO</div><div class="layer-count" id="c-cargo">0</div></div></div>
+        <div class="tog on" id="t-cargo"></div>
+      </div>
+      <div class="layer" onclick="toggleLayer('unknown',this)">
+        <div class="layer-l"><div class="ldot-icon" style="background:#1E2C34;border:1px solid #364E5A"></div><div><div class="layer-name">UNKNOWN</div><div class="layer-count" id="c-unknown">0</div></div></div>
+        <div class="tog on" id="t-unknown"></div>
+      </div>
+      <div class="layer" onclick="toggleLayer('anomaly',this)" style="border-color:rgba(232,80,10,.3)">
+        <div class="layer-l"><div class="ldot-icon" style="background:var(--orange);box-shadow:0 0 6px rgba(232,80,10,.7)"></div><div><div class="layer-name" style="color:var(--orange)">ANOMALIES</div><div class="layer-count" id="c-anomaly" style="color:var(--orange)">0</div></div></div>
+        <div class="tog on" id="t-anomaly" style="background:var(--orange)"></div>
+      </div>
+    </div>
+
+    <div class="sec">
+      <div class="sec-title">// sensitive areas</div>
+      <div class="layer" onclick="toggleSensitive('military',this)">
+        <div class="layer-l"><div class="ldot-icon" style="background:#0A2030;border:1px solid #1A4060"></div><div><div class="layer-name">MILITARY BASES</div><div class="layer-count">BUFFER 50km</div></div></div>
+        <div class="tog on" id="t-bases"></div>
+      </div>
+      <div class="layer" onclick="toggleSensitive('nuclear',this)">
+        <div class="layer-l"><div class="ldot-icon" style="background:#200800;border:1px solid #441400"></div><div><div class="layer-name">NUCLEAR SITES</div><div class="layer-count">BUFFER 100km</div></div></div>
+        <div class="tog on" id="t-nuclear"></div>
+      </div>
+    </div>
+
+    <div class="sec">
+      <div class="sec-title">// active threats</div>
+      <div id="threat-list">
+        <div class="threat w"><div class="threat-tag w">■ CONNECTING...</div><div class="threat-body">Waiting for feed</div></div>
+      </div>
+    </div>
+
+    <div class="sec">
+      <div class="sec-title">// presets</div>
+      <div class="preset" onclick="setPreset('isr')">ISR WATCH MODE</div>
+      <div class="preset" onclick="setPreset('mil')">MILITARY ONLY</div>
+      <div class="preset" onclick="setPreset('ano')">ANOMALIES ONLY</div>
+      <div class="preset" onclick="setPreset('full')">FULL VIEW</div>
+    </div>
+  </div>
+
+  <!-- MAP -->
+  <div id="map-wrap">
+    <div id="map"></div>
+    <div class="corner tl"></div>
+    <div class="corner tr"></div>
+    <div class="corner bl"></div>
+    <div class="corner br"></div>
+    <div class="map-lbl" style="top:18%;left:8%">NORTH ATLANTIC</div>
+    <div class="map-lbl" style="top:62%;left:10%">MEDITERRANEAN</div>
+    <div class="map-lbl" style="top:20%;left:54%">BALTIC SEA</div>
+    <div class="map-lbl" style="top:68%;left:58%">BLACK SEA</div>
+  </div>
+
+  <!-- RIGHT PANEL -->
+  <div id="rpanel">
+    <div class="tabs">
+      <div class="tab on" onclick="switchTab('intel',this)">INTEL</div>
+      <div class="tab" onclick="switchTab('stats',this)">STATS</div>
+      <div class="tab" onclick="switchTab('about',this)">ABOUT</div>
+    </div>
+
+    <div class="tab-content on" id="tab-intel">
+      <div class="metrics">
+        <div class="mbox"><div class="ml">TRACKED</div><div class="mv" id="r-total">—</div><div class="md" id="r-total-d">loading...</div></div>
+        <div class="mbox"><div class="ml">MILITARY</div><div class="mv r" id="r-mil">—</div><div class="md" id="r-mil-d">—</div></div>
+        <div class="mbox"><div class="ml">ANOMALIES</div><div class="mv o" id="r-ano">—</div><div class="md" id="r-ano-d">—</div></div>
+        <div class="mbox"><div class="ml">XPDR OFF</div><div class="mv r" id="r-xpdr">—</div><div class="md" id="r-xpdr-d">—</div></div>
+      </div>
+      <div class="bars-lbl">// ANOMALY FREQ · 24H</div>
+      <div id="sparkbars"></div>
+      <div class="feed-lbl">// LIVE INTEL FEED</div>
+      <div id="feed-list"></div>
+    </div>
+
+    <div class="tab-content" id="tab-stats">
+      <div class="bars-lbl">// CATEGORY BREAKDOWN</div>
+      <div id="cat-bars" style="margin-bottom:12px"></div>
+      <div class="bars-lbl">// TOP COUNTRIES</div>
+      <div id="country-list"></div>
+    </div>
+
+    <div class="tab-content" id="tab-about">
+      <div style="color:var(--grey3);line-height:1.8;font-size:10px">
+        <div style="color:var(--white);font-family:'Orbitron',monospace;font-size:12px;margin-bottom:8px">VIGILHEX v0.1</div>
+        <div style="color:var(--grey2);margin-bottom:10px;font-size:8px;letter-spacing:1px">GLOBAL AIRSPACE INTELLIGENCE</div>
+        <div style="margin-bottom:8px">Real-time flight anomaly detection using public ADS-B data. Monitors military movements, transponder shutdowns, loitering near sensitive areas.</div>
+        <div style="margin-bottom:8px;color:var(--grey2)">DATA SOURCES</div>
+        <div>· OpenSky Network (ADS-B)</div>
+        <div>· ADS-B Exchange (military)</div>
+        <div style="margin-top:8px;color:var(--grey2)">DETECTS</div>
+        <div>· Transponder shutdowns</div>
+        <div>· Military movements</div>
+        <div>· Loitering patterns</div>
+        <div>· Restricted zone proximity</div>
+        <div>· Emergency squawks</div>
+        <div style="margin-top:10px;border-top:1px solid var(--border);padding-top:10px">
+          <a href="https://github.com/pietrorenzii/vigilhex" style="color:var(--orange);text-decoration:none">github.com/pietrorenzii/vigilhex</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- BOTTOM BAR -->
+<div id="bot">
+  <div class="bstat"><span class="ldot" style="width:5px;height:5px"></span> VIGILHEX</div>
+  <div class="bstat">SOURCE <span class="v">OPENSKY NETWORK</span></div>
+  <div class="bstat">COVERAGE <span class="v">EUROPE + NATO</span></div>
+  <div class="bstat">REFRESH <span class="v">60s</span></div>
+  <div class="bstat">ANOMALIES/24H <span class="v o" id="b-ano">—</span></div>
+  <div class="bstat">CRITICAL <span class="v r" id="b-crit">—</span></div>
+  <div id="last-update">LAST UPDATE: <span id="b-time">—</span></div>
+</div>
+
+<script>
+// ── CONFIG ──────────────────────────────────────────────────────────────────
+const REFRESH_MS = 60000;
+const OPENSKY_URL = 'https://opensky-network.org/api/states/all';
+const BBOX = { lamin:30, lamax:72, lomin:-20, lomax:50 };
+
+const SENSITIVE_AREAS = [
+  {name:'Ramstein AFB',     lat:49.44, lon:7.60,  r:50,  type:'military'},
+  {name:'RAF Lakenheath',   lat:52.41, lon:0.56,  r:40,  type:'military'},
+  {name:'Aviano AFB',       lat:46.03, lon:12.60, r:40,  type:'military'},
+  {name:'Incirlik AFB',     lat:37.00, lon:35.43, r:60,  type:'military'},
+  {name:'Kaliningrad',      lat:54.71, lon:20.45, r:80,  type:'military'},
+  {name:'NATO HQ Brussels', lat:50.87, lon:4.41,  r:30,  type:'military'},
+  {name:'Zaporizhzhia NPP', lat:47.51, lon:34.59, r:100, type:'nuclear'},
+  {name:'Cattenom NPP',     lat:49.41, lon:6.22,  r:60,  type:'nuclear'},
+  {name:'Paks NPP',         lat:46.57, lon:18.85, r:60,  type:'nuclear'},
+];
+
+const MIL_HEX = [
+  [0xAE0000,0xAFFFFF,'USA'], [0x43C000,0x43CFFF,'GBR'],
+  [0x3B0000,0x3BFFFF,'FRA'], [0x140000,0x157FFF,'RUS'],
+  [0x3DC000,0x3DCFFF,'DEU'], [0x45D000,0x45D0FF,'NATO'],
+];
+const MIL_CS  = ['RRR','GAF','FAF','USAF','REACH','DUKE','STEEL','NATO','MMM','JAKE','NAVY','TURC','CTM'];
+const STATE_CS= ['SAM','AF1','AF2','EXEC','GOVT','USCG','FRON','EU'];
+const CARGO_CS= ['UPS','FDX','CLX','BOX','GTI','DHL','MPH','ABX','KMI'];
+
+// ── STATE ───────────────────────────────────────────────────────────────────
+let map, markers = {}, sensitiveCircles = [];
+let layerVis = {commercial:true,military:true,state:true,cargo:true,unknown:true,anomaly:true};
+let sensitiveVis = {military:true, nuclear:true};
+let allFlights = [], feedHistory = [];
+let anomalyHistory = Array(24).fill(0);
+let refreshTimer;
+
+// ── MAP INIT ────────────────────────────────────────────────────────────────
+function initMap() {
+  map = L.map('map', {
+    center: [50, 15], zoom: 5,
+    zoomControl: true,
+    attributionControl: true,
+  });
+
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+    attribution: '© CartoDB',
+    subdomains: 'abcd', maxZoom: 19,
+  }).addTo(map);
+
+  // Sensitive areas
+  SENSITIVE_AREAS.forEach(a => {
+    const isMil = a.type === 'military';
+    const c = L.circle([a.lat, a.lon], {
+      radius: a.r * 1000,
+      color: isMil ? '#1A4060' : '#441400',
+      weight: 1,
+      fill: true,
+      fillColor: isMil ? '#0A1820' : '#180600',
+      fillOpacity: 0.18,
+    }).bindTooltip(`<span style="font-family:monospace;font-size:10px;color:#B8CCCC">${a.name}</span>`, {
+      className:'',sticky:true
+    });
+    sensitiveCircles.push({circle:c, type:a.type});
+    if ((isMil && sensitiveVis.military) || (!isMil && sensitiveVis.nuclear)) c.addTo(map);
+  });
+}
+
+// ── CLASSIFY ────────────────────────────────────────────────────────────────
+function classify(s) {
+  const icao = (s[0]||'').toUpperCase();
+  const cs   = ((s[1]||'').trim()).toUpperCase();
+  try {
+    const h = parseInt(icao,16);
+    for(const [lo,hi,c] of MIL_HEX) if(h>=lo&&h<=hi) return {cat:'MILITARY',flag:c};
+  } catch(e){}
+  if(MIL_CS.some(p=>cs.startsWith(p)))   return {cat:'MILITARY',flag:''};
+  if(STATE_CS.some(p=>cs.startsWith(p))) return {cat:'STATE',flag:''};
+  if(cs.length>=3&&CARGO_CS.includes(cs.slice(0,3))) return {cat:'CARGO',flag:''};
+  if(!cs) return {cat:'UNKNOWN',flag:''};
+  return {cat:'COMMERCIAL',flag:''};
+}
+
+function isAnomaly(f) {
+  if((f.silent||0)>300 && !f.ground) return {ano:true,reason:'TRANSPONDER OFF '+(Math.floor(f.silent/60))+'min'};
+  if(['7500','7600','7700'].includes(f.squawk)) return {ano:true,reason:'SQUAWK '+f.squawk};
+  if(f.cat==='MILITARY'&&!f.callsign) return {ano:true,reason:'MILITARY NO CALLSIGN'};
+  if(f.cat==='UNKNOWN'&&(f.silent||0)>120) return {ano:true,reason:'UNKNOWN XPDR SILENT'};
+  return {ano:false,reason:''};
+}
+
+function haversine(lat1,lon1,lat2,lon2) {
+  const R=6371,dLat=(lat2-lat1)*Math.PI/180,dLon=(lon2-lon1)*Math.PI/180;
+  const a=Math.sin(dLat/2)**2+Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLon/2)**2;
+  return R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));
+}
+
+function nearSensitive(lat,lon) {
+  for(const a of SENSITIVE_AREAS) {
+    if(haversine(lat,lon,a.lat,a.lon)<a.r) return a.name;
+  }
+  return null;
+}
+
+// ── MARKER STYLES ────────────────────────────────────────────────────────────
+const CAT_COLOR = {
+  COMMERCIAL:'#2A4868', MILITARY:'#CC2200',
+  STATE:'#886600',      CARGO:'#4A2A6A',
+  UNKNOWN:'#1E3040'
+};
+const CAT_SIZE = {COMMERCIAL:5, MILITARY:8, STATE:7, CARGO:6, UNKNOWN:6};
+
+function makeIcon(cat, isAno, isGround) {
+  if(isGround) return null;
+  const color = isAno ? '#E8500A' : CAT_COLOR[cat]||'#2A4868';
+  const size  = isAno ? (CAT_SIZE[cat]||5)+4 : CAT_SIZE[cat]||5;
+  const glow  = isAno ? `box-shadow:0 0 ${size*2}px ${color};` :
+                cat==='MILITARY' ? `box-shadow:0 0 8px ${color};` : '';
+  const pulse = isAno ? 'animation:blink .8s infinite;' : '';
+  return L.divIcon({
+    className:'',
+    html:`<div style="width:${size}px;height:${size}px;border-radius:50%;background:${color};${glow}${pulse}opacity:0.9;"></div>`,
+    iconSize:[size,size],
+    iconAnchor:[size/2,size/2],
+  });
+}
+
+// ── POPUP ────────────────────────────────────────────────────────────────────
+function makePopup(f) {
+  const tagClass = {MILITARY:'mil',STATE:'sta',COMMERCIAL:'com',CARGO:'com',UNKNOWN:'unk'}[f.cat]||'com';
+  const anoHtml  = f.ano ? `<div style="color:var(--orange);font-size:9px;margin-top:5px">⚠ ${f.reason}</div>` : '';
+  const near     = nearSensitive(f.lat,f.lon);
+  const nearHtml = near ? `<div style="color:var(--red2);font-size:9px;margin-top:3px">⬡ NEAR: ${near}</div>` : '';
+  return `
+  <div class="pop-inner">
+    <span class="pop-tag ${tagClass}">${f.cat}</span>
+    <div class="pop-call">${f.callsign||'NO CALLSIGN'}</div>
+    <div class="pop-sub">ICAO: ${f.icao.toUpperCase()} · ${f.country||'?'}</div>
+    <div class="pop-grid">
+      <div class="pop-s"><div class="lbl">ALTITUDE</div><div class="val ${f.alt&&f.alt<1000?'r':''}">${f.alt?f.alt+'ft':'—'}</div></div>
+      <div class="pop-s"><div class="lbl">SPEED</div><div class="val">${f.spd?f.spd+'kts':'—'}</div></div>
+      <div class="pop-s"><div class="lbl">XPDR</div><div class="val ${(f.silent||0)>300?'r':''}">${(f.silent||0)>60?Math.floor(f.silent/60)+'m':'OK'}</div></div>
+      <div class="pop-s"><div class="lbl">TRACK</div><div class="val">${f.track?f.track+'°':'—'}</div></div>
+      <div class="pop-s"><div class="lbl">SQUAWK</div><div class="val ${['7500','7600','7700'].includes(f.squawk)?'r':''}">${f.squawk||'—'}</div></div>
+      <div class="pop-s"><div class="lbl">SOURCE</div><div class="val">${['ADS-B','ASTERIX','MLAT'][f.src]||'?'}</div></div>
+    </div>
+    ${anoHtml}${nearHtml}
+  </div>`;
+}
+
+// ── FETCH & PROCESS ──────────────────────────────────────────────────────────
+async function fetchFlights() {
+  setLive('connecting');
+  try {
+    const params = new URLSearchParams({lamin:BBOX.lamin,lamax:BBOX.lamax,lomin:BBOX.lomin,lomax:BBOX.lomax});
+    const res = await fetch(`${OPENSKY_URL}?${params}`,{
+      headers:{'User-Agent':'VigilHex/0.1'}
+    });
+    if(!res.ok) throw new Error('HTTP '+res.status);
+    const data = await res.json();
+    if(!data||!data.states) throw new Error('Empty response');
+
+    const now = Math.floor(Date.now()/1000);
+    const flights = [];
+
+    for(const s of data.states) {
+      if(!s[5]||!s[6]) continue;
+      const {cat} = classify(s);
+      const cs    = (s[1]||'').trim();
+      const silent= s[4] ? now - s[4] : null;
+      const f = {
+        icao:s[0], callsign:cs||null, country:s[2],
+        lon:s[5], lat:s[6],
+        alt:s[7]?Math.round(s[7]*3.281):null,
+        ground:s[8],
+        spd:s[9]?Math.round(s[9]*1.944):null,
+        track:s[10]?Math.round(s[10]):null,
+        vrate:s[11]?Math.round(s[11]*196.85):null,
+        squawk:s[14], silent, src:s[16], cat,
+        ano:false, reason:'',
+      };
+      const {ano,reason} = isAnomaly(f);
+      f.ano=ano; f.reason=reason;
+      flights.push(f);
+    }
+
+    allFlights = flights;
+    updateMap(flights);
+    updateStats(flights);
+    updateFeed(flights);
+    updateStatsTab(flights);
+    setLive('live');
+    document.getElementById('b-time').textContent = new Date().toUTCString().split(' ')[4]+' UTC';
+    document.getElementById('loading').style.display='none';
+
+  } catch(e) {
+    console.error('Fetch error:',e);
+    setLive('error');
+    addFeedItem('ERROR','FEED','Feed error: '+e.message,'u');
+  }
+}
+
+// ── MAP UPDATE ───────────────────────────────────────────────────────────────
+function updateMap(flights) {
+  // Remove old markers
+  Object.values(markers).forEach(m=>map.removeLayer(m));
+  markers = {};
+
+  // Anomaly-only mode
+  const anoOnly = !document.getElementById('t-anomaly').classList.contains('on') &&
+    document.getElementById('t-anomaly').dataset.anoonly === '1';
+
+  flights.forEach(f => {
+    if(f.ground) return;
+    const vis = layerVis[f.cat.toLowerCase()];
+    if(!vis) return;
+    if(f.ano && !layerVis.anomaly) return;
+
+    const icon = makeIcon(f.cat, f.ano, f.ground);
+    if(!icon) return;
+
+    const m = L.marker([f.lat,f.lon], {icon, zIndexOffset: f.ano?1000:f.cat==='MILITARY'?500:0})
+      .bindPopup(makePopup(f), {className:'ac-popup', maxWidth:260});
+    m.addTo(map);
+    markers[f.icao] = m;
+  });
+}
+
+// ── STATS UPDATE ─────────────────────────────────────────────────────────────
+function updateStats(flights) {
+  const counts = {commercial:0,military:0,state:0,cargo:0,unknown:0};
+  let ano=0,xpdr=0,crit=0;
+
+  flights.forEach(f=>{
+    if(!f.ground){
+      counts[f.cat.toLowerCase()]=(counts[f.cat.toLowerCase()]||0)+1;
+      if(f.ano) ano++;
+      if((f.silent||0)>300) xpdr++;
+      if(f.squawk==='7500'||f.squawk==='7700') crit++;
+    }
+  });
+
+  const total = Object.values(counts).reduce((a,b)=>a+b,0);
+  document.getElementById('s-total').textContent = total.toLocaleString();
+  document.getElementById('s-mil').textContent   = counts.military;
+  document.getElementById('s-ano').textContent   = ano;
+  document.getElementById('s-unk').textContent   = counts.unknown;
+  document.getElementById('s-xpdr').textContent  = xpdr;
+  document.getElementById('r-total').textContent = total.toLocaleString();
+  document.getElementById('r-mil').textContent   = counts.military;
+  document.getElementById('r-ano').textContent   = ano;
+  document.getElementById('r-xpdr').textContent  = xpdr;
+  document.getElementById('b-ano').textContent   = ano;
+  document.getElementById('b-crit').textContent  = crit;
+
+  Object.keys(counts).forEach(k=>{
+    const el = document.getElementById('c-'+k);
+    if(el) el.textContent = counts[k]+' ACTIVE';
+  });
+  document.getElementById('c-anomaly').textContent = ano+' FLAGGED';
+
+  // Spark bars
+  anomalyHistory.push(ano);
+  anomalyHistory.shift();
+  const max = Math.max(...anomalyHistory,1);
+  const sb = document.getElementById('sparkbars');
+  sb.innerHTML = anomalyHistory.map((v,i)=>{
+    const h = Math.max(4,Math.round((v/max)*36));
+    const cls = v===Math.max(...anomalyHistory)&&v>0?'al':v>max*0.5?'hi':'';
+    return `<div class="bar ${cls}" style="height:${h}px"></div>`;
+  }).join('');
+}
+
+// ── FEED UPDATE ───────────────────────────────────────────────────────────────
+function updateFeed(flights) {
+  const anomalies = flights.filter(f=>f.ano&&!f.ground).sort((a,b)=>(b.silent||0)-(a.silent||0));
+  const now = new Date().toUTCString().split(' ')[4];
+
+  anomalies.slice(0,8).forEach(f=>{
+    addFeedItem(now, f.callsign||f.icao.toUpperCase(), f.reason, f.cat==='MILITARY'?'m':'a');
+  });
+
+  const threats = anomalies.slice(0,4);
+  const tl = document.getElementById('threat-list');
+  if(threats.length===0){
+    tl.innerHTML = '<div class="threat w"><div class="threat-tag w">■ NOMINAL</div><div class="threat-body">No active threats detected</div></div>';
+  } else {
+    tl.innerHTML = threats.map(f=>{
+      const sev = (f.silent||0)>600||f.squawk==='7500'?'':'w';
+      return `<div class="threat ${sev}">
+        <div class="threat-tag ${sev}">■ ${sev?'WARNING':'CRITICAL'} · ${f.reason}</div>
+        <div class="threat-body"><b>${f.callsign||'NO CALLSIGN'} · ${f.cat}</b>${f.country||''} · ALT: ${f.alt||'—'}ft</div>
+      </div>`;
+    }).join('');
+  }
+}
+
+function addFeedItem(time, id, msg, tag) {
+  const fl = document.getElementById('feed-list');
+  const div = document.createElement('div');
+  div.className = 'fi';
+  div.innerHTML = `<div class="ft">${time}</div><div class="fb"><span class="ftag ${tag}">${tag==='m'?'MIL':tag==='a'?'ANOMALY':tag==='u'?'ERR':'INFO'}</span><b>${id}</b>${msg}</div>`;
+  fl.insertBefore(div,fl.firstChild);
+  while(fl.children.length>20) fl.removeChild(fl.lastChild);
+}
+
+// ── STATS TAB ─────────────────────────────────────────────────────────────────
+function updateStatsTab(flights) {
+  const counts = {};
+  const countries = {};
+  flights.filter(f=>!f.ground).forEach(f=>{
+    counts[f.cat]=(counts[f.cat]||0)+1;
+    countries[f.country||'?']=(countries[f.country||'?']||0)+1;
+  });
+  const total = Object.values(counts).reduce((a,b)=>a+b,1);
+  const catColors = {COMMERCIAL:'#2A4868',MILITARY:'#CC2200',STATE:'#886600',CARGO:'#4A2A6A',UNKNOWN:'#1E3040'};
+  document.getElementById('cat-bars').innerHTML = Object.entries(counts)
+    .sort((a,b)=>b[1]-a[1])
+    .map(([k,v])=>`
+      <div style="margin-bottom:5px">
+        <div style="display:flex;justify-content:space-between;font-size:8px;margin-bottom:2px">
+          <span style="color:var(--grey3)">${k}</span><span style="color:var(--white)">${v}</span>
+        </div>
+        <div style="height:3px;background:var(--border)">
+          <div style="height:3px;width:${Math.round(v/total*100)}%;background:${catColors[k]||'#2A4868'}"></div>
+        </div>
+      </div>`).join('');
+
+  document.getElementById('country-list').innerHTML = Object.entries(countries)
+    .sort((a,b)=>b[1]-a[1]).slice(0,8)
+    .map(([k,v])=>`<div style="display:flex;justify-content:space-between;padding:3px 0;border-bottom:1px solid var(--border);font-size:9px"><span style="color:var(--grey3)">${k}</span><span style="color:var(--white)">${v}</span></div>`)
+    .join('');
+}
+
+// ── LAYER CONTROLS ────────────────────────────────────────────────────────────
+function toggleLayer(cat, el) {
+  layerVis[cat] = !layerVis[cat];
+  const tog = document.getElementById('t-'+cat);
+  if(tog) tog.classList.toggle('on', layerVis[cat]);
+  el.style.opacity = layerVis[cat] ? '1' : '0.35';
+  updateMap(allFlights);
+}
+
+function toggleSensitive(type, el) {
+  sensitiveVis[type] = !sensitiveVis[type];
+  const tog = document.getElementById('t-'+(type==='military'?'bases':'nuclear'));
+  if(tog) tog.classList.toggle('on', sensitiveVis[type]);
+  el.style.opacity = sensitiveVis[type] ? '1' : '0.35';
+  sensitiveCircles.forEach(({circle,type:t})=>{
+    if(t===type){
+      if(sensitiveVis[type]) circle.addTo(map); else map.removeLayer(circle);
+    }
+  });
+}
+
+function setPreset(p) {
+  const all = {commercial:true,military:true,state:true,cargo:true,unknown:true,anomaly:true};
+  const presets = {
+    isr:  {commercial:false,military:true,state:true,cargo:false,unknown:true,anomaly:true},
+    mil:  {commercial:false,military:true,state:false,cargo:false,unknown:false,anomaly:true},
+    ano:  {commercial:false,military:false,state:false,cargo:false,unknown:false,anomaly:true},
+    full: all,
+  };
+  layerVis = presets[p]||all;
+  Object.keys(layerVis).forEach(k=>{
+    const tog = document.getElementById('t-'+k);
+    if(tog) tog.classList.toggle('on', layerVis[k]);
+    const layer = document.querySelector(`[onclick="toggleLayer('${k}',this)"]`);
+    if(layer) layer.style.opacity = layerVis[k]?'1':'0.35';
+  });
+  updateMap(allFlights);
+}
+
+// ── TABS ──────────────────────────────────────────────────────────────────────
+function switchTab(id, el) {
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));
+  document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('on'));
+  el.classList.add('on');
+  document.getElementById('tab-'+id).classList.add('on');
+}
+
+// ── CLOCK ─────────────────────────────────────────────────────────────────────
+function setLive(state) {
+  const dot = document.getElementById('live-dot');
+  const txt = document.getElementById('live-txt');
+  if(state==='live')       { dot.style.background='#00FF88'; dot.style.boxShadow='0 0 8px #00FF88'; txt.textContent='FEED LIVE'; }
+  else if(state==='error') { dot.style.background='#CC2200'; dot.style.boxShadow='0 0 8px #CC2200'; txt.textContent='FEED ERROR'; }
+  else                     { dot.style.background='#886600'; dot.style.boxShadow='0 0 8px #886600'; txt.textContent='CONNECTING'; }
+}
+setInterval(()=>{ document.getElementById('clock').textContent=new Date().toUTCString().split(' ')[4]+' UTC'; },1000);
+
+// ── BOOT ──────────────────────────────────────────────────────────────────────
+window.addEventListener('load', async ()=>{
+  initMap();
+  await fetchFlights();
+  refreshTimer = setInterval(fetchFlights, REFRESH_MS);
+});
+</script>
+</body>
+</html>
