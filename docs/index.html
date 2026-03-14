@@ -11,131 +11,167 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{
-  --bg:#030405;--bg1:#060809;--bg2:#080C0E;--border:#111A1E;--border2:#172228;
-  --orange:#E8500A;--red:#CC2200;--red2:#FF3311;
-  --grey1:#1E2C34;--grey2:#364E5A;--grey3:#6A8090;--white:#B8CCCC;
+  --bg:#020304;--bg1:#040608;--bg2:#060A0C;--bg3:#0A0F12;
+  --border:#0E1820;--border2:#142030;
+  --orange:#E8500A;--orange2:#FF6B2B;
+  --red:#CC2200;--red2:#FF3311;
+  --grey1:#1A2830;--grey2:#2E4450;--grey3:#5A7888;--white:#A8C4CC;
+  --cyan:#004466;--cyan2:#006688;
 }
 html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(--grey3);font-family:'Share Tech Mono',monospace;font-size:11px}
-#hdr{position:fixed;top:0;left:0;right:0;height:40px;z-index:1000;background:var(--bg1);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 14px}
+
+/* HEADER */
+#hdr{position:fixed;top:0;left:0;right:0;height:40px;z-index:2000;background:rgba(4,6,8,.97);border-bottom:1px solid var(--border2);display:flex;align-items:center;justify-content:space-between;padding:0 14px;backdrop-filter:blur(4px)}
 .logo{font-family:'Orbitron',monospace;font-size:14px;font-weight:900;color:var(--white);letter-spacing:4px;display:flex;align-items:center;gap:10px}
 .logo-hex{width:24px;height:24px;clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);background:var(--orange);display:flex;align-items:center;justify-content:center;animation:hpulse 3s ease-in-out infinite}
 .logo-hex svg{width:11px;height:11px;fill:#fff}
-@keyframes hpulse{0%,100%{box-shadow:0 0 10px rgba(232,80,10,.4)}50%{box-shadow:0 0 22px rgba(232,80,10,.8)}}
+@keyframes hpulse{0%,100%{box-shadow:0 0 10px rgba(232,80,10,.3)}50%{box-shadow:0 0 20px rgba(232,80,10,.7)}}
 .logo span{color:var(--orange)}
 .logo-sub{font-size:7px;color:var(--grey2);letter-spacing:3px;margin-top:2px}
 .hdr-stats{display:flex}
-.hdr-stat{padding:0 12px;border-left:1px solid var(--border);text-align:center}
+.hdr-stat{padding:0 10px;border-left:1px solid var(--border);text-align:center;min-width:60px}
 .hdr-stat .lbl{font-size:7px;color:var(--grey2);letter-spacing:2px}
-.hdr-stat .val{font-family:'Orbitron',monospace;font-size:13px;color:var(--white)}
+.hdr-stat .val{font-family:'Orbitron',monospace;font-size:14px;color:var(--white)}
 .hdr-stat .val.r{color:var(--red2)}.hdr-stat .val.o{color:var(--orange)}
-.hdr-right{display:flex;align-items:center;gap:10px}
+.hdr-right{display:flex;align-items:center;gap:8px}
 .live-badge{display:flex;align-items:center;gap:5px;font-size:8px;color:var(--grey3)}
-.ldot{width:6px;height:6px;border-radius:50%;background:#00FF88;box-shadow:0 0 8px #00FF88;animation:blink 1.2s infinite;flex-shrink:0}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:.15}}
+.ldot{width:6px;height:6px;border-radius:50%;animation:blink 1.2s infinite;flex-shrink:0}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.1}}
 #clock{font-size:11px;color:var(--orange);border:1px solid var(--border2);padding:3px 9px;letter-spacing:2px}
 .view-sw{display:flex;border:1px solid var(--border2)}
-.vsw-btn{padding:4px 12px;font-size:8px;letter-spacing:2px;color:var(--grey2);cursor:pointer;background:var(--bg2);border:none;transition:.15s;font-family:'Share Tech Mono',monospace}
-.vsw-btn.on{color:var(--orange);background:rgba(232,80,10,.08)}
+.vsw-btn{padding:4px 10px;font-size:8px;letter-spacing:2px;color:var(--grey2);cursor:pointer;background:var(--bg2);border:none;transition:.15s;font-family:'Share Tech Mono',monospace}
+.vsw-btn.on{color:var(--orange);background:rgba(232,80,10,.06);border-bottom:1px solid var(--orange)}
+.vsw-btn:hover{color:var(--white)}
+
+/* LAYOUT */
 #layout{position:fixed;top:40px;left:0;right:0;bottom:28px;display:flex}
-#sidebar{width:210px;min-width:210px;background:var(--bg1);border-right:1px solid var(--border);overflow-y:auto;display:flex;flex-direction:column}
-.sec{padding:9px 11px;border-bottom:1px solid var(--border)}
-.sec-title{font-size:7px;color:var(--grey1);letter-spacing:3px;text-transform:uppercase;margin-bottom:7px}
-.layer{display:flex;align-items:center;justify-content:space-between;padding:5px 7px;margin-bottom:2px;background:var(--bg2);border:1px solid var(--border);cursor:pointer;transition:.15s;user-select:none}
-.layer:hover{border-color:var(--border2)}
-.layer-l{display:flex;align-items:center;gap:7px}
-.ldot-i{width:7px;height:7px;border-radius:50%;flex-shrink:0}
-.layer-name{font-size:10px;color:var(--grey3)}
+
+/* SIDEBAR */
+#sidebar{width:200px;min-width:200px;background:rgba(4,6,8,.95);border-right:1px solid var(--border);overflow-y:auto;display:flex;flex-direction:column;z-index:100}
+.sec{padding:8px 10px;border-bottom:1px solid var(--border)}
+.sec-title{font-size:7px;color:var(--grey1);letter-spacing:3px;text-transform:uppercase;margin-bottom:6px}
+.layer{display:flex;align-items:center;justify-content:space-between;padding:5px 6px;margin-bottom:2px;background:var(--bg2);border:1px solid var(--border);cursor:pointer;transition:.15s;user-select:none}
+.layer:hover{border-color:var(--border2);background:var(--bg3)}
+.layer-l{display:flex;align-items:center;gap:6px}
+.ldot-i{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.layer-name{font-size:9px;color:var(--grey3)}
 .layer-count{font-size:7px;color:var(--grey2)}
-.tog{width:24px;height:12px;border-radius:6px;background:var(--grey1);position:relative;transition:.2s;flex-shrink:0}
+.tog{width:22px;height:11px;border-radius:6px;background:var(--grey1);position:relative;transition:.2s;flex-shrink:0}
 .tog.on{background:var(--orange)}
-.tog::after{content:'';position:absolute;top:2px;left:2px;width:8px;height:8px;border-radius:50%;background:#fff;transition:.2s}
-.tog.on::after{left:14px}
-.threat{padding:6px 7px;margin-bottom:3px;background:var(--bg2);border:1px solid var(--border);border-left:2px solid var(--red)}
+.tog::after{content:'';position:absolute;top:2px;left:2px;width:7px;height:7px;border-radius:50%;background:#fff;transition:.2s}
+.tog.on::after{left:13px}
+.threat{padding:5px 6px;margin-bottom:2px;background:var(--bg2);border:1px solid var(--border);border-left:2px solid var(--red)}
 .threat.w{border-left-color:var(--orange)}
 .threat-tag{font-size:7px;color:var(--red2);letter-spacing:1px;margin-bottom:2px}
 .threat-tag.w{color:var(--orange)}
-.threat-body{font-size:9px;color:var(--grey3);line-height:1.4}
+.threat-body{font-size:8px;color:var(--grey3);line-height:1.4}
 .threat-body b{color:var(--white);display:block}
-.preset{padding:5px 7px;margin-bottom:2px;background:var(--bg2);border:1px solid var(--border);cursor:pointer;font-size:9px;color:var(--grey3);transition:.15s}
+.preset{padding:5px 6px;margin-bottom:2px;background:var(--bg2);border:1px solid var(--border);cursor:pointer;font-size:8px;color:var(--grey3);transition:.15s}
 .preset:hover{border-color:var(--orange);color:var(--orange)}
-#map-wrap{flex:1;position:relative;display:block}
-#map{width:100%;height:100%;background:#020304}
-.leaflet-container{background:#020304!important}
-.leaflet-control-zoom{border:1px solid var(--border)!important;border-radius:0!important}
-.leaflet-control-zoom a{background:var(--bg2)!important;color:var(--grey3)!important;border-bottom:1px solid var(--border)!important;border-radius:0!important}
-.leaflet-control-zoom a:hover{color:var(--orange)!important}
-.leaflet-control-attribution{background:rgba(3,4,5,.8)!important;color:var(--grey1)!important;font-size:7px!important}
+
+/* 2D MAP */
+#map-wrap{flex:1;position:relative;display:block;overflow:hidden}
+#map{width:100%;height:100%;background:#000}
+.leaflet-container{background:#000!important}
+.leaflet-control-zoom{border:1px solid var(--border2)!important;border-radius:0!important}
+.leaflet-control-zoom a{background:var(--bg2)!important;color:var(--grey3)!important;border-bottom:1px solid var(--border)!important;border-radius:0!important;line-height:26px!important}
+.leaflet-control-zoom a:hover{color:var(--orange)!important;background:var(--bg3)!important}
+.leaflet-control-attribution{background:rgba(2,3,4,.8)!important;color:var(--grey1)!important;font-size:7px!important}
+.corner{position:absolute;width:12px;height:12px;pointer-events:none;z-index:500}
+.corner.tl{top:8px;left:8px;border-top:1px solid var(--orange);border-left:1px solid var(--orange)}
+.corner.tr{top:8px;right:8px;border-top:1px solid var(--orange);border-right:1px solid var(--orange)}
+.corner.bl{bottom:8px;left:8px;border-bottom:1px solid var(--orange);border-left:1px solid var(--orange)}
+.corner.br{bottom:8px;right:8px;border-bottom:1px solid var(--orange);border-right:1px solid var(--orange)}
+
+/* FLIGHT DETAIL PANEL */
+#flight-panel{
+  position:absolute;top:10px;right:10px;width:280px;
+  background:rgba(2,3,4,.97);border:1px solid var(--orange);
+  z-index:1000;display:none;
+  box-shadow:0 0 30px rgba(232,80,10,.15);
+}
+.fp-header{
+  background:rgba(232,80,10,.08);border-bottom:1px solid var(--border2);
+  padding:10px 12px;display:flex;justify-content:space-between;align-items:center;
+}
+.fp-callsign{font-family:'Orbitron',monospace;font-size:16px;color:var(--white);letter-spacing:2px}
+.fp-icao{font-size:8px;color:var(--grey2);margin-top:2px}
+.fp-close{color:var(--grey2);cursor:pointer;font-size:16px;line-height:1}
+.fp-close:hover{color:var(--orange)}
+.fp-tags{padding:8px 12px;border-bottom:1px solid var(--border)}
+.fp-tag{display:inline-block;font-size:7px;padding:2px 6px;border:1px solid;margin-right:4px}
+.fp-tag.mil{color:var(--red2);border-color:var(--red);background:rgba(204,34,0,.1)}
+.fp-tag.ano{color:var(--orange);border-color:var(--orange);background:rgba(232,80,10,.08)}
+.fp-tag.com{color:var(--grey3);border-color:var(--grey2)}
+.fp-tag.sta{color:#886600;border-color:#664400}
+.fp-tag.unk{color:var(--grey2);border-color:var(--grey1)}
+.fp-route{padding:10px 12px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px}
+.fp-apt{text-align:center;min-width:56px}
+.fp-apt-code{font-family:'Orbitron',monospace;font-size:20px;color:var(--white);letter-spacing:1px}
+.fp-apt-name{font-size:7px;color:var(--grey2);margin-top:2px;line-height:1.3}
+.fp-apt-name.unknown{color:var(--grey1)}
+.fp-arrow{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px}
+.fp-arrow-line{width:100%;height:1px;background:linear-gradient(90deg,rgba(232,80,10,.3),var(--orange),rgba(232,80,10,.3));position:relative}
+.fp-arrow-line::after{content:'▶';position:absolute;right:-5px;top:-6px;font-size:9px;color:var(--orange)}
+.fp-arrow-cs{font-size:8px;color:var(--grey2);letter-spacing:1px}
+.fp-stats{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border);border-top:1px solid var(--border)}
+.fp-stat{background:var(--bg2);padding:8px 10px}
+.fp-stat .lbl{font-size:7px;color:var(--grey2);letter-spacing:1px;margin-bottom:3px}
+.fp-stat .val{font-size:13px;color:var(--white);font-weight:700}
+.fp-stat .val.r{color:var(--red2)}.fp-stat .val.o{color:var(--orange)}
+.fp-footer{padding:8px 12px;border-top:1px solid var(--border);font-size:8px;color:var(--grey2);line-height:1.6}
+.fp-ano{color:var(--orange);padding:6px 12px;border-top:1px solid var(--border);font-size:9px}
+.fp-near{color:var(--red2);padding:4px 12px 6px;font-size:9px}
+
+/* 3D GLOBE */
 #globe-wrap{flex:1;position:relative;display:none;background:#000;overflow:hidden}
 #globe-canvas{width:100%;height:100%;display:block;cursor:grab}
 #globe-canvas:active{cursor:grabbing}
-.corner{position:absolute;width:14px;height:14px;pointer-events:none}
-.corner.tl{top:10px;left:10px;border-top:1px solid var(--orange);border-left:1px solid var(--orange)}
-.corner.tr{top:10px;right:10px;border-top:1px solid var(--orange);border-right:1px solid var(--orange)}
-.corner.bl{bottom:10px;left:10px;border-bottom:1px solid var(--orange);border-left:1px solid var(--orange)}
-.corner.br{bottom:10px;right:10px;border-bottom:1px solid var(--orange);border-right:1px solid var(--orange)}
-/* POPUP */
-.ac-popup .leaflet-popup-content-wrapper{background:rgba(3,4,5,.97)!important;border:1px solid var(--orange)!important;border-radius:0!important;padding:0!important;box-shadow:0 0 20px rgba(232,80,10,.15)!important}
-.ac-popup .leaflet-popup-tip-container{display:none}
-.ac-popup .leaflet-popup-content{margin:0!important;min-width:240px}
-.pop-inner{padding:12px 14px}
-.pop-call{font-family:'Orbitron',monospace;font-size:15px;color:var(--white);letter-spacing:2px}
-.pop-icao{font-size:8px;color:var(--grey2);margin-top:2px;margin-bottom:6px}
-.pop-tag{display:inline-block;font-size:7px;padding:2px 6px;border:1px solid;margin-right:4px;margin-bottom:6px}
-.pop-tag.mil{color:var(--red2);border-color:var(--red);background:rgba(204,34,0,.1)}
-.pop-tag.ano{color:var(--orange);border-color:var(--orange);background:rgba(232,80,10,.08)}
-.pop-tag.com{color:var(--grey3);border-color:var(--grey2)}
-.pop-tag.sta{color:#886600;border-color:#664400}
-.pop-tag.unk{color:var(--grey2);border-color:var(--grey1)}
-.pop-route{display:flex;align-items:center;gap:6px;padding:8px 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border);margin-bottom:8px}
-.pop-apt{text-align:center;min-width:52px}
-.pop-apt-code{font-family:'Orbitron',monospace;font-size:18px;color:var(--white);letter-spacing:2px}
-.pop-apt-name{font-size:7px;color:var(--grey2);margin-top:2px}
-.pop-route-mid{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px}
-.pop-route-bar{width:100%;height:1px;background:linear-gradient(90deg,transparent,var(--orange),transparent);position:relative}
-.pop-route-bar::after{content:'▶';position:absolute;right:-4px;top:-5px;font-size:8px;color:var(--orange)}
-.pop-route-cs{font-size:7px;color:var(--grey2);letter-spacing:1px}
-.pop-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:5px;margin-bottom:6px}
-.pop-s .lbl{font-size:7px;color:var(--grey2);letter-spacing:1px}
-.pop-s .val{font-size:12px;color:var(--white);font-weight:700}
-.pop-s .val.r{color:var(--red2)}.pop-s .val.o{color:var(--orange)}
-.pop-ano{color:var(--orange);font-size:9px;margin-top:4px;padding-top:4px;border-top:1px solid var(--border)}
-#rpanel{width:230px;min-width:230px;background:var(--bg1);border-left:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden}
+#globe-tip{position:absolute;display:none;background:rgba(2,3,4,.97);border:1px solid var(--orange);padding:10px 12px;font-size:9px;color:var(--white);pointer-events:none;z-index:200;min-width:180px;font-family:'Share Tech Mono',monospace;box-shadow:0 0 16px rgba(232,80,10,.2)}
+
+/* RIGHT PANEL */
+#rpanel{width:220px;min-width:220px;background:rgba(4,6,8,.95);border-left:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden;z-index:100}
 .tabs{display:flex;border-bottom:1px solid var(--border)}
-.tab{flex:1;padding:8px 4px;text-align:center;font-size:7px;color:var(--grey2);cursor:pointer;border-bottom:1px solid transparent;transition:.2s;letter-spacing:1px}
-.tab.on{color:var(--orange);border-bottom-color:var(--orange);background:rgba(232,80,10,.04)}
-.tab-content{display:none;flex:1;overflow-y:auto;padding:11px}
+.tab{flex:1;padding:8px 2px;text-align:center;font-size:7px;color:var(--grey2);cursor:pointer;border-bottom:1px solid transparent;transition:.2s;letter-spacing:1px}
+.tab.on{color:var(--orange);border-bottom-color:var(--orange);background:rgba(232,80,10,.03)}
+.tab-content{display:none;flex:1;overflow-y:auto;padding:10px}
 .tab-content.on{display:block}
-.metrics{display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-bottom:11px}
-.mbox{background:var(--bg2);border:1px solid var(--border);padding:7px}
+.metrics{display:grid;grid-template-columns:1fr 1fr;gap:3px;margin-bottom:10px}
+.mbox{background:var(--bg2);border:1px solid var(--border);padding:7px;border-left:2px solid var(--border2)}
+.mbox.hi{border-left-color:var(--orange)}
+.mbox.red{border-left-color:var(--red)}
 .ml{font-size:7px;color:var(--grey2);letter-spacing:2px}
-.mv{font-family:'Orbitron',monospace;font-size:17px;color:var(--white);margin:3px 0 2px}
+.mv{font-family:'Orbitron',monospace;font-size:16px;color:var(--white);margin:2px 0}
 .mv.r{color:var(--red2)}.mv.o{color:var(--orange)}
 .md{font-size:7px;color:var(--grey3)}
 .bars-lbl{font-size:7px;color:var(--grey2);letter-spacing:2px;margin-bottom:4px}
-#sparkbars{display:flex;align-items:flex-end;gap:2px;height:34px;margin-bottom:11px}
-.bar{flex:1;background:var(--grey1);min-height:2px}
-.bar.hi{background:var(--grey2)}.bar.al{background:var(--orange)}
-.feed-lbl{font-size:7px;color:var(--grey2);letter-spacing:2px;margin-bottom:7px}
-.fi{display:flex;gap:6px;padding-bottom:6px;margin-bottom:6px;border-bottom:1px solid var(--border)}
-.ft{font-size:7px;color:var(--grey2);white-space:nowrap;padding-top:1px;min-width:44px}
-.fb{font-size:9px;color:var(--grey3);line-height:1.4}
+#sparkbars{display:flex;align-items:flex-end;gap:2px;height:32px;margin-bottom:10px}
+.bar{flex:1;background:var(--grey1);min-height:2px;transition:height .3s}
+.bar.hi{background:var(--grey2)}.bar.al{background:var(--orange);box-shadow:0 0 4px rgba(232,80,10,.4)}
+.feed-lbl{font-size:7px;color:var(--grey2);letter-spacing:2px;margin-bottom:6px}
+.fi{display:flex;gap:5px;padding-bottom:6px;margin-bottom:6px;border-bottom:1px solid var(--border)}
+.ft{font-size:7px;color:var(--grey2);white-space:nowrap;padding-top:1px;min-width:42px}
+.fb{font-size:8px;color:var(--grey3);line-height:1.4}
 .fb b{color:var(--white);display:block;margin-bottom:1px}
-.ftag{display:inline-block;font-size:7px;padding:0 4px;border:1px solid;margin-right:3px}
+.ftag{display:inline-block;font-size:7px;padding:0 3px;border:1px solid;margin-right:2px}
 .ftag.m{color:var(--red2);border-color:var(--red);background:rgba(204,34,0,.08)}
 .ftag.a{color:var(--orange);border-color:var(--orange);background:rgba(232,80,10,.06)}
 .ftag.u{color:var(--grey2);border-color:var(--grey1)}
-#bot{position:fixed;bottom:0;left:0;right:0;height:28px;z-index:1000;background:var(--bg1);border-top:1px solid var(--border);display:flex;align-items:center}
-.bstat{font-size:8px;color:var(--grey3);padding:0 12px;border-right:1px solid var(--border);height:100%;display:flex;align-items:center;gap:5px;white-space:nowrap}
+
+/* BOTTOM */
+#bot{position:fixed;bottom:0;left:0;right:0;height:28px;z-index:2000;background:rgba(4,6,8,.97);border-top:1px solid var(--border);display:flex;align-items:center}
+.bstat{font-size:7px;color:var(--grey3);padding:0 10px;border-right:1px solid var(--border);height:100%;display:flex;align-items:center;gap:4px;white-space:nowrap}
 .bstat .v{color:var(--white)}.bstat .v.r{color:var(--red2)}.bstat .v.o{color:var(--orange)}
-#last-update{margin-left:auto;padding-right:12px;font-size:8px;color:var(--grey2)}
+#last-update{margin-left:auto;padding-right:10px;font-size:7px;color:var(--grey2)}
+
+/* LOADING */
 #loading{position:fixed;inset:0;z-index:9999;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px}
-.load-hex{width:56px;height:56px;clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);background:var(--orange);animation:hpulse 1s ease-in-out infinite}
-.load-txt{font-family:'Orbitron',monospace;font-size:13px;color:var(--white);letter-spacing:4px}
+.load-hex{width:52px;height:52px;clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);background:var(--orange);animation:hpulse 1s ease-in-out infinite}
+.load-txt{font-family:'Orbitron',monospace;font-size:12px;color:var(--white);letter-spacing:4px}
 .load-sub{font-size:8px;color:var(--grey2);letter-spacing:3px}
-.load-bar{width:180px;height:2px;background:var(--border);position:relative;overflow:hidden}
-.load-bar::after{content:'';position:absolute;top:0;left:-50%;width:50%;height:100%;background:var(--orange);animation:scan 1.2s linear infinite}
+.load-bar{width:160px;height:1px;background:var(--border);position:relative;overflow:hidden}
+.load-bar::after{content:'';position:absolute;top:0;left:-50%;width:50%;height:100%;background:var(--orange);animation:scan 1s linear infinite}
 @keyframes scan{0%{left:-50%}100%{left:150%}}
-#globe-tip{position:absolute;display:none;background:rgba(3,4,5,.97);border:1px solid var(--orange);padding:8px 12px;font-size:10px;color:var(--white);pointer-events:none;z-index:100;min-width:160px;font-family:'Share Tech Mono',monospace}
 </style>
 </head>
 <body>
@@ -166,7 +202,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(
       <button class="vsw-btn on" id="btn-2d" onclick="switchView('2d')">2D MAP</button>
       <button class="vsw-btn" id="btn-3d" onclick="switchView('3d')">3D GLOBE</button>
     </div>
-    <div class="live-badge"><div class="ldot" id="live-dot"></div><span id="live-txt">CONNECTING</span></div>
+    <div class="live-badge"><div class="ldot" id="live-dot" style="background:#886600;box-shadow:0 0 8px #886600"></div><span id="live-txt">CONNECTING</span></div>
     <div id="clock">--:--:-- UTC</div>
   </div>
 </div>
@@ -176,11 +212,11 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(
     <div class="sec">
       <div class="sec-title">// layer control</div>
       <div class="layer" onclick="toggleLayer('commercial',this)">
-        <div class="layer-l"><div class="ldot-i" style="background:#2A4050"></div><div><div class="layer-name">COMMERCIAL</div><div class="layer-count" id="c-commercial">0 ACTIVE</div></div></div>
+        <div class="layer-l"><div class="ldot-i" style="background:#3A6080"></div><div><div class="layer-name">COMMERCIAL</div><div class="layer-count" id="c-commercial">0 ACTIVE</div></div></div>
         <div class="tog on" id="t-commercial"></div>
       </div>
       <div class="layer" onclick="toggleLayer('military',this)">
-        <div class="layer-l"><div class="ldot-i" style="background:#CC2200;box-shadow:0 0 5px rgba(204,34,0,.5)"></div><div><div class="layer-name">MILITARY</div><div class="layer-count" id="c-military">0 TRACKED</div></div></div>
+        <div class="layer-l"><div class="ldot-i" style="background:#CC2200;box-shadow:0 0 4px rgba(204,34,0,.6)"></div><div><div class="layer-name">MILITARY</div><div class="layer-count" id="c-military">0 TRACKED</div></div></div>
         <div class="tog on" id="t-military"></div>
       </div>
       <div class="layer" onclick="toggleLayer('state',this)">
@@ -188,26 +224,26 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(
         <div class="tog on" id="t-state"></div>
       </div>
       <div class="layer" onclick="toggleLayer('cargo',this)">
-        <div class="layer-l"><div class="ldot-i" style="background:#4A2A6A"></div><div><div class="layer-name">CARGO</div><div class="layer-count" id="c-cargo">0 ACTIVE</div></div></div>
+        <div class="layer-l"><div class="ldot-i" style="background:#6A3A8A"></div><div><div class="layer-name">CARGO</div><div class="layer-count" id="c-cargo">0 ACTIVE</div></div></div>
         <div class="tog on" id="t-cargo"></div>
       </div>
       <div class="layer" onclick="toggleLayer('unknown',this)">
-        <div class="layer-l"><div class="ldot-i" style="background:#1E2C34;border:1px solid #364E5A"></div><div><div class="layer-name">UNKNOWN</div><div class="layer-count" id="c-unknown">0 NO SQUAWK</div></div></div>
+        <div class="layer-l"><div class="ldot-i" style="background:#1E3040;border:1px solid #2E4450"></div><div><div class="layer-name">UNKNOWN</div><div class="layer-count" id="c-unknown">0 NO SQUAWK</div></div></div>
         <div class="tog on" id="t-unknown"></div>
       </div>
-      <div class="layer" onclick="toggleLayer('anomaly',this)" style="border-color:rgba(232,80,10,.3)">
-        <div class="layer-l"><div class="ldot-i" style="background:var(--orange);box-shadow:0 0 6px rgba(232,80,10,.7)"></div><div><div class="layer-name" style="color:var(--orange)">ANOMALIES</div><div class="layer-count" id="c-anomaly" style="color:var(--orange)">0 FLAGGED</div></div></div>
+      <div class="layer" onclick="toggleLayer('anomaly',this)" style="border-color:rgba(232,80,10,.25)">
+        <div class="layer-l"><div class="ldot-i" style="background:var(--orange);box-shadow:0 0 5px rgba(232,80,10,.6);animation:blink 1s infinite"></div><div><div class="layer-name" style="color:var(--orange)">ANOMALIES</div><div class="layer-count" id="c-anomaly" style="color:var(--orange)">0 FLAGGED</div></div></div>
         <div class="tog on" id="t-anomaly" style="background:var(--orange)"></div>
       </div>
     </div>
     <div class="sec">
       <div class="sec-title">// sensitive areas</div>
       <div class="layer" onclick="toggleSensitive('military',this)">
-        <div class="layer-l"><div class="ldot-i" style="background:#0A2030;border:1px solid #1A4060"></div><div><div class="layer-name">MILITARY BASES</div><div class="layer-count">BUFFER 50km</div></div></div>
+        <div class="layer-l"><div class="ldot-i" style="background:#0A1820;border:1px solid #1A3A50"></div><div><div class="layer-name">MILITARY BASES</div><div class="layer-count">BUFFER 50km</div></div></div>
         <div class="tog on" id="t-bases"></div>
       </div>
       <div class="layer" onclick="toggleSensitive('nuclear',this)">
-        <div class="layer-l"><div class="ldot-i" style="background:#200800;border:1px solid #441400"></div><div><div class="layer-name">NUCLEAR SITES</div><div class="layer-count">BUFFER 100km</div></div></div>
+        <div class="layer-l"><div class="ldot-i" style="background:#1A0800;border:1px solid #3A1400"></div><div><div class="layer-name">NUCLEAR SITES</div><div class="layer-count">BUFFER 100km</div></div></div>
         <div class="tog on" id="t-nuclear"></div>
       </div>
     </div>
@@ -224,14 +260,30 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(
     </div>
   </div>
 
+  <!-- 2D MAP -->
   <div id="map-wrap">
     <div id="map"></div>
-    <div class="corner tl" style="position:absolute;z-index:500"></div>
-    <div class="corner tr" style="position:absolute;z-index:500"></div>
-    <div class="corner bl" style="position:absolute;z-index:500"></div>
-    <div class="corner br" style="position:absolute;z-index:500"></div>
+    <div class="corner tl"></div><div class="corner tr"></div>
+    <div class="corner bl"></div><div class="corner br"></div>
+    <!-- Flight detail panel -->
+    <div id="flight-panel">
+      <div class="fp-header">
+        <div>
+          <div class="fp-callsign" id="fp-callsign">—</div>
+          <div class="fp-icao" id="fp-icao">—</div>
+        </div>
+        <div class="fp-close" onclick="closePanel()">✕</div>
+      </div>
+      <div class="fp-tags" id="fp-tags"></div>
+      <div class="fp-route" id="fp-route"></div>
+      <div class="fp-stats" id="fp-stats"></div>
+      <div id="fp-ano" style="display:none" class="fp-ano"></div>
+      <div id="fp-near" style="display:none" class="fp-near"></div>
+      <div class="fp-footer" id="fp-footer"></div>
+    </div>
   </div>
 
+  <!-- 3D GLOBE -->
   <div id="globe-wrap">
     <canvas id="globe-canvas"></canvas>
     <div id="globe-tip"></div>
@@ -249,10 +301,10 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(
     </div>
     <div class="tab-content on" id="tab-intel">
       <div class="metrics">
-        <div class="mbox"><div class="ml">TRACKED</div><div class="mv" id="r-total">—</div><div class="md">worldwide</div></div>
-        <div class="mbox"><div class="ml">MILITARY</div><div class="mv r" id="r-mil">—</div><div class="md">active</div></div>
-        <div class="mbox"><div class="ml">ANOMALIES</div><div class="mv o" id="r-ano">—</div><div class="md">flagged</div></div>
-        <div class="mbox"><div class="ml">XPDR OFF</div><div class="mv r" id="r-xpdr">—</div><div class="md">>5min silent</div></div>
+        <div class="mbox hi"><div class="ml">TRACKED</div><div class="mv" id="r-total">—</div><div class="md">worldwide</div></div>
+        <div class="mbox red"><div class="ml">MILITARY</div><div class="mv r" id="r-mil">—</div><div class="md">active</div></div>
+        <div class="mbox hi"><div class="ml">ANOMALIES</div><div class="mv o" id="r-ano">—</div><div class="md">flagged</div></div>
+        <div class="mbox red"><div class="ml">XPDR OFF</div><div class="mv r" id="r-xpdr">—</div><div class="md">>5min</div></div>
       </div>
       <div class="bars-lbl">// ANOMALY FREQ · 24H</div>
       <div id="sparkbars"></div>
@@ -261,22 +313,23 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(
     </div>
     <div class="tab-content" id="tab-stats">
       <div class="bars-lbl">// CATEGORY BREAKDOWN</div>
-      <div id="cat-bars" style="margin-bottom:12px"></div>
+      <div id="cat-bars" style="margin-bottom:10px"></div>
       <div class="bars-lbl">// TOP COUNTRIES</div>
       <div id="country-list"></div>
     </div>
     <div class="tab-content" id="tab-about">
-      <div style="color:var(--grey3);line-height:1.8;font-size:10px">
-        <div style="color:var(--white);font-family:'Orbitron',monospace;font-size:12px;margin-bottom:6px">VIGILHEX v0.1</div>
-        <div style="color:var(--grey2);margin-bottom:10px;font-size:8px;letter-spacing:1px">GLOBAL AIRSPACE INTELLIGENCE</div>
-        <div style="margin-bottom:8px">Real-time global flight anomaly detection using public ADS-B data.</div>
-        <div style="color:var(--grey2);font-size:8px;margin-bottom:4px">DETECTS</div>
-        <div>· Transponder off >5min</div>
+      <div style="color:var(--grey3);line-height:1.8;font-size:9px">
+        <div style="color:var(--white);font-family:'Orbitron',monospace;font-size:11px;margin-bottom:5px">VIGILHEX v0.1</div>
+        <div style="color:var(--grey2);margin-bottom:8px;font-size:7px;letter-spacing:1px">GLOBAL AIRSPACE INTELLIGENCE</div>
+        <div style="margin-bottom:8px">Real-time global flight anomaly detection using public ADS-B data. No API key required.</div>
+        <div style="color:var(--grey2);font-size:7px;margin-bottom:3px">ANOMALY DETECTION</div>
+        <div>· Transponder silent >5min</div>
         <div>· Military no callsign</div>
-        <div>· Emergency squawks 7500/7600/7700</div>
+        <div>· Squawk 7500 / 7600 / 7700</div>
         <div>· Sensitive area proximity</div>
-        <div style="margin-top:10px;border-top:1px solid var(--border);padding-top:10px">
-          <a href="https://github.com/pietrorenzii/vigilhex" style="color:var(--orange);text-decoration:none">⭐ github.com/pietrorenzii/vigilhex</a>
+        <div>· Unknown aircraft silent >2min</div>
+        <div style="margin-top:8px;border-top:1px solid var(--border);padding-top:8px">
+          <a href="https://github.com/pietrorenzii/vigilhex" target="_blank" style="color:var(--orange);text-decoration:none">⭐ github.com/pietrorenzii/vigilhex</a>
         </div>
       </div>
     </div>
@@ -284,7 +337,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(
 </div>
 
 <div id="bot">
-  <div class="bstat"><div class="ldot" style="width:5px;height:5px"></div>VIGILHEX</div>
+  <div class="bstat"><div class="ldot" style="width:5px;height:5px;background:#00FF88;box-shadow:0 0 6px #00FF88;animation:blink 1.2s infinite"></div>VIGILHEX</div>
   <div class="bstat">SOURCE <span class="v">OPENSKY NETWORK</span></div>
   <div class="bstat">COVERAGE <span class="v">WORLDWIDE</span></div>
   <div class="bstat">MAX <span class="v">2000 AC</span></div>
@@ -294,9 +347,9 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(
 </div>
 
 <script>
-// ═══════════════════════════════════════
-// CONFIG
-// ═══════════════════════════════════════
+// ═══════════════════════════════════════════════════
+// DATA
+// ═══════════════════════════════════════════════════
 const MAX_AC=2000, REFRESH_MS=60000;
 const OPENSKY='https://opensky-network.org/api/states/all';
 
@@ -306,7 +359,7 @@ const SENSITIVE=[
   {n:'Aviano AFB',lat:46.03,lon:12.60,r:40,t:'military'},
   {n:'Incirlik AFB',lat:37.00,lon:35.43,r:60,t:'military'},
   {n:'Kaliningrad',lat:54.71,lon:20.45,r:80,t:'military'},
-  {n:'NATO HQ',lat:50.87,lon:4.41,r:30,t:'military'},
+  {n:'NATO HQ Brussels',lat:50.87,lon:4.41,r:30,t:'military'},
   {n:'Diego Garcia',lat:-7.32,lon:72.42,r:50,t:'military'},
   {n:'Andersen AFB',lat:13.58,lon:144.93,r:60,t:'military'},
   {n:'Zaporizhzhia NPP',lat:47.51,lon:34.59,r:100,t:'nuclear'},
@@ -315,35 +368,86 @@ const SENSITIVE=[
 ];
 
 const MIL_HEX=[[0xAE0000,0xAFFFFF],[0x43C000,0x43CFFF],[0x3B0000,0x3BFFFF],[0x140000,0x157FFF],[0x3DC000,0x3DCFFF],[0x45D000,0x45D0FF]];
-const MIL_CS=['RRR','GAF','FAF','USAF','REACH','DUKE','STEEL','NATO','MMM','JAKE','NAVY','TURC','CTM'];
+const MIL_CS=['RRR','GAF','FAF','USAF','REACH','DUKE','STEEL','NATO','MMM','JAKE','NAVY','TURC','CTM','CASA','EVY','BAFE'];
 const STATE_CS=['SAM','AF1','AF2','EXEC','GOVT','USCG','FRON','EU'];
-const CARGO_CS=['UPS','FDX','CLX','BOX','GTI','DHL','MPH','ABX','KMI'];
-const CAT_COLOR={COMMERCIAL:'#3A6080',MILITARY:'#CC2200',STATE:'#886600',CARGO:'#6A3A8A',UNKNOWN:'#2E4050'};
+const CARGO_CS=['UPS','FDX','CLX','BOX','GTI','DHL','MPH','ABX','KMI','PAC'];
+const CAT_COLOR={COMMERCIAL:'#3A6080',MILITARY:'#CC2200',STATE:'#886600',CARGO:'#6A3A8A',UNKNOWN:'#2E4450'};
 
-// Airport DB for route display
+// Airline callsign → {name, hub_iata}
+const AIRLINES={
+  RYR:{n:'Ryanair',hub:'DUB',hubN:'Dublin'},
+  EZY:{n:'easyJet',hub:'LTN',hubN:'London Luton'},
+  BAW:{n:'British Airways',hub:'LHR',hubN:'London Heathrow'},
+  DLH:{n:'Lufthansa',hub:'FRA',hubN:'Frankfurt'},
+  AFR:{n:'Air France',hub:'CDG',hubN:'Paris CDG'},
+  KLM:{n:'KLM',hub:'AMS',hubN:'Amsterdam'},
+  UAE:{n:'Emirates',hub:'DXB',hubN:'Dubai'},
+  AAL:{n:'American Airlines',hub:'DFW',hubN:'Dallas FW'},
+  UAL:{n:'United Airlines',hub:'ORD',hubN:"Chicago O'Hare"},
+  DAL:{n:'Delta Air Lines',hub:'ATL',hubN:'Atlanta'},
+  SWA:{n:'Southwest Airlines',hub:'DAL',hubN:'Dallas Love Field'},
+  THY:{n:'Turkish Airlines',hub:'IST',hubN:'Istanbul'},
+  AZU:{n:'Azul Brazilian',hub:'VCP',hubN:'Campinas'},
+  TAP:{n:'TAP Air Portugal',hub:'LIS',hubN:'Lisbon'},
+  IBE:{n:'Iberia',hub:'MAD',hubN:'Madrid'},
+  VLG:{n:'Vueling',hub:'BCN',hubN:'Barcelona'},
+  AEE:{n:'Aegean Airlines',hub:'ATH',hubN:'Athens'},
+  WZZ:{n:'Wizz Air',hub:'BUD',hubN:'Budapest'},
+  FIN:{n:'Finnair',hub:'HEL',hubN:'Helsinki'},
+  SAS:{n:'SAS',hub:'CPH',hubN:'Copenhagen'},
+  NOR:{n:'Norwegian',hub:'OSL',hubN:'Oslo'},
+  LOT:{n:'LOT Polish',hub:'WAW',hubN:'Warsaw'},
+  CSN:{n:'China Southern',hub:'CAN',hubN:'Guangzhou'},
+  CCA:{n:'Air China',hub:'PEK',hubN:'Beijing'},
+  CES:{n:'China Eastern',hub:'PVG',hubN:'Shanghai'},
+  JAL:{n:'Japan Airlines',hub:'HND',hubN:'Tokyo Haneda'},
+  ANA:{n:'All Nippon AW',hub:'NRT',hubN:'Tokyo Narita'},
+  SIA:{n:'Singapore Airlines',hub:'SIN',hubN:'Singapore Changi'},
+  QFA:{n:'Qantas',hub:'SYD',hubN:'Sydney'},
+  ETH:{n:'Ethiopian Airlines',hub:'ADD',hubN:'Addis Ababa'},
+  UAE:{n:'Emirates',hub:'DXB',hubN:'Dubai'},
+  QTR:{n:'Qatar Airways',hub:'DOH',hubN:'Doha'},
+  SVA:{n:'Saudi Arabian',hub:'JED',hubN:'Jeddah'},
+  MSR:{n:'EgyptAir',hub:'CAI',hubN:'Cairo'},
+  TOM:{n:'TUI Airways',hub:'BHX',hubN:'Birmingham'},
+  EIN:{n:'Aer Lingus',hub:'DUB',hubN:'Dublin'},
+  VIR:{n:'Virgin Atlantic',hub:'LHR',hubN:'London Heathrow'},
+  ACA:{n:'Air Canada',hub:'YYZ',hubN:'Toronto Pearson'},
+  WJA:{n:'WestJet',hub:'YYC',hubN:'Calgary'},
+  AMX:{n:'Aeromexico',hub:'MEX',hubN:'Mexico City'},
+  GLO:{n:'Gol Airlines',hub:'GRU',hubN:'Sao Paulo'},
+  LAN:{n:'LATAM',hub:'SCL',hubN:'Santiago'},
+};
+
 const APT={
   LHR:{n:'Heathrow',lat:51.47,lon:-0.46},CDG:{n:'Paris CDG',lat:49.01,lon:2.55},
   AMS:{n:'Amsterdam',lat:52.31,lon:4.76},FRA:{n:'Frankfurt',lat:50.03,lon:8.57},
-  MAD:{n:'Madrid',lat:40.47,lon:-3.57},FCO:{n:'Rome FCO',lat:41.80,lon:12.24},
+  MAD:{n:'Madrid Barajas',lat:40.47,lon:-3.57},FCO:{n:'Rome Fiumicino',lat:41.80,lon:12.24},
   MUC:{n:'Munich',lat:48.35,lon:11.79},BCN:{n:'Barcelona',lat:41.30,lon:2.08},
   IST:{n:'Istanbul',lat:41.27,lon:28.75},ATH:{n:'Athens',lat:37.94,lon:23.95},
   JFK:{n:'New York JFK',lat:40.64,lon:-73.78},LAX:{n:'Los Angeles',lat:33.94,lon:-118.41},
   ORD:{n:"Chicago O'Hare",lat:41.98,lon:-87.91},ATL:{n:'Atlanta',lat:33.64,lon:-84.43},
-  DFW:{n:'Dallas FW',lat:32.90,lon:-97.04},MIA:{n:'Miami',lat:25.80,lon:-80.29},
-  SFO:{n:'San Francisco',lat:37.62,lon:-122.38},SEA:{n:'Seattle',lat:47.45,lon:-122.31},
-  DXB:{n:'Dubai',lat:25.25,lon:55.36},SIN:{n:'Singapore',lat:1.36,lon:103.99},
-  HKG:{n:'Hong Kong',lat:22.31,lon:113.92},NRT:{n:'Tokyo Narita',lat:35.77,lon:140.39},
-  PEK:{n:'Beijing',lat:40.08,lon:116.59},SYD:{n:'Sydney',lat:-33.94,lon:151.18},
-  GRU:{n:'Sao Paulo',lat:-23.43,lon:-46.47},CAI:{n:'Cairo',lat:30.12,lon:31.41},
-  JNB:{n:'Johannesburg',lat:-26.13,lon:28.24},ICN:{n:'Seoul',lat:37.46,lon:126.44},
-  DEL:{n:'New Delhi',lat:28.56,lon:77.10},BOM:{n:'Mumbai',lat:19.09,lon:72.87},
-  YYZ:{n:'Toronto',lat:43.68,lon:-79.63},MEX:{n:'Mexico City',lat:19.43,lon:-99.07},
-  VIE:{n:'Vienna',lat:48.11,lon:16.57},ZRH:{n:'Zurich',lat:47.46,lon:8.55},
-  BRU:{n:'Brussels',lat:50.90,lon:4.48},CPH:{n:'Copenhagen',lat:55.62,lon:12.66},
-  ARN:{n:'Stockholm',lat:59.65,lon:17.92},WAW:{n:'Warsaw',lat:52.17,lon:20.97},
-  HEL:{n:'Helsinki',lat:60.32,lon:24.96},PRG:{n:'Prague',lat:50.10,lon:14.26},
-  // Country→hub mapping
+  DFW:{n:'Dallas Fort Worth',lat:32.90,lon:-97.04},MIA:{n:'Miami Intl',lat:25.80,lon:-80.29},
+  SFO:{n:'San Francisco',lat:37.62,lon:-122.38},SEA:{n:'Seattle-Tacoma',lat:47.45,lon:-122.31},
+  DXB:{n:'Dubai Intl',lat:25.25,lon:55.36},SIN:{n:'Singapore Changi',lat:1.36,lon:103.99},
+  HKG:{n:'Hong Kong Intl',lat:22.31,lon:113.92},NRT:{n:'Tokyo Narita',lat:35.77,lon:140.39},
+  HND:{n:'Tokyo Haneda',lat:35.55,lon:139.78},PEK:{n:'Beijing Capital',lat:40.08,lon:116.59},
+  PVG:{n:'Shanghai Pudong',lat:31.14,lon:121.80},SYD:{n:'Sydney Kingsford',lat:-33.94,lon:151.18},
+  GRU:{n:'São Paulo Guarulhos',lat:-23.43,lon:-46.47},CAI:{n:'Cairo Intl',lat:30.12,lon:31.41},
+  JNB:{n:'Johannesburg OR Tambo',lat:-26.13,lon:28.24},ICN:{n:'Seoul Incheon',lat:37.46,lon:126.44},
+  DEL:{n:'New Delhi Indira Gandhi',lat:28.56,lon:77.10},BOM:{n:'Mumbai Chhatrapati',lat:19.09,lon:72.87},
+  YYZ:{n:'Toronto Pearson',lat:43.68,lon:-79.63},MEX:{n:'Mexico City Juárez',lat:19.43,lon:-99.07},
+  VIE:{n:'Vienna Schwechat',lat:48.11,lon:16.57},ZRH:{n:'Zurich',lat:47.46,lon:8.55},
+  BRU:{n:'Brussels Zaventem',lat:50.90,lon:4.48},CPH:{n:'Copenhagen Kastrup',lat:55.62,lon:12.66},
+  ARN:{n:'Stockholm Arlanda',lat:59.65,lon:17.92},WAW:{n:'Warsaw Chopin',lat:52.17,lon:20.97},
+  HEL:{n:'Helsinki Vantaa',lat:60.32,lon:24.96},PRG:{n:'Prague Václav Havel',lat:50.10,lon:14.26},
+  BUD:{n:'Budapest Ferenc Liszt',lat:47.44,lon:19.26},OSL:{n:'Oslo Gardermoen',lat:60.20,lon:11.08},
+  LIS:{n:'Lisbon Humberto Delgado',lat:38.78,lon:-9.13},DUB:{n:'Dublin',lat:53.43,lon:-6.27},
+  DOH:{n:'Doha Hamad Intl',lat:25.27,lon:51.61},ADD:{n:'Addis Ababa Bole',lat:8.98,lon:38.80},
+  SCL:{n:'Santiago Arturo Merino',lat:-33.39,lon:-70.79},
 };
+
+// Country → likely hub airport
 const COUNTRY_HUB={
   'United Kingdom':'LHR','France':'CDG','Germany':'FRA','Italy':'FCO',
   'Spain':'MAD','Netherlands':'AMS','Turkey':'IST','United States':'JFK',
@@ -352,26 +456,27 @@ const COUNTRY_HUB={
   'Singapore':'SIN','Egypt':'CAI','South Africa':'JNB','Mexico':'MEX',
   'Austria':'VIE','Switzerland':'ZRH','Belgium':'BRU','Denmark':'CPH',
   'Sweden':'ARN','Poland':'WAW','Finland':'HEL','Czech Republic':'PRG',
-  'Greece':'ATH','Hungary':'VIE',
+  'Greece':'ATH','Hungary':'BUD','Norway':'OSL','Portugal':'LIS',
+  'Ireland':'DUB','Qatar':'DOH','Ethiopia':'ADD',
 };
 
-// ═══════════════════════════════════════
+// ═══════════════════════════════════════════════════
 // STATE
-// ═══════════════════════════════════════
+// ═══════════════════════════════════════════════════
 let map2d, markerLayer, routeLayer, sensitiveCircles=[];
 let layerVis={commercial:true,military:true,state:true,cargo:true,unknown:true,anomaly:true};
 let sensitiveVis={military:true,nuclear:true};
 let allFlights=[], prevPos={}, animMarkers={};
 let anomalyHist=Array(24).fill(0);
 let curView='2d', animRaf=null, animStart=0;
-// 3D
-let scene,cam,ren3,globeGrp,dotMeshes=[],isDrag=false,pMouse={x:0,y:0},rVel={x:0,y:0};
+let scene,cam,ren3,globeGrp,dotMeshes=[];
+let isDrag=false,pMouse={x:0,y:0},rVel={x:0,y:0};
 
-// ═══════════════════════════════════════
-// UTILS
-// ═══════════════════════════════════════
+// ═══════════════════════════════════════════════════
+// CLASSIFY
+// ═══════════════════════════════════════════════════
 function classify(s){
-  const ic=(s[0]||'').toUpperCase(), cs=((s[1]||'').trim()).toUpperCase();
+  const ic=(s[0]||'').toUpperCase(),cs=((s[1]||'').trim()).toUpperCase();
   try{const h=parseInt(ic,16);for(const[lo,hi]of MIL_HEX)if(h>=lo&&h<=hi)return'MILITARY';}catch(e){}
   if(MIL_CS.some(p=>cs.startsWith(p)))return'MILITARY';
   if(STATE_CS.some(p=>cs.startsWith(p)))return'STATE';
@@ -383,7 +488,7 @@ function chkAno(f){
   if((f.sil||0)>300&&!f.gnd)return{ano:true,rsn:'TRANSPONDER OFF '+Math.floor(f.sil/60)+'min'};
   if(['7500','7600','7700'].includes(f.sqk))return{ano:true,rsn:'SQUAWK '+f.sqk};
   if(f.cat==='MILITARY'&&!f.cs)return{ano:true,rsn:'MILITARY NO CALLSIGN'};
-  if(f.cat==='UNKNOWN'&&(f.sil||0)>120)return{ano:true,rsn:'UNKNOWN SILENT'};
+  if(f.cat==='UNKNOWN'&&(f.sil||0)>120)return{ano:true,rsn:'UNKNOWN XPDR SILENT'};
   return{ano:false,rsn:''};
 }
 function hav(a,b,c,d){
@@ -394,78 +499,103 @@ function hav(a,b,c,d){
 function nearSens(la,lo){for(const a of SENSITIVE)if(hav(la,lo,a.lat,a.lon)<a.r)return a.n;return null;}
 function utcNow(){return new Date().toUTCString().split(' ')[4];}
 
-// Great-circle interpolated points for curved route
-function greatCircle(lat1,lon1,lat2,lon2,steps=80){
-  const toR=d=>d*Math.PI/180, toD=r=>r*180/Math.PI;
-  const φ1=toR(lat1),λ1=toR(lon1),φ2=toR(lat2),λ2=toR(lon2);
+// Resolve origin/dest from callsign + country
+function resolveRoute(f){
+  const cs=(f.cs||'').toUpperCase();
+  // Try airline DB first (3-letter prefix)
+  const prefix=cs.slice(0,3);
+  const airline=AIRLINES[prefix];
+  // Origin = airline hub
+  const origCode=airline?airline.hub:(COUNTRY_HUB[f.country||'']||null);
+  const orig=origCode?APT[origCode]:null;
+  // Destination: estimate from heading direction
+  // Find nearest major airport in direction of travel
+  const dest=estimateDest(f,origCode);
+  return{airline,origCode,orig,destCode:dest?.code,dest:dest?.apt};
+}
+
+function estimateDest(f,origCode){
+  if(!f.trk||!f.lat||!f.lon)return null;
+  // Cast a ray in heading direction, find nearest airport within 3000km
+  const trk=f.trk*Math.PI/180;
+  const maxDist=3000,step=200;
+  let bestApt=null,bestScore=Infinity;
+  const candidates=Object.entries(APT);
+  for(const[code,apt]of candidates){
+    if(code===origCode)continue;
+    const d=hav(f.lat,f.lon,apt.lat,apt.lon);
+    if(d>maxDist||d<50)continue;
+    // Bearing to airport
+    const dlat=(apt.lat-f.lat)*Math.PI/180;
+    const dlon=(apt.lon-f.lon)*Math.PI/180;
+    const la1=f.lat*Math.PI/180,la2=apt.lat*Math.PI/180;
+    const y=Math.sin(dlon)*Math.cos(la2);
+    const x=Math.cos(la1)*Math.sin(la2)-Math.sin(la1)*Math.cos(la2)*Math.cos(dlon);
+    const bearing=(Math.atan2(y,x)*180/Math.PI+360)%360;
+    const diff=Math.abs(((bearing-f.trk)+180+360)%360-180);
+    if(diff<45){
+      const score=d*(1+diff/45);
+      if(score<bestScore){bestScore=score;bestApt={code,apt};}
+    }
+  }
+  return bestApt;
+}
+
+// Great-circle interpolation
+function greatCircle(la1,lo1,la2,lo2,n=60){
+  const R=Math.PI/180,D=180/Math.PI;
+  const φ1=la1*R,λ1=lo1*R,φ2=la2*R,λ2=lo2*R;
+  const d=2*Math.asin(Math.sqrt(Math.sin((φ2-φ1)/2)**2+Math.cos(φ1)*Math.cos(φ2)*Math.sin((λ2-λ1)/2)**2));
+  if(d<0.001)return[[la1,lo1],[la2,lo2]];
   const pts=[];
-  for(let i=0;i<=steps;i++){
-    const f=i/steps;
-    const A=Math.sin((1-f)*Math.acos(Math.sin(φ1)*Math.sin(φ2)+Math.cos(φ1)*Math.cos(φ2)*Math.cos(λ2-λ1)))/Math.sin(Math.acos(Math.sin(φ1)*Math.sin(φ2)+Math.cos(φ1)*Math.cos(φ2)*Math.cos(λ2-λ1)));
-    const B=Math.sin(f*Math.acos(Math.sin(φ1)*Math.sin(φ2)+Math.cos(φ1)*Math.cos(φ2)*Math.cos(λ2-λ1)))/Math.sin(Math.acos(Math.sin(φ1)*Math.sin(φ2)+Math.cos(φ1)*Math.cos(φ2)*Math.cos(λ2-λ1)));
+  for(let i=0;i<=n;i++){
+    const f=i/n,A=Math.sin((1-f)*d)/Math.sin(d),B=Math.sin(f*d)/Math.sin(d);
     const x=A*Math.cos(φ1)*Math.cos(λ1)+B*Math.cos(φ2)*Math.cos(λ2);
     const y=A*Math.cos(φ1)*Math.sin(λ1)+B*Math.cos(φ2)*Math.sin(λ2);
     const z=A*Math.sin(φ1)+B*Math.sin(φ2);
-    pts.push([toD(Math.atan2(z,Math.sqrt(x*x+y*y))),toD(Math.atan2(y,x))]);
+    pts.push([Math.atan2(z,Math.sqrt(x*x+y*y))*D,Math.atan2(y,x)*D]);
   }
   return pts;
 }
 
-// Estimate origin airport from country hub
-function getOrigin(f){
-  const hub=COUNTRY_HUB[f.country||''];
-  return hub?APT[hub]:null;
-}
-
-// ═══════════════════════════════════════
+// ═══════════════════════════════════════════════════
 // FETCH
-// ═══════════════════════════════════════
+// ═══════════════════════════════════════════════════
 async function fetchFlights(){
   setLive('connecting');
   try{
     const res=await fetch(OPENSKY,{headers:{'User-Agent':'VigilHex/0.1'}});
     if(!res.ok)throw new Error('HTTP '+res.status);
     const data=await res.json();
-    if(!data?.states)throw new Error('Empty');
+    if(!data?.states)throw new Error('Empty response');
     const now=Math.floor(Date.now()/1000);
-    let flights=[];
+    let fl=[];
     for(const s of data.states){
       if(s[5]==null||s[6]==null)continue;
       const cat=classify(s);
       const f={
-        icao:s[0], cs:(s[1]||'').trim()||null, country:s[2],
-        lon:s[5], lat:s[6],
-        alt:s[7]?Math.round(s[7]*3.281):null,
-        gnd:s[8],
+        icao:s[0],cs:(s[1]||'').trim()||null,country:s[2],
+        lon:s[5],lat:s[6],
+        alt:s[7]?Math.round(s[7]*3.281):null,gnd:s[8],
         spd:s[9]?Math.round(s[9]*1.944):null,
         trk:s[10]!=null?Math.round(s[10]):0,
         vrt:s[11]?Math.round(s[11]*196.85):null,
-        sqk:s[14],
-        sil:s[4]?now-s[4]:null,
-        cat, ano:false, rsn:'',
+        sqk:s[14],sil:s[4]?now-s[4]:null,cat,ano:false,rsn:'',
       };
-      const{ano,rsn}=chkAno(f); f.ano=ano; f.rsn=rsn;
-      flights.push(f);
+      const{ano,rsn}=chkAno(f);f.ano=ano;f.rsn=rsn;
+      fl.push(f);
     }
-    // Priority sort — anomalies & military first, limit 2000
-    flights.sort((a,b)=>{
+    fl.sort((a,b)=>{
       if(a.ano!==b.ano)return a.ano?-1:1;
       if((a.cat==='MILITARY')!==(b.cat==='MILITARY'))return a.cat==='MILITARY'?-1:1;
       return 0;
     });
-    flights=flights.slice(0,MAX_AC);
-
-    // Save prev positions for smooth animation
-    const np={};
-    allFlights.forEach(f=>np[f.icao]={lat:f.lat,lon:f.lon,trk:f.trk});
-    prevPos=np;
-    allFlights=flights;
-
-    render2D(flights);
-    if(curView==='3d')render3D(flights);
-    updateStats(flights);
-    updateFeed(flights);
-    updateStatsTab(flights);
+    fl=fl.slice(0,MAX_AC);
+    const np={};allFlights.forEach(f=>np[f.icao]={lat:f.lat,lon:f.lon,trk:f.trk});
+    prevPos=np;allFlights=fl;
+    render2D(fl);
+    if(curView==='3d')render3D(fl);
+    updateStats(fl);updateFeed(fl);updateStatsTab(fl);
     setLive('live');
     document.getElementById('b-time').textContent=utcNow()+' UTC';
     document.getElementById('loading').style.display='none';
@@ -476,176 +606,199 @@ async function fetchFlights(){
   }
 }
 
-// ═══════════════════════════════════════
-// 2D MAP INIT
-// ═══════════════════════════════════════
+// ═══════════════════════════════════════════════════
+// 2D MAP
+// ═══════════════════════════════════════════════════
 function init2D(){
   map2d=L.map('map',{
     center:[20,0],zoom:3,
-    maxBounds:[[-90,-180],[90,180]],
+    maxBounds:[[-85,-180],[85,180]],
     maxBoundsViscosity:1.0,
-    minZoom:2, worldCopyJump:false,
+    minZoom:2,maxZoom:14,
+    worldCopyJump:false,
+    zoomSnap:0.5,
   });
   L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',{
-    attribution:'© CartoDB',subdomains:'abcd',maxZoom:19,
-    noWrap:true,bounds:[[-90,-180],[90,180]],
+    attribution:'© CartoDB © OpenStreetMap',subdomains:'abcd',
+    maxZoom:14,noWrap:true,bounds:[[-85,-180],[85,180]],
   }).addTo(map2d);
   markerLayer=L.layerGroup().addTo(map2d);
   routeLayer=L.layerGroup().addTo(map2d);
   SENSITIVE.forEach(a=>{
     const isMil=a.t==='military';
     const c=L.circle([a.lat,a.lon],{
-      radius:a.r*1000,color:isMil?'#1A4060':'#441400',weight:1,
-      fill:true,fillColor:isMil?'#0A1820':'#180600',fillOpacity:0.18,
-    }).bindTooltip(`<span style="font-family:monospace;font-size:10px;color:#B8CCCC">${a.n}</span>`,{sticky:true});
+      radius:a.r*1000,
+      color:isMil?'#1A4060':'#3A1400',weight:1,
+      fill:true,fillColor:isMil?'#0A1820':'#180800',fillOpacity:0.15,
+    }).bindTooltip(`<span style="font-family:monospace;font-size:10px;color:#A8C4CC">${a.n}</span>`,{sticky:true});
     sensitiveCircles.push({circle:c,type:a.t});
     if((isMil&&sensitiveVis.military)||(!isMil&&sensitiveVis.nuclear))c.addTo(map2d);
   });
+  // Prevent zoom out past world bounds
+  map2d.on('zoomend',()=>{if(map2d.getZoom()<2)map2d.setZoom(2);});
 }
 
-// ═══════════════════════════════════════
-// AIRCRAFT ICON — large hitbox
-// ═══════════════════════════════════════
+// ═══════════════════════════════════════════════════
+// AIRCRAFT ICON
+// ═══════════════════════════════════════════════════
 function makeIcon(f){
   const col=f.ano?'#E8500A':CAT_COLOR[f.cat]||'#3A6080';
-  const sz=f.ano?24:f.cat==='MILITARY'?22:18;
+  const sz=f.ano?22:f.cat==='MILITARY'?20:16;
   const glow=f.ano?'filter:drop-shadow(0 0 5px #E8500A);':f.cat==='MILITARY'?'filter:drop-shadow(0 0 3px #CC2200);':'';
+  const pulse=f.ano?'animation:blink .8s infinite;':'';
   const rot=f.trk||0;
-  // Airplane SVG + invisible large hitbox div
-  const html=`
-    <div style="width:32px;height:32px;display:flex;align-items:center;justify-content:center;cursor:pointer">
-      <svg xmlns="http://www.w3.org/2000/svg" width="${sz}" height="${sz}" viewBox="0 0 24 24" style="transform:rotate(${rot}deg);${glow};transition:transform .5s">
-        <path fill="${col}" d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"/>
-      </svg>
-    </div>`;
-  return L.divIcon({className:'',html,iconSize:[32,32],iconAnchor:[16,16]});
-}
-
-// ═══════════════════════════════════════
-// POPUP
-// ═══════════════════════════════════════
-function makePopup(f){
-  const tc={MILITARY:'mil',STATE:'sta',COMMERCIAL:'com',CARGO:'com',UNKNOWN:'unk'}[f.cat]||'com';
-  const near=nearSens(f.lat,f.lon);
-  const orig=getOrigin(f);
-  const routeHtml=orig?`
-    <div class="pop-route">
-      <div class="pop-apt">
-        <div class="pop-apt-code">${COUNTRY_HUB[f.country||'']||'???'}</div>
-        <div class="pop-apt-name">${orig.n}</div>
-      </div>
-      <div class="pop-route-mid">
-        <div class="pop-route-bar"></div>
-        <div class="pop-route-cs">${f.cs||f.icao.toUpperCase()}</div>
-      </div>
-      <div class="pop-apt">
-        <div class="pop-apt-code" style="font-size:12px;color:var(--grey3)">EN ROUTE</div>
-        <div class="pop-apt-name">${f.country||'?'}</div>
-      </div>
-    </div>`:'';
-  return`<div class="pop-inner">
-    <span class="pop-tag ${tc}">${f.cat}</span>${f.ano?`<span class="pop-tag ano">⚠ ANOMALY</span>`:''}
-    <div class="pop-call">${f.cs||'NO CALLSIGN'}</div>
-    <div class="pop-icao">ICAO: ${f.icao.toUpperCase()} · ${f.country||'?'}</div>
-    ${routeHtml}
-    <div class="pop-grid">
-      <div class="pop-s"><div class="lbl">ALTITUDE</div><div class="val ${f.alt&&f.alt<1000?'r':''}">${f.alt!=null?f.alt+'ft':'—'}</div></div>
-      <div class="pop-s"><div class="lbl">SPEED</div><div class="val">${f.spd!=null?f.spd+'kts':'—'}</div></div>
-      <div class="pop-s"><div class="lbl">TRACK</div><div class="val">${f.trk!=null?f.trk+'°':'—'}</div></div>
-      <div class="pop-s"><div class="lbl">VERT RATE</div><div class="val ${f.vrt&&f.vrt<-2000?'r':''}">${f.vrt!=null?f.vrt+'fpm':'—'}</div></div>
-      <div class="pop-s"><div class="lbl">SQUAWK</div><div class="val ${['7500','7600','7700'].includes(f.sqk)?'r':''}">${f.sqk||'—'}</div></div>
-      <div class="pop-s"><div class="lbl">XPDR</div><div class="val ${(f.sil||0)>300?'r':''}">${(f.sil||0)>60?Math.floor(f.sil/60)+'m':'OK'}</div></div>
-    </div>
-    ${f.ano?`<div class="pop-ano">⚠ ${f.rsn}</div>`:''}
-    ${near?`<div class="pop-ano" style="color:var(--red2)">⬡ NEAR: ${near}</div>`:''}
+  const html=`<div style="width:36px;height:36px;display:flex;align-items:center;justify-content:center;cursor:pointer">
+    <svg xmlns="http://www.w3.org/2000/svg" width="${sz}" height="${sz}" viewBox="0 0 24 24"
+      style="transform:rotate(${rot}deg);${glow}${pulse}transition:transform .4s ease">
+      <path fill="${col}" d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"/>
+    </svg>
   </div>`;
+  return L.divIcon({className:'',html,iconSize:[36,36],iconAnchor:[18,18]});
 }
 
-// Draw great-circle route on map
-function drawRoute(f){
+// ═══════════════════════════════════════════════════
+// FLIGHT DETAIL PANEL
+// ═══════════════════════════════════════════════════
+function openPanel(f){
+  const route=resolveRoute(f);
+  const near=nearSens(f.lat,f.lon);
+  const tc={MILITARY:'mil',STATE:'sta',COMMERCIAL:'com',CARGO:'com',UNKNOWN:'unk'}[f.cat]||'com';
+
+  document.getElementById('fp-callsign').textContent=f.cs||'NO CALLSIGN';
+  document.getElementById('fp-icao').textContent=`ICAO: ${f.icao.toUpperCase()} · ${f.country||'?'}`;
+
+  // Tags
+  let tags=`<span class="fp-tag ${tc}">${f.cat}</span>`;
+  if(f.ano)tags+=`<span class="fp-tag ano">⚠ ANOMALY</span>`;
+  if(route.airline)tags+=`<span class="fp-tag com">${route.airline.n}</span>`;
+  document.getElementById('fp-tags').innerHTML=tags;
+
+  // Route
+  const origCode=route.origCode||'???';
+  const origName=route.orig?.n||'Unknown origin';
+  const destCode=route.destCode||'???';
+  const destName=route.dest?.n||'Estimating...';
+  document.getElementById('fp-route').innerHTML=`
+    <div class="fp-apt">
+      <div class="fp-apt-code">${origCode}</div>
+      <div class="fp-apt-name ${!route.orig?'unknown':''}">${origName}</div>
+    </div>
+    <div class="fp-arrow">
+      <div class="fp-arrow-line"></div>
+      <div class="fp-arrow-cs">${f.cs||f.icao.toUpperCase()}</div>
+    </div>
+    <div class="fp-apt">
+      <div class="fp-apt-code">${destCode}</div>
+      <div class="fp-apt-name ${!route.dest?'unknown':''}">${destName}</div>
+    </div>`;
+
+  // Stats grid
+  document.getElementById('fp-stats').innerHTML=`
+    <div class="fp-stat"><div class="lbl">ALTITUDE</div><div class="val ${f.alt&&f.alt<1000?'r':''}">${f.alt!=null?f.alt+'ft':'—'}</div></div>
+    <div class="fp-stat"><div class="lbl">SPEED</div><div class="val">${f.spd!=null?f.spd+' kts':'—'}</div></div>
+    <div class="fp-stat"><div class="lbl">HEADING</div><div class="val">${f.trk!=null?f.trk+'°':'—'}</div></div>
+    <div class="fp-stat"><div class="lbl">VERT RATE</div><div class="val ${f.vrt&&f.vrt<-2000?'r':''}">${f.vrt!=null?f.vrt+' fpm':'—'}</div></div>
+    <div class="fp-stat"><div class="lbl">SQUAWK</div><div class="val ${['7500','7600','7700'].includes(f.sqk)?'r':''}">${f.sqk||'—'}</div></div>
+    <div class="fp-stat"><div class="lbl">TRANSPONDER</div><div class="val ${(f.sil||0)>300?'r':''}">${(f.sil||0)>60?Math.floor(f.sil/60)+'min ago':'ACTIVE'}</div></div>`;
+
+  // Anomaly / near
+  const anoEl=document.getElementById('fp-ano');
+  const nearEl=document.getElementById('fp-near');
+  if(f.ano){anoEl.style.display='block';anoEl.textContent='⚠ '+f.rsn;}
+  else{anoEl.style.display='none';}
+  if(near){nearEl.style.display='block';nearEl.textContent='⬡ NEAR SENSITIVE AREA: '+near;}
+  else{nearEl.style.display='none';}
+
+  // Footer
+  const phase=f.alt?f.vrt&&f.vrt>200?'CLIMBING ↑':f.vrt&&f.vrt<-200?'DESCENDING ↓':'CRUISE':'GROUND';
+  document.getElementById('fp-footer').innerHTML=`
+    <span style="color:var(--grey3)">STATUS</span> <span style="color:var(--white)">${phase}</span>
+    &nbsp;·&nbsp; <span style="color:var(--grey3)">SRC</span> <span style="color:var(--white)">${['ADS-B','ASTERIX','MLAT','—'][f.src||3]}</span>
+    &nbsp;·&nbsp; <span style="color:var(--grey3)">COUNTRY</span> <span style="color:var(--white)">${f.country||'?'}</span>`;
+
+  document.getElementById('flight-panel').style.display='block';
+
+  // Draw route on map
+  drawRoute(f,route);
+}
+
+function closePanel(){
+  document.getElementById('flight-panel').style.display='none';
   routeLayer.clearLayers();
-  const orig=getOrigin(f);
-  if(!orig)return;
-  try{
-    const pts=greatCircle(orig.lat,orig.lon,f.lat,f.lon,60);
-    L.polyline(pts,{
-      color:'#E8500A',weight:1.5,opacity:0.7,
-      dashArray:'8,5',
-    }).addTo(routeLayer);
-    // Origin dot
-    L.circleMarker([orig.lat,orig.lon],{
-      radius:5,color:'#E8500A',fill:true,
-      fillColor:'#E8500A',fillOpacity:0.9,weight:1,
-    }).bindTooltip(COUNTRY_HUB[f.country||'']||'?',{permanent:false,className:''}).addTo(routeLayer);
-    // Trail dots along route
-    [0.2,0.4,0.6,0.8].forEach(t=>{
-      const i=Math.floor(t*pts.length);
-      if(pts[i])L.circleMarker(pts[i],{
-        radius:2,color:'rgba(232,80,10,0.4)',fill:true,
-        fillColor:'rgba(232,80,10,0.4)',fillOpacity:0.6,weight:0,
-      }).addTo(routeLayer);
-    });
-  }catch(e){/* great circle can fail for same-point */}
 }
 
-// ═══════════════════════════════════════
+function drawRoute(f,route){
+  routeLayer.clearLayers();
+  const orig=route.orig;
+  const dest=route.dest;
+
+  if(orig){
+    // Origin → current position
+    try{
+      const pts1=greatCircle(orig.lat,orig.lon,f.lat,f.lon,50);
+      L.polyline(pts1,{color:'rgba(232,80,10,0.5)',weight:1.5,dashArray:'6,4'}).addTo(routeLayer);
+      L.circleMarker([orig.lat,orig.lon],{radius:5,color:'#E8500A',fill:true,fillColor:'#E8500A',fillOpacity:.9,weight:1})
+        .bindTooltip(route.origCode,{permanent:false}).addTo(routeLayer);
+    }catch(e){}
+  }
+
+  if(dest){
+    // Current position → destination
+    try{
+      const pts2=greatCircle(f.lat,f.lon,dest.lat,dest.lon,50);
+      L.polyline(pts2,{color:'rgba(232,80,10,0.25)',weight:1,dashArray:'4,6'}).addTo(routeLayer);
+      L.circleMarker([dest.lat,dest.lon],{radius:5,color:'rgba(232,80,10,0.6)',fill:true,fillColor:'rgba(232,80,10,0.3)',fillOpacity:.8,weight:1})
+        .bindTooltip(route.destCode,{permanent:false}).addTo(routeLayer);
+    }catch(e){}
+  }
+}
+
+// ═══════════════════════════════════════════════════
 // 2D RENDER
-// ═══════════════════════════════════════
+// ═══════════════════════════════════════════════════
 function render2D(flights){
   markerLayer.clearLayers();
   routeLayer.clearLayers();
+  document.getElementById('flight-panel').style.display='none';
   animMarkers={};
-
   flights.forEach(f=>{
     if(f.gnd)return;
     if(!layerVis[f.cat.toLowerCase()])return;
     if(!layerVis.anomaly&&f.ano)return;
-
     const m=L.marker([f.lat,f.lon],{
       icon:makeIcon(f),
       zIndexOffset:f.ano?2000:f.cat==='MILITARY'?1000:0,
     });
-
-    // Click — show popup + draw route
-    m.on('click',function(){
-      routeLayer.clearLayers();
-      drawRoute(f);
-      this.unbindPopup();
-      this.bindPopup(makePopup(f),{className:'ac-popup',maxWidth:290,autoPan:true}).openPopup();
-    });
-
+    m.on('click',()=>openPanel(f));
     m.addTo(markerLayer);
     animMarkers[f.icao]={m,f};
   });
-
   startAnim();
 }
 
-// ═══════════════════════════════════════
+// ═══════════════════════════════════════════════════
 // SMOOTH ANIMATION
-// ═══════════════════════════════════════
+// ═══════════════════════════════════════════════════
 const ANIM_DUR=58000;
 function startAnim(){
   if(animRaf)cancelAnimationFrame(animRaf);
   animStart=Date.now();
-  animStep();
+  step();
 }
-function animStep(){
+function step(){
   const t=Math.min((Date.now()-animStart)/ANIM_DUR,1);
-  Object.values(animMarkers).forEach(({m,f})=>{
+  for(const{m,f}of Object.values(animMarkers)){
     const p=prevPos[f.icao];
-    if(!p)return;
-    const lat=p.lat+(f.lat-p.lat)*t;
-    const lon=p.lon+(f.lon-p.lon)*t;
-    m.setLatLng([lat,lon]);
-  });
-  if(t<1)animRaf=requestAnimationFrame(animStep);
+    if(!p)continue;
+    m.setLatLng([p.lat+(f.lat-p.lat)*t,p.lon+(f.lon-p.lon)*t]);
+  }
+  if(t<1)animRaf=requestAnimationFrame(step);
 }
 
-// ═══════════════════════════════════════
-// 3D GLOBE
-// ═══════════════════════════════════════
-function latlonXYZ(la,lo,r=1){
+// ═══════════════════════════════════════════════════
+// 3D GLOBE — Sci-fi dark earth + wireframe
+// ═══════════════════════════════════════════════════
+function ll2xyz(la,lo,r=1){
   const φ=(90-la)*Math.PI/180,θ=(lo+180)*Math.PI/180;
   return new THREE.Vector3(-r*Math.sin(φ)*Math.cos(θ),r*Math.cos(φ),r*Math.sin(φ)*Math.sin(θ));
 }
@@ -654,8 +807,8 @@ function init3D(){
   const cv=document.getElementById('globe-canvas');
   const wp=document.getElementById('globe-wrap');
   scene=new THREE.Scene();
-  cam=new THREE.PerspectiveCamera(45,wp.clientWidth/wp.clientHeight,0.1,1000);
-  cam.position.z=2.8;
+  cam=new THREE.PerspectiveCamera(40,wp.clientWidth/wp.clientHeight,.1,1000);
+  cam.position.z=2.6;
   ren3=new THREE.WebGLRenderer({canvas:cv,antialias:true,alpha:false});
   ren3.setPixelRatio(Math.min(devicePixelRatio,2));
   ren3.setSize(wp.clientWidth,wp.clientHeight);
@@ -664,95 +817,75 @@ function init3D(){
   globeGrp=new THREE.Group();
   scene.add(globeGrp);
 
-  // ── Earth texture from NASA (public domain)
-  const loader=new THREE.TextureLoader();
-  loader.crossOrigin='anonymous';
-
-  const earthGeo=new THREE.SphereGeometry(1,64,64);
-
-  // Load earth texture — dark/night style
-  const earthTex=loader.load(
-    'https://unpkg.com/three-globe/example/img/earth-dark.jpg',
-    ()=>{},(p)=>{},(e)=>{
-      // Fallback: procedural dark sphere
-      earthMat.color.set(0x0A1525);
-    }
+  // ── Dark earth texture
+  const txl=new THREE.TextureLoader();
+  txl.crossOrigin='anonymous';
+  const tex=txl.load('https://unpkg.com/three-globe/example/img/earth-dark.jpg');
+  const bump=txl.load('https://unpkg.com/three-globe/example/img/earth-topology.png');
+  const sphere=new THREE.Mesh(
+    new THREE.SphereGeometry(1,64,64),
+    new THREE.MeshPhongMaterial({
+      map:tex,bumpMap:bump,bumpScale:0.05,
+      specular:new THREE.Color(0x1A3050),shininess:8,
+      emissive:new THREE.Color(0x020810),emissiveIntensity:0.4,
+    })
   );
-  const earthMat=new THREE.MeshPhongMaterial({
-    map:earthTex,
-    specular:new THREE.Color(0x1A3050),
-    shininess:6,
-    emissive:new THREE.Color(0x020810),
-    emissiveIntensity:0.3,
-  });
-  globeGrp.add(new THREE.Mesh(earthGeo,earthMat));
+  globeGrp.add(sphere);
 
-  // ── Wireframe overlay — sci-fi grid
-  const wfGeo=new THREE.SphereGeometry(1.002,36,18);
-  const wfMat=new THREE.MeshBasicMaterial({
-    color:0x1A3A5A,wireframe:true,transparent:true,opacity:0.12,
-  });
-  globeGrp.add(new THREE.Mesh(wfGeo,wfMat));
+  // ── Sci-fi wireframe overlay
+  globeGrp.add(new THREE.Mesh(
+    new THREE.SphereGeometry(1.001,36,18),
+    new THREE.MeshBasicMaterial({color:0x0A2840,wireframe:true,transparent:true,opacity:0.08})
+  ));
 
-  // ── Lat/Lon lines — bright sci-fi
-  const mkLine=(pts,col,op)=>{
-    const g=new THREE.BufferGeometry().setFromPoints(pts);
-    const m=new THREE.LineBasicMaterial({color:col,transparent:true,opacity:op});
-    return new THREE.Line(g,m);
+  // ── Grid lines
+  const ln=(pts,col,op)=>{
+    const m=new THREE.Line(
+      new THREE.BufferGeometry().setFromPoints(pts),
+      new THREE.LineBasicMaterial({color:col,transparent:true,opacity:op})
+    );return m;
   };
-  // Latitude rings
   for(let la=-80;la<=80;la+=10){
-    const pts=[];
-    for(let lo=0;lo<=361;lo+=3)pts.push(latlonXYZ(la,lo,1.003));
-    globeGrp.add(mkLine(pts,la===0?0x2A6090:0x143050,la===0?0.9:0.4));
+    const pts=[];for(let lo=0;lo<=361;lo+=3)pts.push(ll2xyz(la,lo,1.002));
+    globeGrp.add(ln(pts,la===0?0x2A6090:0x0E2030,la===0?.8:.35));
   }
-  // Longitude lines
   for(let lo=0;lo<360;lo+=10){
-    const pts=[];
-    for(let la=-90;la<=90;la+=3)pts.push(latlonXYZ(la,lo,1.003));
-    globeGrp.add(mkLine(pts,0x143050,0.3));
+    const pts=[];for(let la=-90;la<=90;la+=3)pts.push(ll2xyz(la,lo,1.002));
+    globeGrp.add(ln(pts,0x0E2030,.25));
   }
-  // Tropics
-  for(const la of[23.5,-23.5]){
-    const pts=[];
-    for(let lo=0;lo<=361;lo+=3)pts.push(latlonXYZ(la,lo,1.003));
-    globeGrp.add(mkLine(pts,0x1A4060,0.5));
+  // Tropics highlight
+  for(const la of[23.5,-23.5,66.5,-66.5]){
+    const pts=[];for(let lo=0;lo<=361;lo+=3)pts.push(ll2xyz(la,lo,1.002));
+    globeGrp.add(ln(pts,0x142840,.45));
   }
 
-  // ── Atmosphere
-  const atmGeo=new THREE.SphereGeometry(1.1,32,32);
-  const atmMat=new THREE.MeshPhongMaterial({
-    color:0x0A2040,transparent:true,opacity:0.06,side:THREE.BackSide,
-  });
-  globeGrp.add(new THREE.Mesh(atmGeo,atmMat));
+  // ── Atmosphere glow
+  globeGrp.add(new THREE.Mesh(
+    new THREE.SphereGeometry(1.12,32,32),
+    new THREE.MeshPhongMaterial({color:0x061828,transparent:true,opacity:0.07,side:THREE.BackSide})
+  ));
 
   // ── Lights
-  scene.add(new THREE.AmbientLight(0x304060,1.0));
-  const dl=new THREE.DirectionalLight(0x7AAAD0,0.8);
-  dl.position.set(5,3,5);scene.add(dl);
-  const pl=new THREE.PointLight(0xE8500A,0.1,20);
-  pl.position.set(-5,2,3);scene.add(pl);
+  scene.add(new THREE.AmbientLight(0x203050,.9));
+  const dl=new THREE.DirectionalLight(0x6090C0,.7);dl.position.set(5,3,5);scene.add(dl);
+  const pl=new THREE.PointLight(0xE8500A,.08,20);pl.position.set(-5,2,3);scene.add(pl);
 
-  // ── Mouse/touch
+  // ── Controls
   cv.addEventListener('mousedown',e=>{isDrag=true;pMouse={x:e.clientX,y:e.clientY};rVel={x:0,y:0};});
   window.addEventListener('mouseup',()=>{isDrag=false;});
   window.addEventListener('mousemove',e=>{
     if(!isDrag)return;
-    const dx=e.clientX-pMouse.x,dy=e.clientY-pMouse.y;
-    rVel={x:dy*.005,y:dx*.005};
+    rVel={x:(e.clientY-pMouse.y)*.004,y:(e.clientX-pMouse.x)*.004};
     globeGrp.rotation.y+=rVel.y;
     globeGrp.rotation.x=Math.max(-1.2,Math.min(1.2,globeGrp.rotation.x+rVel.x));
     pMouse={x:e.clientX,y:e.clientY};
   });
-  cv.addEventListener('wheel',e=>{
-    cam.position.z=Math.max(1.5,Math.min(5,cam.position.z+e.deltaY*.002));
-    e.preventDefault();
-  },{passive:false});
+  cv.addEventListener('wheel',e=>{cam.position.z=Math.max(1.4,Math.min(5,cam.position.z+e.deltaY*.002));e.preventDefault();},{passive:false});
   cv.addEventListener('touchstart',e=>{pMouse={x:e.touches[0].clientX,y:e.touches[0].clientY};},{passive:true});
   cv.addEventListener('touchmove',e=>{
     const dx=e.touches[0].clientX-pMouse.x,dy=e.touches[0].clientY-pMouse.y;
-    globeGrp.rotation.y+=dx*.005;
-    globeGrp.rotation.x=Math.max(-1.2,Math.min(1.2,globeGrp.rotation.x+dy*.005));
+    globeGrp.rotation.y+=dx*.004;
+    globeGrp.rotation.x=Math.max(-1.2,Math.min(1.2,globeGrp.rotation.x+dy*.004));
     pMouse={x:e.touches[0].clientX,y:e.touches[0].clientY};
     e.preventDefault();
   },{passive:false});
@@ -762,90 +895,75 @@ function init3D(){
     cam.aspect=w/h;cam.updateProjectionMatrix();ren3.setSize(w,h);
   });
 
-  // ── Raycaster for click on 3D dots
+  // ── Raycaster click
   const ray=new THREE.Raycaster();
-  ray.params.Mesh={};
   cv.addEventListener('click',e=>{
     const rect=cv.getBoundingClientRect();
-    const mouse=new THREE.Vector2(
-      ((e.clientX-rect.left)/rect.width)*2-1,
-      -((e.clientY-rect.top)/rect.height)*2+1
-    );
-    ray.setFromCamera(mouse,cam);
+    const mo=new THREE.Vector2(((e.clientX-rect.left)/rect.width)*2-1,-((e.clientY-rect.top)/rect.height)*2+1);
+    ray.setFromCamera(mo,cam);
     const hits=ray.intersectObjects(dotMeshes.filter(d=>d.userData.f));
+    const tip=document.getElementById('globe-tip');
     if(hits.length){
       const f=hits[0].object.userData.f;
-      const tip=document.getElementById('globe-tip');
+      const route=resolveRoute(f);
       tip.style.display='block';
       tip.style.left=(e.clientX-rect.left+14)+'px';
-      tip.style.top=(e.clientY-rect.top-14)+'px';
+      tip.style.top=(e.clientY-rect.top-10)+'px';
       tip.innerHTML=`
-        <div style="font-family:'Orbitron',monospace;font-size:13px;color:var(--white);letter-spacing:2px;margin-bottom:4px">${f.cs||'NO CALLSIGN'}</div>
-        <div style="font-size:8px;color:var(--grey2);margin-bottom:6px">${f.icao.toUpperCase()} · ${f.cat} · ${f.country||'?'}</div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;font-size:9px">
-          <div><span style="color:var(--grey2)">ALT</span> <span style="color:var(--white)">${f.alt!=null?f.alt+'ft':'—'}</span></div>
-          <div><span style="color:var(--grey2)">SPD</span> <span style="color:var(--white)">${f.spd!=null?f.spd+'kts':'—'}</span></div>
-          <div><span style="color:var(--grey2)">TRK</span> <span style="color:var(--white)">${f.trk!=null?f.trk+'°':'—'}</span></div>
-          <div><span style="color:var(--grey2)">SQWK</span> <span style="color:${['7500','7600','7700'].includes(f.sqk)?'var(--red2)':'var(--white)'}">${f.sqk||'—'}</span></div>
+        <div style="font-family:'Orbitron',monospace;font-size:13px;color:var(--white);letter-spacing:2px;margin-bottom:5px">${f.cs||'NO CALLSIGN'}</div>
+        <div style="font-size:7px;color:var(--grey2);margin-bottom:8px">${f.icao.toUpperCase()} · ${f.cat} · ${f.country||'?'}</div>
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;padding:6px 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border)">
+          <div style="text-align:center"><div style="font-family:'Orbitron',monospace;font-size:14px;color:var(--white)">${route.origCode||'???'}</div><div style="font-size:7px;color:var(--grey2)">${route.orig?.n||'Unknown'}</div></div>
+          <div style="flex:1;height:1px;background:var(--orange)"></div>
+          <div style="text-align:center"><div style="font-family:'Orbitron',monospace;font-size:14px;color:var(--white)">${route.destCode||'???'}</div><div style="font-size:7px;color:var(--grey2)">${route.dest?.n||'Estimating'}</div></div>
         </div>
-        ${f.ano?`<div style="color:var(--orange);font-size:9px;margin-top:5px;padding-top:5px;border-top:1px solid var(--border)">⚠ ${f.rsn}</div>`:''}
-        <div style="margin-top:6px;font-size:7px;color:var(--grey2)">Click to dismiss</div>`;
-      // Dismiss on next click elsewhere
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;font-size:9px">
+          <div><span style="color:var(--grey2)">ALT </span><span style="color:var(--white)">${f.alt!=null?f.alt+'ft':'—'}</span></div>
+          <div><span style="color:var(--grey2)">SPD </span><span style="color:var(--white)">${f.spd!=null?f.spd+'kts':'—'}</span></div>
+          <div><span style="color:var(--grey2)">HDG </span><span style="color:var(--white)">${f.trk!=null?f.trk+'°':'—'}</span></div>
+          <div><span style="color:var(--grey2)">SQWK </span><span style="color:${['7500','7600','7700'].includes(f.sqk)?'var(--red2)':'var(--white)'}">${f.sqk||'—'}</span></div>
+        </div>
+        ${f.ano?`<div style="color:var(--orange);margin-top:6px;padding-top:6px;border-top:1px solid var(--border);font-size:9px">⚠ ${f.rsn}</div>`:''}
+        <div style="margin-top:5px;font-size:7px;color:var(--grey1)">Click elsewhere to dismiss</div>`;
       setTimeout(()=>cv.addEventListener('click',()=>tip.style.display='none',{once:true}),100);
     }
   });
-  // Hover tooltip
+  // Hover cursor
   cv.addEventListener('mousemove',e=>{
     if(isDrag)return;
     const rect=cv.getBoundingClientRect();
-    const mouse=new THREE.Vector2(
-      ((e.clientX-rect.left)/rect.width)*2-1,
-      -((e.clientY-rect.top)/rect.height)*2+1
-    );
-    ray.setFromCamera(mouse,cam);
-    const hits=ray.intersectObjects(dotMeshes.filter(d=>d.userData.f));
-    cv.style.cursor=hits.length?'pointer':'grab';
+    const mo=new THREE.Vector2(((e.clientX-rect.left)/rect.width)*2-1,-((e.clientY-rect.top)/rect.height)*2+1);
+    ray.setFromCamera(mo,cam);
+    cv.style.cursor=ray.intersectObjects(dotMeshes.filter(d=>d.userData.f)).length?'pointer':'grab';
   });
 
-  animate3D();
+  anim3D();
 }
 
 function render3D(flights){
-  dotMeshes.forEach(m=>globeGrp.remove(m));
-  dotMeshes=[];
-  // Sensitive areas
+  dotMeshes.forEach(m=>globeGrp.remove(m));dotMeshes=[];
   SENSITIVE.forEach(a=>{
-    const p=latlonXYZ(a.lat,a.lon,1.006);
-    const m=new THREE.Mesh(
-      new THREE.SphereGeometry(0.008,6,6),
-      new THREE.MeshBasicMaterial({color:a.t==='nuclear'?0x441400:0x1A4060,transparent:true,opacity:0.7})
-    );
-    m.position.copy(p);globeGrp.add(m);dotMeshes.push(m);
+    const m=new THREE.Mesh(new THREE.SphereGeometry(.007,6,6),new THREE.MeshBasicMaterial({color:a.t==='nuclear'?0x3A1400:0x1A3A50,transparent:true,opacity:.7}));
+    m.position.copy(ll2xyz(a.lat,a.lon,1.005));globeGrp.add(m);dotMeshes.push(m);
   });
-  // Aircraft
   flights.filter(f=>!f.gnd&&layerVis[f.cat.toLowerCase()]).forEach(f=>{
-    const p=latlonXYZ(f.lat,f.lon,1.018);
-    const sz=f.ano?.016:f.cat==='MILITARY'?.012:.008;
+    const sz=f.ano?.015:f.cat==='MILITARY'?.011:.007;
     const col=f.ano?0xE8500A:parseInt((CAT_COLOR[f.cat]||'#3A6080').replace('#',''),16);
-    const m=new THREE.Mesh(
-      new THREE.SphereGeometry(sz,8,8),
-      new THREE.MeshBasicMaterial({color:col})
-    );
-    m.position.copy(p);
-    m.userData={f};
+    const m=new THREE.Mesh(new THREE.SphereGeometry(sz,8,8),new THREE.MeshBasicMaterial({color:col}));
+    m.position.copy(ll2xyz(f.lat,f.lon,1.016));m.userData={f};
     globeGrp.add(m);dotMeshes.push(m);
   });
 }
 
-function animate3D(){
-  requestAnimationFrame(animate3D);
-  if(!isDrag){rVel.x*=.92;rVel.y*=.92;globeGrp.rotation.y+=.0006;}
+function anim3D(){
+  requestAnimationFrame(anim3D);
+  if(!isDrag){rVel.x*=.92;rVel.y*=.92;globeGrp.rotation.y+=.0005;}
   ren3.render(scene,cam);
 }
 
-// ═══════════════════════════════════════
+// ═══════════════════════════════════════════════════
 // VIEW SWITCH
-// ═══════════════════════════════════════
+// ═══════════════════════════════════════════════════
 function switchView(v){
   curView=v;
   document.getElementById('map-wrap').style.display=v==='2d'?'block':'none';
@@ -853,35 +971,30 @@ function switchView(v){
   document.getElementById('btn-2d').classList.toggle('on',v==='2d');
   document.getElementById('btn-3d').classList.toggle('on',v==='3d');
   if(v==='3d'){if(!scene)init3D();else render3D(allFlights);}
-  if(v==='2d')map2d.invalidateSize();
+  if(v==='2d')setTimeout(()=>map2d.invalidateSize(),50);
 }
 
-// ═══════════════════════════════════════
-// STATS + FEED
-// ═══════════════════════════════════════
-function updateStats(flights){
+// ═══════════════════════════════════════════════════
+// STATS
+// ═══════════════════════════════════════════════════
+function updateStats(fl){
   const C={commercial:0,military:0,state:0,cargo:0,unknown:0};
-  let ano=0,xpdr=0,crit=0;
-  flights.forEach(f=>{
-    if(!f.gnd){
-      C[f.cat.toLowerCase()]=(C[f.cat.toLowerCase()]||0)+1;
-      if(f.ano)ano++;
-      if((f.sil||0)>300)xpdr++;
-      if(['7500','7700'].includes(f.sqk))crit++;
-    }
+  let ano=0,xp=0,cr=0;
+  fl.forEach(f=>{
+    if(!f.gnd){C[f.cat.toLowerCase()]=(C[f.cat.toLowerCase()]||0)+1;
+      if(f.ano)ano++;if((f.sil||0)>300)xp++;if(['7500','7700'].includes(f.sqk))cr++;}
   });
   const tot=Object.values(C).reduce((a,b)=>a+b,0);
-  document.getElementById('s-total').textContent=tot.toLocaleString();
-  document.getElementById('s-mil').textContent=C.military;
-  document.getElementById('s-ano').textContent=ano;
-  document.getElementById('s-unk').textContent=C.unknown;
-  document.getElementById('s-xpdr').textContent=xpdr;
+  ['total','mil','ano','unk','xpdr'].forEach((k,i)=>{
+    const v=[tot,C.military,ano,C.unknown,xp][i];
+    document.getElementById('s-'+k).textContent=k==='total'?v.toLocaleString():v;
+  });
   document.getElementById('r-total').textContent=tot.toLocaleString();
   document.getElementById('r-mil').textContent=C.military;
   document.getElementById('r-ano').textContent=ano;
-  document.getElementById('r-xpdr').textContent=xpdr;
+  document.getElementById('r-xpdr').textContent=xp;
   document.getElementById('b-ano').textContent=ano;
-  document.getElementById('b-crit').textContent=crit;
+  document.getElementById('b-crit').textContent=cr;
   Object.keys(C).forEach(k=>{
     const el=document.getElementById('c-'+k);
     if(el)el.textContent=C[k]+(k==='military'?' TRACKED':' ACTIVE');
@@ -890,61 +1003,55 @@ function updateStats(flights){
   anomalyHist.push(ano);anomalyHist.shift();
   const mx=Math.max(...anomalyHist,1);
   document.getElementById('sparkbars').innerHTML=anomalyHist.map(v=>{
-    const h=Math.max(3,Math.round((v/mx)*34));
+    const h=Math.max(2,Math.round((v/mx)*32));
     return`<div class="bar ${v===Math.max(...anomalyHist)&&v>0?'al':v>mx*.5?'hi':''}" style="height:${h}px"></div>`;
   }).join('');
 }
 
-function updateFeed(flights){
-  const anos=flights.filter(f=>f.ano&&!f.gnd).sort((a,b)=>(b.sil||0)-(a.sil||0));
+function updateFeed(fl){
+  const anos=fl.filter(f=>f.ano&&!f.gnd).sort((a,b)=>(b.sil||0)-(a.sil||0));
   const now=utcNow();
   anos.slice(0,6).forEach(f=>addFeedItem(now,f.cs||f.icao.toUpperCase(),f.rsn,f.cat==='MILITARY'?'m':'a'));
   document.getElementById('threat-list').innerHTML=anos.length===0
-    ?'<div class="threat w"><div class="threat-tag w">■ NOMINAL</div><div class="threat-body">No active threats</div></div>'
-    :anos.slice(0,4).map(f=>`
-      <div class="threat ${(f.sil||0)>600?'':'w'}">
-        <div class="threat-tag ${(f.sil||0)>600?'':'w'}">■ ${(f.sil||0)>600?'CRITICAL':'WARNING'} · ${f.rsn}</div>
-        <div class="threat-body"><b>${f.cs||'NO CALLSIGN'} · ${f.cat}</b>${f.country||''} ALT:${f.alt||'—'}ft</div>
-      </div>`).join('');
+    ?'<div class="threat w"><div class="threat-tag w">■ NOMINAL</div><div class="threat-body">No active threats detected</div></div>'
+    :anos.slice(0,4).map(f=>`<div class="threat ${(f.sil||0)>600?'':'w'}">
+      <div class="threat-tag ${(f.sil||0)>600?'':'w'}">■ ${(f.sil||0)>600?'CRITICAL':'WARNING'} · ${f.rsn}</div>
+      <div class="threat-body"><b>${f.cs||'NO CALLSIGN'} · ${f.cat}</b>${f.country||''} ALT:${f.alt||'—'}ft</div>
+    </div>`).join('');
 }
 
 function addFeedItem(t,id,msg,tag){
   const fl=document.getElementById('feed-list');
   const d=document.createElement('div');d.className='fi';
   d.innerHTML=`<div class="ft">${t}</div><div class="fb"><span class="ftag ${tag}">${tag==='m'?'MIL':tag==='a'?'ANOMALY':'ERR'}</span><b>${id}</b>${msg}</div>`;
-  fl.insertBefore(d,fl.firstChild);
-  while(fl.children.length>20)fl.removeChild(fl.lastChild);
+  fl.insertBefore(d,fl.firstChild);while(fl.children.length>20)fl.removeChild(fl.lastChild);
 }
 
-function updateStatsTab(flights){
+function updateStatsTab(fl){
   const C={},Co={};
-  flights.filter(f=>!f.gnd).forEach(f=>{
-    C[f.cat]=(C[f.cat]||0)+1;
-    Co[f.country||'?']=(Co[f.country||'?']||0)+1;
-  });
+  fl.filter(f=>!f.gnd).forEach(f=>{C[f.cat]=(C[f.cat]||0)+1;Co[f.country||'?']=(Co[f.country||'?']||0)+1;});
   const tot=Object.values(C).reduce((a,b)=>a+b,1);
   document.getElementById('cat-bars').innerHTML=Object.entries(C).sort((a,b)=>b[1]-a[1]).map(([k,v])=>`
     <div style="margin-bottom:5px">
-      <div style="display:flex;justify-content:space-between;font-size:8px;margin-bottom:2px">
+      <div style="display:flex;justify-content:space-between;font-size:7px;margin-bottom:2px">
         <span style="color:var(--grey3)">${k}</span><span style="color:var(--white)">${v}</span>
       </div>
-      <div style="height:3px;background:var(--border)">
-        <div style="height:3px;width:${Math.round(v/tot*100)}%;background:${CAT_COLOR[k]||'#3A6080'}"></div>
+      <div style="height:2px;background:var(--border)">
+        <div style="height:2px;width:${Math.round(v/tot*100)}%;background:${CAT_COLOR[k]||'#3A6080'}"></div>
       </div>
     </div>`).join('');
   document.getElementById('country-list').innerHTML=Object.entries(Co).sort((a,b)=>b[1]-a[1]).slice(0,8)
-    .map(([k,v])=>`<div style="display:flex;justify-content:space-between;padding:3px 0;border-bottom:1px solid var(--border);font-size:9px"><span style="color:var(--grey3)">${k}</span><span style="color:var(--white)">${v}</span></div>`).join('');
+    .map(([k,v])=>`<div style="display:flex;justify-content:space-between;padding:3px 0;border-bottom:1px solid var(--border);font-size:8px"><span style="color:var(--grey3)">${k}</span><span style="color:var(--white)">${v}</span></div>`).join('');
 }
 
-// ═══════════════════════════════════════
+// ═══════════════════════════════════════════════════
 // CONTROLS
-// ═══════════════════════════════════════
+// ═══════════════════════════════════════════════════
 function toggleLayer(cat,el){
   layerVis[cat]=!layerVis[cat];
   document.getElementById('t-'+cat)?.classList.toggle('on',layerVis[cat]);
   el.style.opacity=layerVis[cat]?'1':'0.35';
-  render2D(allFlights);
-  if(curView==='3d')render3D(allFlights);
+  render2D(allFlights);if(curView==='3d')render3D(allFlights);
 }
 function toggleSensitive(type,el){
   sensitiveVis[type]=!sensitiveVis[type];
@@ -975,15 +1082,12 @@ function switchTab(id,el){
 }
 function setLive(s){
   const dot=document.getElementById('live-dot'),txt=document.getElementById('live-txt');
-  const states={live:['#00FF88','FEED LIVE'],error:['#CC2200','FEED ERROR'],connecting:['#886600','CONNECTING']};
-  const[col,label]=states[s]||states.connecting;
-  dot.style.background=col;dot.style.boxShadow=`0 0 8px ${col}`;txt.textContent=label;
+  const m={live:['#00FF88','FEED LIVE'],error:['#CC2200','FEED ERROR'],connecting:['#886600','CONNECTING']};
+  const[c,l]=m[s]||m.connecting;dot.style.background=c;dot.style.boxShadow=`0 0 8px ${c}`;txt.textContent=l;
 }
 setInterval(()=>{document.getElementById('clock').textContent=new Date().toUTCString().split(' ')[4]+' UTC';},1000);
 
-// ═══════════════════════════════════════
 // BOOT
-// ═══════════════════════════════════════
 window.addEventListener('load',async()=>{
   init2D();
   await fetchFlights();
