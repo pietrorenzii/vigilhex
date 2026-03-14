@@ -303,9 +303,9 @@ const REFRESH_MS = 60000;
 // Questo URL con bbox funzionava prima — è la versione che usavamo
 // OpenSky permette richieste bbox da browser, blocca solo worldwide
 const OPENSKY_URLS = [
-  'https://opensky-network.org/api/states/all?lamin=30&lamax=72&lomin=-25&lomax=50',
   'https://api.allorigins.win/raw?url=' + encodeURIComponent('https://opensky-network.org/api/states/all?lamin=30&lamax=72&lomin=-25&lomax=50'),
-  'https://corsproxy.io/?' + encodeURIComponent('https://opensky-network.org/api/states/all?lamin=30&lamax=72&lomin=-25&lomax=50'),
+  'https://thingproxy.freeboard.io/fetch/https://opensky-network.org/api/states/all?lamin=30&lamax=72&lomin=-25&lomax=50',
+  'https://api.codetabs.com/v1/proxy?quest=https://opensky-network.org/api/states/all?lamin=30&lamax=72&lomin=-25&lomax=50',
 ];
 
 const SENSITIVE=[
