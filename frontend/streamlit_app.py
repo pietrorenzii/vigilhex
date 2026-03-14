@@ -294,4 +294,3 @@ if flagged:
         """, unsafe_allow_html=True)
 else:
     st.markdown('<div class="sec">// no anomalies detected</div>', unsafe_allow_html=True)
-```
