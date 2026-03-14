@@ -3,6 +3,5 @@ streamlit==1.40.0
 folium==0.17.0
 streamlit-folium==0.23.0
 pandas==2.2.3
-numpy==2.1.0
+numpy==1.26.4
 python-dotenv==1.0.0
-Pillow==11.1.0
