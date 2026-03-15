@@ -93,6 +93,19 @@ Then deploy the `/docs` folder on [GitHub Pages](https://pages.github.com) — f
 - [ ] Public REST API
 
 ---
+---
+
+## Legal
+
+VIGILHEX uses only publicly broadcast ADS-B data transmitted by aircraft transponders.
+No interception, no unauthorized access, no classified data.
+All information is freely available through public APIs (OpenSky Network, ADS-B Exchange).
+
+This project is independent and not affiliated with any government, military organization or aviation authority.
+
+> *"Tracking publicly broadcast signals is legal in all EU jurisdictions and consistent with established OSINT practice (ref. Bellingcat, FlightRadar24, ADS-B Exchange)."*
+
+---
 
 ## Star History
 
