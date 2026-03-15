@@ -33,6 +33,9 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(
 .ldot{width:6px;height:6px;border-radius:50%;animation:blink 1.2s infinite;flex-shrink:0}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.1}}
 #clock{font-size:11px;color:var(--orange);border:1px solid var(--border2);padding:3px 9px;letter-spacing:2px}
+.gh-btn{display:flex;align-items:center;gap:5px;color:var(--grey3);text-decoration:none;border:1px solid var(--border2);padding:3px 9px;font-size:8px;letter-spacing:1px;transition:.15s}
+.gh-btn:hover{color:var(--orange);border-color:var(--orange)}
+.gh-btn svg{width:14px;height:14px;fill:currentColor}
 #layout{position:fixed;top:40px;left:0;right:0;bottom:28px;display:flex}
 #sidebar{width:200px;min-width:200px;background:rgba(4,6,8,.97);border-right:1px solid var(--border);overflow-y:auto;display:flex;flex-direction:column;z-index:100}
 .sec{padding:8px 10px;border-bottom:1px solid var(--border)}
@@ -150,7 +153,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(
 <div id="loading">
   <div class="load-hex"></div>
   <div class="load-txt">VIGILHEX</div>
-  <div class="load-sub">LOADING MILITARY + PRIORITY FEED...</div>
+  <div class="load-sub">LOADING GLOBAL FEED...</div>
   <div class="load-bar"></div>
 </div>
 
@@ -169,7 +172,14 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(
     <div class="hdr-stat"><div class="lbl">XPDR OFF</div><div class="val r" id="s-xpdr">—</div></div>
   </div>
   <div class="hdr-right">
-    <div class="live-badge"><div class="ldot" id="live-dot" style="background:#886600;box-shadow:0 0 8px #886600"></div><span id="live-txt">CONNECTING</span></div>
+    <div class="live-badge">
+      <div class="ldot" id="live-dot" style="background:#886600;box-shadow:0 0 8px #886600"></div>
+      <span id="live-txt">CONNECTING</span>
+    </div>
+    <a href="https://github.com/pietrorenzii/vigilhex" target="_blank" class="gh-btn">
+      <svg viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+      GITHUB
+    </a>
     <div id="clock">--:--:-- UTC</div>
   </div>
 </div>
@@ -266,11 +276,11 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(
     <div class="tab-content" id="tab-about">
       <div style="color:var(--grey3);line-height:1.8;font-size:9px">
         <div style="color:var(--white);font-family:'Orbitron',monospace;font-size:11px;margin-bottom:5px">VIGILHEX v0.1</div>
-        <div style="color:var(--grey2);margin-bottom:8px;font-size:7px;letter-spacing:1px">MILITARY & PRIORITY AIRSPACE</div>
-        <div style="margin-bottom:8px">Tracks military, state, cargo and unknown aircraft. Commercial flights excluded for performance.</div>
-        <div style="color:var(--grey2);font-size:7px;margin-bottom:3px">COVERAGE</div>
-        <div>· Europe + Mediterranean + NATO</div>
-        <div>· Source: OpenSky Network ADS-B</div>
+        <div style="color:var(--grey2);margin-bottom:8px;font-size:7px;letter-spacing:1px">GLOBAL AIRSPACE INTELLIGENCE</div>
+        <div style="margin-bottom:8px">Tracks military, state, cargo and unknown aircraft worldwide. Commercial flights excluded.</div>
+        <div style="color:var(--grey2);font-size:7px;margin-bottom:3px">SOURCE</div>
+        <div>· OpenSky Network ADS-B</div>
+        <div>· Multi-region worldwide coverage</div>
         <div style="margin-top:8px;border-top:1px solid var(--border);padding-top:8px">
           <a href="https://github.com/pietrorenzii/vigilhex" target="_blank" style="color:var(--orange);text-decoration:none">⭐ github.com/pietrorenzii/vigilhex</a>
         </div>
@@ -283,17 +293,27 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(
   <div class="bstat"><div class="ldot" style="width:5px;height:5px;background:#00FF88;box-shadow:0 0 5px #00FF88;animation:blink 1.2s infinite"></div>VIGILHEX</div>
   <div class="bstat">SOURCE <span class="v">OPENSKY NETWORK</span></div>
   <div class="bstat">MODE <span class="v">MILITARY + PRIORITY</span></div>
-  <div class="bstat">ZONE <span class="v">EUROPE + NATO</span></div>
+  <div class="bstat">COVERAGE <span class="v">WORLDWIDE</span></div>
   <div class="bstat">ANOMALIES <span class="v o" id="b-ano">—</span></div>
   <div class="bstat">CRITICAL <span class="v r" id="b-crit">—</span></div>
   <div id="last-update">LAST UPDATE: <span id="b-time">—</span></div>
 </div>
 
 <script>
-const MAX_AC=500, REFRESH_MS=90000;
+// ══════════════════════════════════════
+// CONFIG
+// ══════════════════════════════════════
+const REFRESH_MS = 120000; // 2 min — evita rate limit
+const MAX_AC = 800;
 
-// Stesso URL bbox che funzionava prima del 3D
-const OPENSKY_URL='https://opensky-network.org/api/states/all?lamin=30&lamax=72&lomin=-25&lomax=50';
+// Bbox regionali — evitano la richiesta worldwide bloccata
+// Vengono fatte in sequenza con delay tra una e l'altra
+const REGIONS = [
+  {name:'Europe+NATO', url:'https://opensky-network.org/api/states/all?lamin=30&lamax=72&lomin=-25&lomax=50'},
+  {name:'North America', url:'https://opensky-network.org/api/states/all?lamin=15&lamax=75&lomin=-170&lomax=-50'},
+  {name:'Asia-Pacific',  url:'https://opensky-network.org/api/states/all?lamin=-10&lamax=60&lomin=60&lomax=180'},
+  {name:'Middle East+Africa', url:'https://opensky-network.org/api/states/all?lamin=-40&lamax=40&lomin=-20&lomax=60'},
+];
 
 const SENSITIVE=[
   {n:'Ramstein AFB',lat:49.44,lon:7.60,r:50,t:'military'},
@@ -302,52 +322,55 @@ const SENSITIVE=[
   {n:'Incirlik AFB',lat:37.00,lon:35.43,r:60,t:'military'},
   {n:'Kaliningrad MZ',lat:54.71,lon:20.45,r:80,t:'military'},
   {n:'NATO HQ Brussels',lat:50.87,lon:4.41,r:30,t:'military'},
+  {n:'Diego Garcia',lat:-7.32,lon:72.42,r:50,t:'military'},
+  {n:'Andersen AFB Guam',lat:13.58,lon:144.93,r:60,t:'military'},
   {n:'Zaporizhzhia NPP',lat:47.51,lon:34.59,r:100,t:'nuclear'},
   {n:'Cattenom NPP',lat:49.41,lon:6.22,r:60,t:'nuclear'},
   {n:'Paks NPP',lat:46.57,lon:18.85,r:60,t:'nuclear'},
 ];
 
 const MIL_HEX=[[0xAE0000,0xAFFFFF],[0x43C000,0x43CFFF],[0x3B0000,0x3BFFFF],[0x140000,0x157FFF],[0x3DC000,0x3DCFFF],[0x45D000,0x45D0FF]];
-const MIL_CS=['RRR','GAF','FAF','USAF','REACH','DUKE','STEEL','NATO','MMM','JAKE','NAVY','TURC','CTM','CASA','EVY','BAFE','ROMEO','ASCOT','ATLAS','COMET'];
+const MIL_CS=['RRR','GAF','FAF','USAF','REACH','DUKE','STEEL','NATO','MMM','JAKE','NAVY','TURC','CTM','CASA','EVY','BAFE','ROMEO','ASCOT','ATLAS','COMET','VIPER','EAGLE'];
 const STATE_CS=['SAM','AF1','AF2','EXEC','GOVT','USCG','FRON','EU','ELITE','RSAF'];
 const CARGO_CS=['UPS','FDX','CLX','BOX','GTI','DHL','MPH','ABX','KMI','PAC','TGX','SWN'];
 const CAT_COLOR={MILITARY:'#CC2200',STATE:'#886600',CARGO:'#6A3A8A',UNKNOWN:'#2E4450'};
 
-const AIRLINES={
-  RYR:{n:'Ryanair',hub:'DUB',hc:'Dublin'},BAW:{n:'British Airways',hub:'LHR',hc:'Heathrow'},
-  DLH:{n:'Lufthansa',hub:'FRA',hc:'Frankfurt'},AFR:{n:'Air France',hub:'CDG',hc:'Paris CDG'},
-  KLM:{n:'KLM',hub:'AMS',hc:'Amsterdam'},UAE:{n:'Emirates',hub:'DXB',hc:'Dubai'},
-  QTR:{n:'Qatar Airways',hub:'DOH',hc:'Doha'},THY:{n:'Turkish Airlines',hub:'IST',hc:'Istanbul'},
-  IBE:{n:'Iberia',hub:'MAD',hc:'Madrid'},TAP:{n:'TAP Portugal',hub:'LIS',hc:'Lisbon'},
-};
 const APT={
   LHR:{n:'Heathrow',c:'London',lat:51.47,lon:-0.46},CDG:{n:'Charles de Gaulle',c:'Paris',lat:49.01,lon:2.55},
   AMS:{n:'Schiphol',c:'Amsterdam',lat:52.31,lon:4.76},FRA:{n:'Frankfurt Main',c:'Frankfurt',lat:50.03,lon:8.57},
   MAD:{n:'Barajas',c:'Madrid',lat:40.47,lon:-3.57},FCO:{n:'Fiumicino',c:'Rome',lat:41.80,lon:12.24},
-  MUC:{n:'Franz Josef Strauss',c:'Munich',lat:48.35,lon:11.79},BCN:{n:'El Prat',c:'Barcelona',lat:41.30,lon:2.08},
-  IST:{n:'Istanbul Airport',c:'Istanbul',lat:41.27,lon:28.75},ATH:{n:'Venizelos',c:'Athens',lat:37.94,lon:23.95},
-  JFK:{n:'JFK Intl',c:'New York',lat:40.64,lon:-73.78},DXB:{n:'Dubai Intl',c:'Dubai',lat:25.25,lon:55.36},
-  DOH:{n:'Hamad Intl',c:'Doha',lat:25.27,lon:51.61},VIE:{n:'Vienna Intl',c:'Vienna',lat:48.11,lon:16.57},
-  ZRH:{n:'Zurich',c:'Zurich',lat:47.46,lon:8.55},BRU:{n:'Brussels',c:'Brussels',lat:50.90,lon:4.48},
-  CPH:{n:'Kastrup',c:'Copenhagen',lat:55.62,lon:12.66},ARN:{n:'Arlanda',c:'Stockholm',lat:59.65,lon:17.92},
-  WAW:{n:'Chopin',c:'Warsaw',lat:52.17,lon:20.97},HEL:{n:'Vantaa',c:'Helsinki',lat:60.32,lon:24.96},
-  OSL:{n:'Gardermoen',c:'Oslo',lat:60.20,lon:11.08},LIS:{n:'Humberto Delgado',c:'Lisbon',lat:38.78,lon:-9.13},
-  DUB:{n:'Dublin Airport',c:'Dublin',lat:53.43,lon:-6.27},
+  MUC:{n:'Franz Josef Strauss',c:'Munich',lat:48.35,lon:11.79},IST:{n:'Istanbul Airport',c:'Istanbul',lat:41.27,lon:28.75},
+  JFK:{n:'JFK Intl',c:'New York',lat:40.64,lon:-73.78},LAX:{n:'Los Angeles Intl',c:'Los Angeles',lat:33.94,lon:-118.41},
+  ORD:{n:"O'Hare Intl",c:'Chicago',lat:41.98,lon:-87.91},ATL:{n:'Hartsfield-Jackson',c:'Atlanta',lat:33.64,lon:-84.43},
+  DFW:{n:'Dallas/Fort Worth',c:'Dallas',lat:32.90,lon:-97.04},
+  DXB:{n:'Dubai Intl',c:'Dubai',lat:25.25,lon:55.36},DOH:{n:'Hamad Intl',c:'Doha',lat:25.27,lon:51.61},
+  SIN:{n:'Changi Airport',c:'Singapore',lat:1.36,lon:103.99},NRT:{n:'Narita Intl',c:'Tokyo',lat:35.77,lon:140.39},
+  PEK:{n:'Beijing Capital',c:'Beijing',lat:40.08,lon:116.59},SYD:{n:'Kingsford Smith',c:'Sydney',lat:-33.94,lon:151.18},
+  VIE:{n:'Vienna Intl',c:'Vienna',lat:48.11,lon:16.57},ZRH:{n:'Zurich',c:'Zurich',lat:47.46,lon:8.55},
+  CPH:{n:'Kastrup',c:'Copenhagen',lat:55.62,lon:12.66},WAW:{n:'Chopin',c:'Warsaw',lat:52.17,lon:20.97},
+  OSL:{n:'Gardermoen',c:'Oslo',lat:60.20,lon:11.08},DUB:{n:'Dublin Airport',c:'Dublin',lat:53.43,lon:-6.27},
 };
 const COUNTRY_HUB={
   'United Kingdom':'LHR','France':'CDG','Germany':'FRA','Italy':'FCO','Spain':'MAD',
   'Netherlands':'AMS','Turkey':'IST','United States':'JFK','United Arab Emirates':'DXB',
-  'Austria':'VIE','Switzerland':'ZRH','Belgium':'BRU','Denmark':'CPH','Sweden':'ARN',
-  'Poland':'WAW','Finland':'HEL','Greece':'ATH','Norway':'OSL','Portugal':'LIS','Ireland':'DUB',
+  'Japan':'NRT','China':'PEK','Australia':'SYD','Austria':'VIE','Switzerland':'ZRH',
+  'Denmark':'CPH','Poland':'WAW','Norway':'OSL','Ireland':'DUB','Qatar':'DOH','Singapore':'SIN',
 };
 
+// ══════════════════════════════════════
+// STATE
+// ══════════════════════════════════════
 let map2d,markerLayer,routeLayer,sensitiveCircles=[];
 let layerVis={military:true,state:true,cargo:true,unknown:true,anomaly:true};
 let sensitiveVis={military:true,nuclear:true};
 let allFlights=[],prevPos={},animMarkers={};
 let anomalyHist=Array(24).fill(0);
 let animRaf=null,animStart=0;
+let retryDelay=120000;
 
+// ══════════════════════════════════════
+// CLASSIFY
+// ══════════════════════════════════════
 function classify(s){
   const ic=(s[0]||'').toUpperCase(),cs=((s[1]||'').trim()).toUpperCase();
   try{const h=parseInt(ic,16);for(const[lo,hi]of MIL_HEX)if(h>=lo&&h<=hi)return'MILITARY';}catch(e){}
@@ -355,7 +378,7 @@ function classify(s){
   if(STATE_CS.some(p=>cs.startsWith(p)))return'STATE';
   if(cs.length>=3&&CARGO_CS.includes(cs.slice(0,3)))return'CARGO';
   if(!cs)return'UNKNOWN';
-  return'COMMERCIAL'; // sarà filtrato dopo
+  return'COMMERCIAL';
 }
 function chkAno(f){
   if((f.sil||0)>300&&!f.gnd)return{ano:true,rsn:'TRANSPONDER OFF '+Math.floor(f.sil/60)+'min'};
@@ -394,11 +417,10 @@ function gc(la1,lo1,la2,lo2,n=50){
 
 function resolveRoute(f){
   const cs=(f.cs||'').toUpperCase();
-  const airline=AIRLINES[cs.slice(0,3)]||null;
-  const origCode=airline?airline.hub:(COUNTRY_HUB[f.country||'']||null);
+  const origCode=COUNTRY_HUB[f.country||'']||null;
   const orig=origCode?APT[origCode]:null;
   const destInfo=estimateDest(f,origCode);
-  return{airline,origCode,orig,destCode:destInfo?.code||null,dest:destInfo?.apt||null};
+  return{origCode,orig,destCode:destInfo?.code||null,dest:destInfo?.apt||null};
 }
 function estimateDest(f,skip){
   if(!f.trk||!f.lat||!f.lon)return null;
@@ -418,74 +440,116 @@ function estimateDest(f,skip){
   return best;
 }
 
-// FETCH — bbox Europa, stesso che funzionava
+// ══════════════════════════════════════
+// FETCH — richieste bbox regionali in sequenza
+// ══════════════════════════════════════
+async function fetchRegion(region){
+  const res=await fetch(region.url,{
+    headers:{'User-Agent':'VigilHex/0.1'},
+    signal:AbortSignal.timeout(15000),
+  });
+  if(!res.ok)throw new Error('HTTP '+res.status+' ('+region.name+')');
+  const data=await res.json();
+  if(!data?.states)return[];
+  const now=Math.floor(Date.now()/1000);
+  const fl=[];
+  for(const s of data.states){
+    if(s[5]==null||s[6]==null)continue;
+    const cat=classify(s);
+    if(cat==='COMMERCIAL')continue; // filtra commercial
+    const f={
+      icao:s[0],cs:(s[1]||'').trim()||null,country:s[2],
+      lon:s[5],lat:s[6],
+      alt:s[7]?Math.round(s[7]*3.281):null,gnd:s[8],
+      spd:s[9]?Math.round(s[9]*1.944):null,
+      trk:s[10]!=null?Math.round(s[10]):0,
+      vrt:s[11]?Math.round(s[11]*196.85):null,
+      sqk:s[14],sil:s[4]?now-s[4]:null,cat,ano:false,rsn:'',
+    };
+    const{ano,rsn}=chkAno(f);f.ano=ano;f.rsn=rsn;
+    fl.push(f);
+  }
+  return fl;
+}
+
 async function fetchFlights(){
   setLive('connecting');
-  try{
-    const res=await fetch(OPENSKY_URL,{
-      headers:{'User-Agent':'VigilHex/0.1'},
-      signal:AbortSignal.timeout(20000),
-    });
-    if(!res.ok)throw new Error('HTTP '+res.status);
-    const data=await res.json();
-    if(!data?.states?.length)throw new Error('Empty response');
+  const allRaw=[];
+  let success=0;
 
-    const now=Math.floor(Date.now()/1000);
-    let fl=[];
-    for(const s of data.states){
-      if(s[5]==null||s[6]==null)continue;
-      const cat=classify(s);
-
-      // ── FILTRA COMMERCIAL — non li mostriamo
-      if(cat==='COMMERCIAL')continue;
-
-      const f={
-        icao:s[0],cs:(s[1]||'').trim()||null,country:s[2],
-        lon:s[5],lat:s[6],
-        alt:s[7]?Math.round(s[7]*3.281):null,gnd:s[8],
-        spd:s[9]?Math.round(s[9]*1.944):null,
-        trk:s[10]!=null?Math.round(s[10]):0,
-        vrt:s[11]?Math.round(s[11]*196.85):null,
-        sqk:s[14],sil:s[4]?now-s[4]:null,cat,ano:false,rsn:'',
-      };
-      const{ano,rsn}=chkAno(f);f.ano=ano;f.rsn=rsn;
-      fl.push(f);
+  // Fetch regioni in sequenza con piccolo delay per non fare spam
+  for(const region of REGIONS){
+    try{
+      const fl=await fetchRegion(region);
+      allRaw.push(...fl);
+      success++;
+      // Piccolo delay tra richieste per rispettare rate limit
+      await new Promise(r=>setTimeout(r,1500));
+    }catch(e){
+      console.warn('Region failed:',region.name,e.message);
+      if(e.message.includes('429')){
+        // Rate limited — aspetta di più prima della prossima
+        await new Promise(r=>setTimeout(r,5000));
+      }
     }
+  }
 
-    fl.sort((a,b)=>{
-      if(a.ano!==b.ano)return a.ano?-1:1;
-      if((a.cat==='MILITARY')!==(b.cat==='MILITARY'))return a.cat==='MILITARY'?-1:1;
-      return 0;
-    });
-    fl=fl.slice(0,MAX_AC);
-
-    const np={};allFlights.forEach(f=>np[f.icao]={lat:f.lat,lon:f.lon});
-    prevPos=np;allFlights=fl;
-
-    render2D(fl);updateStats(fl);updateFeed(fl);updateStatsTab(fl);
-    setLive('live');
-    document.getElementById('b-time').textContent=utcNow()+' UTC';
-    document.getElementById('loading').style.display='none';
-  }catch(e){
+  if(success===0){
     setLive('error');
     document.getElementById('loading').style.display='none';
     document.getElementById('feed-list').innerHTML=`
-      <div style="color:var(--orange);font-size:9px;padding:8px;border:1px solid var(--orange);background:rgba(232,80,10,.04);margin-bottom:8px">
-        ⚠ ${e.message}<br>
-        <span style="color:var(--grey2)">Retrying in 90s...</span>
+      <div style="color:var(--orange);font-size:9px;padding:8px;border:1px solid var(--orange);background:rgba(232,80,10,.04)">
+        ⚠ OpenSky rate limited<br>
+        <span style="color:var(--grey2)">Retrying in 5 minutes...</span>
       </div>`;
-    console.error('Fetch error:',e);
+    return;
   }
+
+  // Deduplicazione per icao
+  const seen=new Set();
+  let fl=allRaw.filter(f=>{
+    if(seen.has(f.icao))return false;
+    seen.add(f.icao);return true;
+  });
+
+  fl.sort((a,b)=>{
+    if(a.ano!==b.ano)return a.ano?-1:1;
+    if((a.cat==='MILITARY')!==(b.cat==='MILITARY'))return a.cat==='MILITARY'?-1:1;
+    return 0;
+  });
+  fl=fl.slice(0,MAX_AC);
+
+  const np={};allFlights.forEach(f=>np[f.icao]={lat:f.lat,lon:f.lon});
+  prevPos=np;allFlights=fl;
+
+  render2D(fl);updateStats(fl);updateFeed(fl);updateStatsTab(fl);
+  setLive('live');
+  retryDelay=REFRESH_MS; // reset delay on success
+  document.getElementById('b-time').textContent=utcNow()+' UTC';
+  document.getElementById('loading').style.display='none';
 }
 
+// ══════════════════════════════════════
+// MAP — stile riferimento cinese
+// ══════════════════════════════════════
 function init2D(){
-  map2d=L.map('map',{center:[48,14],zoom:5,minZoom:2,maxZoom:14,worldCopyJump:true,zoomSnap:0.25});
+  map2d=L.map('map',{
+    center:[20,0],zoom:2,
+    minZoom:2,maxZoom:14,
+    worldCopyJump:true,
+    zoomSnap:0.25,
+  });
+
+  // Tile layer scuro stile reference
   L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',{
-    attribution:'© CartoDB © OpenStreetMap',subdomains:'abcd',maxZoom:14,
+    attribution:'© CartoDB © OpenStreetMap',
+    subdomains:'abcd',maxZoom:14,
   }).addTo(map2d);
+
   map2d.setMaxBounds([[-85,-260],[85,260]]);
   markerLayer=L.layerGroup().addTo(map2d);
   routeLayer=L.layerGroup().addTo(map2d);
+
   SENSITIVE.forEach(a=>{
     const isMil=a.t==='military';
     const c=L.circle([a.lat,a.lon],{
@@ -497,20 +561,30 @@ function init2D(){
   });
 }
 
+// ══════════════════════════════════════
+// ICON — aereo SVG orientato + animazione
+// ══════════════════════════════════════
 function makeIcon(f){
   const col=f.ano?'#E8500A':CAT_COLOR[f.cat]||'#2E4450';
   const sz=f.ano?24:f.cat==='MILITARY'?22:18;
-  const glow=f.ano?'filter:drop-shadow(0 0 6px #E8500A);':f.cat==='MILITARY'?'filter:drop-shadow(0 0 4px #CC2200);':'filter:drop-shadow(0 0 3px '+col+');';
-  const anim=f.ano?'animation:blink .8s infinite;':'';
+  const glow=f.ano
+    ?'filter:drop-shadow(0 0 6px #E8500A) drop-shadow(0 0 12px rgba(232,80,10,.5));'
+    :f.cat==='MILITARY'
+    ?'filter:drop-shadow(0 0 4px #CC2200);'
+    :`filter:drop-shadow(0 0 2px ${col});`;
+  const anim=f.ano?'animation:blink .7s infinite;':'';
   const html=`<div style="width:36px;height:36px;display:flex;align-items:center;justify-content:center;cursor:pointer">
     <svg xmlns="http://www.w3.org/2000/svg" width="${sz}" height="${sz}" viewBox="0 0 24 24"
-      style="transform:rotate(${f.trk||0}deg);${glow}${anim}transition:transform .4s">
+      style="transform:rotate(${f.trk||0}deg);${glow}${anim}transition:transform .5s ease">
       <path fill="${col}" d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"/>
     </svg>
   </div>`;
   return L.divIcon({className:'',html,iconSize:[36,36],iconAnchor:[18,18]});
 }
 
+// ══════════════════════════════════════
+// FLIGHT PANEL
+// ══════════════════════════════════════
 function openPanel(f){
   const route=resolveRoute(f);
   const near=nearSens(f.lat,f.lon);
@@ -523,33 +597,15 @@ function openPanel(f){
   else if(f.sqk==='7600')html+=`<div class="fp-alert">📡 SQUAWK 7600 — RADIO FAILURE</div>`;
   else if(f.ano)html+=`<div class="fp-alert">⚠ ${f.rsn}</div>`;
   if(near)html+=`<div class="fp-near">⬡ NEAR SENSITIVE AREA: ${near}</div>`;
-  html+=`<div style="margin-bottom:12px">
-    <span class="fp-badge ${tc}">${f.cat}</span>
-    ${f.ano?'<span class="fp-badge ano">ANOMALY</span>':''}
-    ${route.airline?`<span class="fp-badge com">${route.airline.n}</span>`:''}
-  </div>`;
-  const oC=route.origCode||'???',oA=route.orig;
-  const dC=route.destCode||'???',dA=route.dest;
+  html+=`<div style="margin-bottom:12px"><span class="fp-badge ${tc}">${f.cat}</span>${f.ano?'<span class="fp-badge ano">ANOMALY</span>':''}</div>`;
+  const oC=route.origCode||'???',oA=route.orig,dC=route.destCode||'???',dA=route.dest;
   html+=`<div class="fp-route">
-    <div class="fp-apt">
-      <div class="fp-apt-code">${oC}</div>
-      <div class="fp-apt-name">${oA?.n||'Unknown airport'}</div>
-      <div class="fp-apt-city">${oA?.c||''}</div>
-    </div>
-    <div class="fp-route-mid">
-      <div class="fp-route-line"></div>
-      <div class="fp-route-cs">${f.cs||f.icao.toUpperCase()}</div>
-      <div class="fp-route-note">${f.spd?f.spd+'kts':''}</div>
-    </div>
-    <div class="fp-apt">
-      <div class="fp-apt-code" style="${!dA?'color:var(--grey2)':''}">${dC}</div>
-      <div class="fp-apt-name" style="${!dA?'color:var(--grey1)':''}">${dA?.n||'Estimating...'}</div>
-      <div class="fp-apt-city">${dA?.c||''}</div>
-    </div>
+    <div class="fp-apt"><div class="fp-apt-code">${oC}</div><div class="fp-apt-name">${oA?.n||'Unknown'}</div><div class="fp-apt-city">${oA?.c||''}</div></div>
+    <div class="fp-route-mid"><div class="fp-route-line"></div><div class="fp-route-cs">${f.cs||f.icao.toUpperCase()}</div><div class="fp-route-note">${f.spd?f.spd+'kts':''}</div></div>
+    <div class="fp-apt"><div class="fp-apt-code" style="${!dA?'color:var(--grey2)':''}">${dC}</div><div class="fp-apt-name" style="${!dA?'color:var(--grey1)':''}">${dA?.n||'Estimating...'}</div><div class="fp-apt-city">${dA?.c||''}</div></div>
   </div>`;
   if(oA&&dA){
-    const total=hav(oA.lat,oA.lon,dA.lat,dA.lon);
-    const rem=hav(f.lat,f.lon,dA.lat,dA.lon);
+    const total=hav(oA.lat,oA.lon,dA.lat,dA.lon),rem=hav(f.lat,f.lon,dA.lat,dA.lon);
     const pct=Math.max(0,Math.min(100,Math.round((1-rem/total)*100)));
     const eta=f.spd&&rem?Math.round(rem/f.spd*60):null;
     html+=`<div style="margin-bottom:12px;font-size:8px;color:var(--grey2)">
@@ -561,30 +617,26 @@ function openPanel(f){
   }
   const phase=f.gnd?'ON GROUND':f.vrt&&f.vrt>300?'CLIMBING ↑':f.vrt&&f.vrt<-300?'DESCENDING ↓':'CRUISE →';
   const phaseCol=f.gnd?'var(--grey3)':f.vrt&&f.vrt>300?'#00CC66':f.vrt&&f.vrt<-300?'var(--red2)':'var(--orange)';
-  html+=`<div class="fp-sec"><div class="fp-sec-title">// flight data</div>
-  <div class="fp-grid">
+  html+=`<div class="fp-sec"><div class="fp-sec-title">// flight data</div><div class="fp-grid">
     <div class="fp-cell"><div class="lbl">ALTITUDE</div><div class="val ${f.alt&&f.alt<1000&&!f.gnd?'r':''}">${fmtAlt(f.alt)}</div><div class="sub">${f.alt?f.alt>35000?'HIGH CRUISE':f.alt>20000?'CRUISE':f.alt>10000?'CLIMB/DESCENT':'LOW ALT':''}</div></div>
     <div class="fp-cell"><div class="lbl">SPEED</div><div class="val">${fmtSpd(f.spd)}</div><div class="sub">${f.spd?f.spd>500?'HIGH':f.spd>300?'CRUISE':'LOW':''}</div></div>
     <div class="fp-cell"><div class="lbl">HEADING</div><div class="val">${f.trk!=null?f.trk+'°':'—'}</div><div class="sub">${f.trk!=null?hdgName(f.trk):''}</div></div>
     <div class="fp-cell"><div class="lbl">VERT RATE</div><div class="val ${f.vrt&&f.vrt<-2000?'r':f.vrt&&f.vrt>2000?'g':''}">${fmtVrt(f.vrt)}</div><div class="sub">${f.vrt?Math.abs(f.vrt)>3000?'RAPID':'NORMAL':''}</div></div>
     <div class="fp-cell full"><div class="lbl">FLIGHT PHASE</div><div class="val" style="color:${phaseCol};font-size:13px">${phase}</div></div>
   </div></div>`;
-  html+=`<div class="fp-sec"><div class="fp-sec-title">// transponder & comms</div>
-  <div class="fp-grid">
+  html+=`<div class="fp-sec"><div class="fp-sec-title">// transponder</div><div class="fp-grid">
     <div class="fp-cell"><div class="lbl">SQUAWK</div><div class="val ${['7500','7600','7700'].includes(f.sqk)?'r':''}">${f.sqk||'—'}</div><div class="sub">${f.sqk==='7500'?'HIJACK':f.sqk==='7700'?'EMERGENCY':f.sqk==='7600'?'RADIO FAIL':'NORMAL'}</div></div>
     <div class="fp-cell"><div class="lbl">LAST CONTACT</div><div class="val ${(f.sil||0)>300?'r':(f.sil||0)>60?'o':''}">${(f.sil||0)>60?Math.floor(f.sil/60)+'m ago':'LIVE'}</div><div class="sub">${(f.sil||0)>600?'CRITICAL':(f.sil||0)>300?'WARNING':'ACTIVE'}</div></div>
     <div class="fp-cell"><div class="lbl">ADS-B SOURCE</div><div class="val" style="font-size:11px">${['ADS-B','ASTERIX','MLAT','—'][f.src||0]}</div></div>
     <div class="fp-cell"><div class="lbl">ON GROUND</div><div class="val ${f.gnd?'o':''}">${f.gnd?'YES':'NO'}</div></div>
   </div></div>`;
-  html+=`<div class="fp-sec"><div class="fp-sec-title">// aircraft identity</div>
-  <div class="fp-grid">
-    <div class="fp-cell"><div class="lbl">ICAO24 HEX</div><div class="val" style="font-size:14px">${f.icao.toUpperCase()}</div></div>
+  html+=`<div class="fp-sec"><div class="fp-sec-title">// identity</div><div class="fp-grid">
+    <div class="fp-cell"><div class="lbl">ICAO24</div><div class="val" style="font-size:14px">${f.icao.toUpperCase()}</div></div>
     <div class="fp-cell"><div class="lbl">CALLSIGN</div><div class="val" style="font-size:14px">${f.cs||'BLOCKED'}</div></div>
-    <div class="fp-cell full"><div class="lbl">REGISTRATION COUNTRY</div><div class="val" style="font-size:13px">${f.country||'Unknown'}</div></div>
+    <div class="fp-cell full"><div class="lbl">COUNTRY</div><div class="val" style="font-size:13px">${f.country||'Unknown'}</div></div>
     <div class="fp-cell full"><div class="lbl">CLASSIFICATION</div><div class="val" style="font-size:12px;color:${CAT_COLOR[f.cat]||'var(--white)'}">${f.cat}</div></div>
   </div></div>`;
-  html+=`<div class="fp-sec"><div class="fp-sec-title">// position</div>
-  <div class="fp-grid">
+  html+=`<div class="fp-sec"><div class="fp-sec-title">// position</div><div class="fp-grid">
     <div class="fp-cell"><div class="lbl">LATITUDE</div><div class="val" style="font-size:13px">${f.lat.toFixed(4)}°</div></div>
     <div class="fp-cell"><div class="lbl">LONGITUDE</div><div class="val" style="font-size:13px">${f.lon.toFixed(4)}°</div></div>
     ${near?`<div class="fp-cell full"><div class="lbl">SENSITIVE AREA</div><div class="val r" style="font-size:11px">${near}</div></div>`:''}
@@ -610,6 +662,9 @@ function closePanel(){
   routeLayer.clearLayers();
 }
 
+// ══════════════════════════════════════
+// RENDER + ANIMAZIONE
+// ══════════════════════════════════════
 function render2D(flights){
   markerLayer.clearLayers();routeLayer.clearLayers();
   document.getElementById('fp').style.display='none';
@@ -618,7 +673,10 @@ function render2D(flights){
     if(f.gnd)return;
     if(!layerVis[f.cat.toLowerCase()])return;
     if(!layerVis.anomaly&&f.ano)return;
-    const m=L.marker([f.lat,f.lon],{icon:makeIcon(f),zIndexOffset:f.ano?2000:f.cat==='MILITARY'?1000:0});
+    const m=L.marker([f.lat,f.lon],{
+      icon:makeIcon(f),
+      zIndexOffset:f.ano?2000:f.cat==='MILITARY'?1000:0,
+    });
     m.on('click',()=>openPanel(f));
     m.addTo(markerLayer);
     animMarkers[f.icao]={m,f};
@@ -626,19 +684,28 @@ function render2D(flights){
   startAnim();
 }
 
+// Animazione smooth — interpola posizione tra vecchio e nuovo update
 function startAnim(){
   if(animRaf)cancelAnimationFrame(animRaf);
-  animStart=Date.now();animStep();
+  animStart=Date.now();
+  animStep();
 }
 function animStep(){
-  const t=Math.min((Date.now()-animStart)/58000,1);
+  const elapsed=Date.now()-animStart;
+  const t=Math.min(elapsed/55000,1); // interpola su 55 secondi
   for(const{m,f}of Object.values(animMarkers)){
-    const p=prevPos[f.icao];if(!p)continue;
-    m.setLatLng([p.lat+(f.lat-p.lat)*t,p.lon+(f.lon-p.lon)*t]);
+    const p=prevPos[f.icao];
+    if(!p||!f.spd||f.spd<10)continue; // non animare aerei fermi
+    const lat=p.lat+(f.lat-p.lat)*t;
+    const lon=p.lon+(f.lon-p.lon)*t;
+    try{m.setLatLng([lat,lon]);}catch(e){}
   }
   if(t<1)animRaf=requestAnimationFrame(animStep);
 }
 
+// ══════════════════════════════════════
+// STATS
+// ══════════════════════════════════════
 function updateStats(fl){
   const C={military:0,state:0,cargo:0,unknown:0};
   let ano=0,xp=0,cr=0;
