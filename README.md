@@ -4,8 +4,8 @@
 
 **Global Airspace Anomaly Detection & Intelligence Platform**
 
-[![Live App](https://img.shields.io/badge/🌐_LIVE_APP-vigilhex.streamlit.app-E8500A?style=for-the-badge)](https://vigilhex.streamlit.app)
-[![Telegram](https://img.shields.io/badge/📡_ALERTS-Telegram_Channel-141E22?style=for-the-badge)](https://t.me/vigilhex)
+[![Live App](https://img.shields.io/badge/🌐_LIVE_APP-vigilhex.digital-E8500A?style=for-the-badge)](https://vigilhex.digital)
+[![Telegram](https://img.shields.io/badge/📡_ALERTS-@vigilhex-2CA5E0?style=for-the-badge)](https://t.me/vigilhex)
 [![License](https://img.shields.io/badge/License-AGPL_v3-141E22?style=for-the-badge)](LICENSE)
 [![Stars](https://img.shields.io/github/stars/pietrorenzii/vigilhex?style=for-the-badge&color=141E22)](https://github.com/pietrorenzii/vigilhex/stargazers)
 
@@ -13,39 +13,47 @@
 
 ---
 
-<!-- Sostituisci questo commento con la tua GIF demo una volta che Streamlit è live -->
-<!-- ![VigilHex Demo](docs/assets/demo.gif) -->
+<!-- Sostituisci con il tuo screenshot o GIF una volta pronto -->
+<!-- ![VIGILHEX Demo](docs/assets/demo.gif) -->
+
+![VIGILHEX Screenshot](docs/assets/screenshot.png)
 
 ---
 
-VigilHex monitors global airspace **24/7 using only free, public ADS-B data**.
+VIGILHEX monitors global airspace 24/7 using only free, public ADS-B data, detecting anomalous behavior in real time — transponder shutdowns, military movements, loitering near sensitive areas, emergency squawks.
 
-It classifies every aircraft in real time — military, commercial, state, cargo, unknown — and scores each flight for anomalous behavior: transponder shutdowns, loitering near sensitive areas, unusual routes, emergency squawks.
-
-**Free. Open-source. 5-minute deploy.**
+**Free. Open-source. No API key required.**
 
 ---
 
-## Screenshots
+## 🌐 Live Demo
 
-<!-- Aggiungi i tuoi screenshot qui dopo il deploy, esempio: -->
-<!-- ![Dashboard](docs/assets/screenshot_map.png) -->
-<!-- ![Anomaly Feed](docs/assets/screenshot_anomalies.png) -->
+> **[vigilhex.digital](https://vigilhex.digital)**
 
-*Screenshots coming soon — deploy the live app to see it in action.*
+Real-time map of military, state, cargo and unknown aircraft worldwide.
+Click any aircraft to see full flight data, route and anomaly details.
+
+## 📡 Telegram Alerts
+
+> **[t.me/vigilhex](https://t.me/vigilhex)**
+
+Subscribe to receive automatic real-time alerts for:
+- 🔴 Transponder shutdowns
+- 🔴 Emergency squawks (7500/7600/7700)
+- 🟠 Military aircraft with no callsign
+- 🟠 Aircraft near sensitive areas
 
 ---
 
 ## Features
 
-- 🗺️ **Live World Map** — real-time aircraft positions, layer toggle on/off
-- 🔴 **Military Tracker** — dedicated layer with ICAO hex range detection
-- 🚨 **Anomaly Detection** — transponder off, loitering, altitude drops, restricted zones
-- 🟠 **State / Gov Aircraft** — VIP transport, police, Frontex, EU institutional
+- 🗺️ **Live World Map** — real-time positions, layer toggle on/off
+- 🔴 **Military Tracker** — ICAO hex range detection + callsign patterns
+- 🚨 **Anomaly Detection** — transponder off, emergency squawks, no callsign
+- 🟠 **State / Gov Aircraft** — VIP transport, Frontex, EU institutional
 - ⚫ **Unknown / No Callsign** — maximum attention flag
-- 📡 **Telegram Alerts** — public channel, automatic real-time notifications
-- 📊 **Daily Intel Report** — auto-generated PDF digest of top anomalies
-- 🔌 **REST API** — public endpoints for third-party integrations
+- 📡 **Telegram Alerts** — automatic real-time notifications to public channel
+- ✈️ **Flight Detail Panel** — route, progress, ETA, full telemetry on click
 
 ---
 
@@ -53,26 +61,41 @@ It classifies every aircraft in real time — military, commercial, state, cargo
 
 | Type | Description | Severity |
 |---|---|---|
-| `TRANSPONDER_OFF` | Aircraft stops transmitting | 🔴 CRITICAL |
-| `SQUAWK_EMERGENCY` | 7500 / 7600 / 7700 active | 🔴 CRITICAL |
-| `LOITERING` | Circular pattern near sensitive area | 🟠 WARNING |
-| `RESTRICTED_ZONE` | Inside buffer of military base or nuclear site | 🟠 WARNING |
-| `NO_CALLSIGN` | Military or unknown with no identification | 🟠 WARNING |
-| `UNUSUAL_ALTITUDE` | Rapid unexplained altitude change | 🟠 WARNING |
-| `NIGHT_FLIGHT` | Military over sensitive area at night | 🟡 WATCH |
+| `TRANSPONDER_OFF` | Aircraft stops transmitting >5min | 🔴 CRITICAL |
+| `SQUAWK_7500` | Hijack declared | 🔴 CRITICAL |
+| `SQUAWK_7700` | General emergency | 🔴 CRITICAL |
+| `SQUAWK_7600` | Radio failure | 🟠 WARNING |
+| `MILITARY_NO_CALLSIGN` | Military aircraft with no identification | 🟠 WARNING |
+| `UNKNOWN_SILENT` | Unknown aircraft transponder silent >2min | 🟠 WARNING |
 
 ---
 
-## Quick Start
+## Quick Deploy
 ```bash
+# Clone and open — no installation needed
 git clone https://github.com/pietrorenzii/vigilhex
 cd vigilhex
-pip install -r requirements.txt
-streamlit run frontend/streamlit_app.py
+open docs/index.html
 ```
 
-Or deploy free in 1 click on **[Streamlit Cloud](https://share.streamlit.io)** —
-set main file to `frontend/streamlit_app.py`.
+Or deploy free in 1 click on **[GitHub Pages](https://pages.github.com)** — set source to `/docs` folder.
+
+---
+
+## Architecture
+```
+OpenSky Network API
+        │
+        ▼
+Cloudflare Worker (proxy + anomaly detection)
+        │
+   ┌────┴────┐
+   ▼         ▼
+GitHub     Telegram
+Pages      Channel
+vigilhex   @vigilhex
+.digital
+```
 
 ---
 
@@ -83,43 +106,25 @@ All free. No API keys required to start.
 | Source | Data |
 |---|---|
 | [OpenSky Network](https://opensky-network.org/api) | Real-time ADS-B worldwide |
-| [ADS-B Exchange](https://adsbexchange.com) | Unfiltered feed including military |
+| [ADS-B Exchange](https://adsbexchange.com) | Unfiltered feed incl. military |
 | OpenStreetMap | Sensitive area overlays |
-| ICAO public registry | Aircraft classification |
-
----
-
-## Architecture
-```
-OpenSky Network ──► opensky_collector.py
-                          │
-                          ▼
-             aircraft_classifier.py
-             MILITARY · STATE · COMMERCIAL · CARGO · UNKNOWN
-                          │
-                          ▼
-             anomaly_detector.py
-             rule-based scoring + Isolation Forest ML
-                          │
-                  ┌───────┴───────┐
-                  ▼               ▼
-        Streamlit Dashboard   Telegram Bot
-        live map + alerts     @VigilHexAlerts
-```
 
 ---
 
 ## Roadmap
 
 - [x] OpenSky real-time collector
-- [x] Aircraft classifier
+- [x] Aircraft classifier (military/state/cargo/unknown)
 - [x] Anomaly detection engine
-- [x] Streamlit live dashboard
-- [ ] Telegram alert bot
-- [ ] ADS-B Exchange military feed
-- [ ] Isolation Forest ML model
+- [x] Live dashboard with layer controls
+- [x] Flight detail panel with route
+- [x] Telegram alert bot
+- [x] Cloudflare Worker proxy
+- [x] Custom domain (vigilhex.digital)
+- [ ] ADS-B Exchange military feed integration
+- [ ] Historical 30-day analysis
 - [ ] Daily PDF intel report
-- [ ] REST API
+- [ ] REST API public endpoints
 - [ ] Docker deploy
 
 ---
@@ -128,7 +133,8 @@ OpenSky Network ──► opensky_collector.py
 
 VigilHex is open-source under AGPL-3.0.
 
-For hosted deployments, SLA, air-gapped installations, classified data integration or custom AOI — **[open an issue](https://github.com/pietrorenzii/vigilhex/issues)** or contact via Telegram.
+For **hosted deployments, SLA, air-gapped installations, classified data integration
+or custom AOI** — [open an issue](https://github.com/pietrorenzii/vigilhex/issues).
 
 Target clients: Ministries of Defence · NATO commands · Frontex · EU EEAS · Critical infrastructure operators.
 
@@ -143,6 +149,3 @@ Target clients: Ministries of Defence · NATO commands · Frontex · EU EEAS · 
 <div align="center">
 <sub>Built with public data only · AGPL-3.0 · Not affiliated with any government or military organization</sub>
 </div>
-```
-
----
