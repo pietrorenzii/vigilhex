@@ -16,6 +16,8 @@
   --grey1:#1A2830;--grey2:#2E4450;--grey3:#5A7888;--white:#A8C4CC;
 }
 html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(--grey3);font-family:'Share Tech Mono',monospace;font-size:11px}
+
+/* HEADER */
 #hdr{position:fixed;top:0;left:0;right:0;height:40px;z-index:2000;background:rgba(4,6,8,.98);border-bottom:1px solid var(--border2);display:flex;align-items:center;justify-content:space-between;padding:0 14px}
 .logo{font-family:'Orbitron',monospace;font-size:14px;font-weight:900;color:var(--white);letter-spacing:4px;display:flex;align-items:center;gap:10px}
 .logo-hex{width:24px;height:24px;clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);background:var(--orange);display:flex;align-items:center;justify-content:center;animation:hpulse 3s ease-in-out infinite}
@@ -28,15 +30,19 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(
 .hdr-stat .lbl{font-size:7px;color:var(--grey2);letter-spacing:2px}
 .hdr-stat .val{font-family:'Orbitron',monospace;font-size:14px;color:var(--white)}
 .hdr-stat .val.r{color:var(--red2)}.hdr-stat .val.o{color:var(--orange)}
-.hdr-right{display:flex;align-items:center;gap:10px}
+.hdr-right{display:flex;align-items:center;gap:8px}
 .live-badge{display:flex;align-items:center;gap:5px;font-size:8px;color:var(--grey3)}
 .ldot{width:6px;height:6px;border-radius:50%;animation:blink 1.2s infinite;flex-shrink:0}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.1}}
-#clock{font-size:11px;color:var(--orange);border:1px solid var(--border2);padding:3px 9px;letter-spacing:2px}
-.gh-btn{display:flex;align-items:center;gap:5px;color:var(--grey3);text-decoration:none;border:1px solid var(--border2);padding:3px 9px;font-size:8px;letter-spacing:1px;transition:.15s}
+.gh-btn{display:flex;align-items:center;gap:5px;color:var(--grey3);text-decoration:none;border:1px solid var(--border2);padding:3px 9px;font-size:8px;letter-spacing:1px;transition:.15s;white-space:nowrap}
 .gh-btn:hover{color:var(--orange);border-color:var(--orange)}
-.gh-btn svg{width:14px;height:14px;fill:currentColor}
+.gh-btn svg{width:13px;height:13px;fill:currentColor;flex-shrink:0}
+#clock{font-size:11px;color:var(--orange);border:1px solid var(--border2);padding:3px 9px;letter-spacing:2px}
+
+/* LAYOUT */
 #layout{position:fixed;top:40px;left:0;right:0;bottom:28px;display:flex}
+
+/* SIDEBAR */
 #sidebar{width:200px;min-width:200px;background:rgba(4,6,8,.97);border-right:1px solid var(--border);overflow-y:auto;display:flex;flex-direction:column;z-index:100}
 .sec{padding:8px 10px;border-bottom:1px solid var(--border)}
 .sec-title{font-size:7px;color:var(--grey1);letter-spacing:3px;text-transform:uppercase;margin-bottom:6px}
@@ -58,18 +64,34 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(
 .threat-body b{color:var(--white);display:block}
 .preset{padding:5px 6px;margin-bottom:2px;background:var(--bg2);border:1px solid var(--border);cursor:pointer;font-size:8px;color:var(--grey3);transition:.15s}
 .preset:hover{border-color:var(--orange);color:var(--orange)}
+
+/* MAP */
 #map-wrap{flex:1;position:relative;overflow:hidden}
-#map{width:100%;height:100%}
+#map{width:100%;height:100%;background:#020304}
+/* STILE MAPPA SCI-FI — filtro CSS sui tile */
 .leaflet-container{background:#020304!important}
+.leaflet-tile-pane{
+  filter:
+    brightness(0.55)
+    contrast(1.6)
+    saturate(0.2)
+    hue-rotate(170deg)
+    !important;
+}
 .leaflet-control-zoom{border:1px solid var(--border2)!important;border-radius:0!important}
 .leaflet-control-zoom a{background:var(--bg2)!important;color:var(--grey3)!important;border-bottom:1px solid var(--border)!important;border-radius:0!important;width:26px!important;height:26px!important;line-height:26px!important}
 .leaflet-control-zoom a:hover{color:var(--orange)!important;background:var(--bg3)!important}
 .leaflet-control-attribution{background:rgba(2,3,4,.8)!important;color:var(--grey1)!important;font-size:7px!important}
+.leaflet-control-attribution a{color:var(--grey2)!important}
+
+/* HUD CORNERS */
 .corner{position:absolute;width:12px;height:12px;pointer-events:none;z-index:500}
 .corner.tl{top:8px;left:8px;border-top:1px solid var(--orange);border-left:1px solid var(--orange)}
 .corner.tr{top:8px;right:8px;border-top:1px solid var(--orange);border-right:1px solid var(--orange)}
 .corner.bl{bottom:8px;left:8px;border-bottom:1px solid var(--orange);border-left:1px solid var(--orange)}
 .corner.br{bottom:8px;right:8px;border-bottom:1px solid var(--orange);border-right:1px solid var(--orange)}
+
+/* FLIGHT PANEL */
 #fp{position:absolute;top:0;right:0;bottom:0;width:320px;background:rgba(2,3,4,.98);border-left:1px solid var(--border2);z-index:800;display:none;overflow-y:auto;box-shadow:-10px 0 40px rgba(0,0,0,.8)}
 .fp-hdr{background:rgba(232,80,10,.06);border-bottom:1px solid var(--border2);padding:12px 14px;display:flex;justify-content:space-between;align-items:flex-start;position:sticky;top:0;z-index:10}
 .fp-call{font-family:'Orbitron',monospace;font-size:18px;color:var(--white);letter-spacing:2px}
@@ -109,6 +131,8 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(
 .fp-near{background:rgba(204,34,0,.06);border:1px solid var(--red);padding:7px 10px;margin-bottom:10px;font-size:9px;color:var(--red2)}
 .fp-prog{height:3px;background:var(--border2);margin-top:6px}
 .fp-prog-bar{height:100%;background:var(--orange);transition:width .5s}
+
+/* RIGHT PANEL */
 #rpanel{width:220px;min-width:220px;background:rgba(4,6,8,.97);border-left:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden;z-index:100}
 .tabs{display:flex;border-bottom:1px solid var(--border)}
 .tab{flex:1;padding:8px 2px;text-align:center;font-size:7px;color:var(--grey2);cursor:pointer;border-bottom:1px solid transparent;transition:.2s;letter-spacing:1px}
@@ -135,10 +159,14 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(
 .ftag.m{color:var(--red2);border-color:var(--red);background:rgba(204,34,0,.08)}
 .ftag.a{color:var(--orange);border-color:var(--orange);background:rgba(232,80,10,.06)}
 .ftag.u{color:var(--grey2);border-color:var(--grey1)}
+
+/* BOTTOM */
 #bot{position:fixed;bottom:0;left:0;right:0;height:28px;z-index:2000;background:rgba(4,6,8,.98);border-top:1px solid var(--border);display:flex;align-items:center}
 .bstat{font-size:7px;color:var(--grey3);padding:0 10px;border-right:1px solid var(--border);height:100%;display:flex;align-items:center;gap:4px;white-space:nowrap}
 .bstat .v{color:var(--white)}.bstat .v.r{color:var(--red2)}.bstat .v.o{color:var(--orange)}
 #last-update{margin-left:auto;padding-right:10px;font-size:7px;color:var(--grey2)}
+
+/* LOADING */
 #loading{position:fixed;inset:0;z-index:9999;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px}
 .load-hex{width:52px;height:52px;clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);background:var(--orange);animation:hpulse 1s ease-in-out infinite}
 .load-txt{font-family:'Orbitron',monospace;font-size:12px;color:var(--white);letter-spacing:4px}
@@ -277,7 +305,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(
       <div style="color:var(--grey3);line-height:1.8;font-size:9px">
         <div style="color:var(--white);font-family:'Orbitron',monospace;font-size:11px;margin-bottom:5px">VIGILHEX v0.1</div>
         <div style="color:var(--grey2);margin-bottom:8px;font-size:7px;letter-spacing:1px">GLOBAL AIRSPACE INTELLIGENCE</div>
-        <div style="margin-bottom:8px">Tracks military, state, cargo and unknown aircraft worldwide. Commercial flights excluded.</div>
+        <div style="margin-bottom:8px">Tracks military, state, cargo and unknown aircraft worldwide. Commercial excluded.</div>
         <div style="color:var(--grey2);font-size:7px;margin-bottom:3px">SOURCE</div>
         <div>· OpenSky Network ADS-B</div>
         <div>· Multi-region worldwide coverage</div>
@@ -300,19 +328,13 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(
 </div>
 
 <script>
-// ══════════════════════════════════════
-// CONFIG
-// ══════════════════════════════════════
-const REFRESH_MS = 120000; // 2 min — evita rate limit
-const MAX_AC = 800;
+const REFRESH_MS=120000,MAX_AC=800;
 
-// Bbox regionali — evitano la richiesta worldwide bloccata
-// Vengono fatte in sequenza con delay tra una e l'altra
-const REGIONS = [
-  {name:'Europe+NATO', url:'https://opensky-network.org/api/states/all?lamin=30&lamax=72&lomin=-25&lomax=50'},
-  {name:'North America', url:'https://opensky-network.org/api/states/all?lamin=15&lamax=75&lomin=-170&lomax=-50'},
-  {name:'Asia-Pacific',  url:'https://opensky-network.org/api/states/all?lamin=-10&lamax=60&lomin=60&lomax=180'},
-  {name:'Middle East+Africa', url:'https://opensky-network.org/api/states/all?lamin=-40&lamax=40&lomin=-20&lomax=60'},
+const REGIONS=[
+  {n:'Europe+NATO',    u:'https://opensky-network.org/api/states/all?lamin=30&lamax=72&lomin=-25&lomax=50'},
+  {n:'North America',  u:'https://opensky-network.org/api/states/all?lamin=15&lamax=75&lomin=-170&lomax=-50'},
+  {n:'Asia-Pacific',   u:'https://opensky-network.org/api/states/all?lamin=-10&lamax=60&lomin=60&lomax=180'},
+  {n:'Middle East+Africa',u:'https://opensky-network.org/api/states/all?lamin=-40&lamax=40&lomin=-20&lomax=60'},
 ];
 
 const SENSITIVE=[
@@ -323,7 +345,7 @@ const SENSITIVE=[
   {n:'Kaliningrad MZ',lat:54.71,lon:20.45,r:80,t:'military'},
   {n:'NATO HQ Brussels',lat:50.87,lon:4.41,r:30,t:'military'},
   {n:'Diego Garcia',lat:-7.32,lon:72.42,r:50,t:'military'},
-  {n:'Andersen AFB Guam',lat:13.58,lon:144.93,r:60,t:'military'},
+  {n:'Andersen AFB',lat:13.58,lon:144.93,r:60,t:'military'},
   {n:'Zaporizhzhia NPP',lat:47.51,lon:34.59,r:100,t:'nuclear'},
   {n:'Cattenom NPP',lat:49.41,lon:6.22,r:60,t:'nuclear'},
   {n:'Paks NPP',lat:46.57,lon:18.85,r:60,t:'nuclear'},
@@ -331,46 +353,57 @@ const SENSITIVE=[
 
 const MIL_HEX=[[0xAE0000,0xAFFFFF],[0x43C000,0x43CFFF],[0x3B0000,0x3BFFFF],[0x140000,0x157FFF],[0x3DC000,0x3DCFFF],[0x45D000,0x45D0FF]];
 const MIL_CS=['RRR','GAF','FAF','USAF','REACH','DUKE','STEEL','NATO','MMM','JAKE','NAVY','TURC','CTM','CASA','EVY','BAFE','ROMEO','ASCOT','ATLAS','COMET','VIPER','EAGLE'];
-const STATE_CS=['SAM','AF1','AF2','EXEC','GOVT','USCG','FRON','EU','ELITE','RSAF'];
+const STATE_CS=['SAM','AF1','AF2','EXEC','GOVT','USCG','FRON','EU','ELITE'];
 const CARGO_CS=['UPS','FDX','CLX','BOX','GTI','DHL','MPH','ABX','KMI','PAC','TGX','SWN'];
 const CAT_COLOR={MILITARY:'#CC2200',STATE:'#886600',CARGO:'#6A3A8A',UNKNOWN:'#2E4450'};
 
 const APT={
-  LHR:{n:'Heathrow',c:'London',lat:51.47,lon:-0.46},CDG:{n:'Charles de Gaulle',c:'Paris',lat:49.01,lon:2.55},
-  AMS:{n:'Schiphol',c:'Amsterdam',lat:52.31,lon:4.76},FRA:{n:'Frankfurt Main',c:'Frankfurt',lat:50.03,lon:8.57},
-  MAD:{n:'Barajas',c:'Madrid',lat:40.47,lon:-3.57},FCO:{n:'Fiumicino',c:'Rome',lat:41.80,lon:12.24},
-  MUC:{n:'Franz Josef Strauss',c:'Munich',lat:48.35,lon:11.79},IST:{n:'Istanbul Airport',c:'Istanbul',lat:41.27,lon:28.75},
-  JFK:{n:'JFK Intl',c:'New York',lat:40.64,lon:-73.78},LAX:{n:'Los Angeles Intl',c:'Los Angeles',lat:33.94,lon:-118.41},
-  ORD:{n:"O'Hare Intl",c:'Chicago',lat:41.98,lon:-87.91},ATL:{n:'Hartsfield-Jackson',c:'Atlanta',lat:33.64,lon:-84.43},
+  LHR:{n:'Heathrow',c:'London',lat:51.47,lon:-0.46},
+  CDG:{n:'Charles de Gaulle',c:'Paris',lat:49.01,lon:2.55},
+  AMS:{n:'Schiphol',c:'Amsterdam',lat:52.31,lon:4.76},
+  FRA:{n:'Frankfurt Main',c:'Frankfurt',lat:50.03,lon:8.57},
+  MAD:{n:'Barajas',c:'Madrid',lat:40.47,lon:-3.57},
+  FCO:{n:'Fiumicino',c:'Rome',lat:41.80,lon:12.24},
+  MUC:{n:'Franz Josef Strauss',c:'Munich',lat:48.35,lon:11.79},
+  IST:{n:'Istanbul Airport',c:'Istanbul',lat:41.27,lon:28.75},
+  JFK:{n:'JFK International',c:'New York',lat:40.64,lon:-73.78},
+  LAX:{n:'Los Angeles Intl',c:'Los Angeles',lat:33.94,lon:-118.41},
+  ORD:{n:"O'Hare International",c:'Chicago',lat:41.98,lon:-87.91},
+  ATL:{n:'Hartsfield-Jackson',c:'Atlanta',lat:33.64,lon:-84.43},
   DFW:{n:'Dallas/Fort Worth',c:'Dallas',lat:32.90,lon:-97.04},
-  DXB:{n:'Dubai Intl',c:'Dubai',lat:25.25,lon:55.36},DOH:{n:'Hamad Intl',c:'Doha',lat:25.27,lon:51.61},
-  SIN:{n:'Changi Airport',c:'Singapore',lat:1.36,lon:103.99},NRT:{n:'Narita Intl',c:'Tokyo',lat:35.77,lon:140.39},
-  PEK:{n:'Beijing Capital',c:'Beijing',lat:40.08,lon:116.59},SYD:{n:'Kingsford Smith',c:'Sydney',lat:-33.94,lon:151.18},
-  VIE:{n:'Vienna Intl',c:'Vienna',lat:48.11,lon:16.57},ZRH:{n:'Zurich',c:'Zurich',lat:47.46,lon:8.55},
-  CPH:{n:'Kastrup',c:'Copenhagen',lat:55.62,lon:12.66},WAW:{n:'Chopin',c:'Warsaw',lat:52.17,lon:20.97},
-  OSL:{n:'Gardermoen',c:'Oslo',lat:60.20,lon:11.08},DUB:{n:'Dublin Airport',c:'Dublin',lat:53.43,lon:-6.27},
+  DXB:{n:'Dubai International',c:'Dubai',lat:25.25,lon:55.36},
+  DOH:{n:'Hamad International',c:'Doha',lat:25.27,lon:51.61},
+  SIN:{n:'Changi Airport',c:'Singapore',lat:1.36,lon:103.99},
+  NRT:{n:'Narita International',c:'Tokyo',lat:35.77,lon:140.39},
+  PEK:{n:'Beijing Capital',c:'Beijing',lat:40.08,lon:116.59},
+  SYD:{n:'Kingsford Smith',c:'Sydney',lat:-33.94,lon:151.18},
+  VIE:{n:'Vienna International',c:'Vienna',lat:48.11,lon:16.57},
+  ZRH:{n:'Zurich Airport',c:'Zurich',lat:47.46,lon:8.55},
+  CPH:{n:'Copenhagen Kastrup',c:'Copenhagen',lat:55.62,lon:12.66},
+  WAW:{n:'Chopin Airport',c:'Warsaw',lat:52.17,lon:20.97},
+  OSL:{n:'Oslo Gardermoen',c:'Oslo',lat:60.20,lon:11.08},
+  DUB:{n:'Dublin Airport',c:'Dublin',lat:53.43,lon:-6.27},
+  HEL:{n:'Helsinki-Vantaa',c:'Helsinki',lat:60.32,lon:24.96},
+  ATH:{n:'Eleftherios Venizelos',c:'Athens',lat:37.94,lon:23.95},
+  GRU:{n:'Guarulhos Intl',c:'São Paulo',lat:-23.43,lon:-46.47},
+  CAI:{n:'Cairo International',c:'Cairo',lat:30.12,lon:31.41},
+  JNB:{n:'OR Tambo',c:'Johannesburg',lat:-26.13,lon:28.24},
 };
 const COUNTRY_HUB={
   'United Kingdom':'LHR','France':'CDG','Germany':'FRA','Italy':'FCO','Spain':'MAD',
   'Netherlands':'AMS','Turkey':'IST','United States':'JFK','United Arab Emirates':'DXB',
   'Japan':'NRT','China':'PEK','Australia':'SYD','Austria':'VIE','Switzerland':'ZRH',
-  'Denmark':'CPH','Poland':'WAW','Norway':'OSL','Ireland':'DUB','Qatar':'DOH','Singapore':'SIN',
+  'Denmark':'CPH','Poland':'WAW','Norway':'OSL','Ireland':'DUB','Qatar':'DOH',
+  'Singapore':'SIN','Finland':'HEL','Greece':'ATH','Brazil':'GRU','Egypt':'CAI','South Africa':'JNB',
 };
 
-// ══════════════════════════════════════
-// STATE
-// ══════════════════════════════════════
 let map2d,markerLayer,routeLayer,sensitiveCircles=[];
 let layerVis={military:true,state:true,cargo:true,unknown:true,anomaly:true};
 let sensitiveVis={military:true,nuclear:true};
 let allFlights=[],prevPos={},animMarkers={};
 let anomalyHist=Array(24).fill(0);
 let animRaf=null,animStart=0;
-let retryDelay=120000;
 
-// ══════════════════════════════════════
-// CLASSIFY
-// ══════════════════════════════════════
 function classify(s){
   const ic=(s[0]||'').toUpperCase(),cs=((s[1]||'').trim()).toUpperCase();
   try{const h=parseInt(ic,16);for(const[lo,hi]of MIL_HEX)if(h>=lo&&h<=hi)return'MILITARY';}catch(e){}
@@ -416,7 +449,6 @@ function gc(la1,lo1,la2,lo2,n=50){
 }
 
 function resolveRoute(f){
-  const cs=(f.cs||'').toUpperCase();
   const origCode=COUNTRY_HUB[f.country||'']||null;
   const orig=origCode?APT[origCode]:null;
   const destInfo=estimateDest(f,origCode);
@@ -440,15 +472,12 @@ function estimateDest(f,skip){
   return best;
 }
 
-// ══════════════════════════════════════
-// FETCH — richieste bbox regionali in sequenza
-// ══════════════════════════════════════
-async function fetchRegion(region){
-  const res=await fetch(region.url,{
+async function fetchRegion(r){
+  const res=await fetch(r.u,{
     headers:{'User-Agent':'VigilHex/0.1'},
     signal:AbortSignal.timeout(15000),
   });
-  if(!res.ok)throw new Error('HTTP '+res.status+' ('+region.name+')');
+  if(!res.ok)throw new Error('HTTP '+res.status);
   const data=await res.json();
   if(!data?.states)return[];
   const now=Math.floor(Date.now()/1000);
@@ -456,7 +485,7 @@ async function fetchRegion(region){
   for(const s of data.states){
     if(s[5]==null||s[6]==null)continue;
     const cat=classify(s);
-    if(cat==='COMMERCIAL')continue; // filtra commercial
+    if(cat==='COMMERCIAL')continue;
     const f={
       icao:s[0],cs:(s[1]||'').trim()||null,country:s[2],
       lon:s[5],lat:s[6],
@@ -474,76 +503,42 @@ async function fetchRegion(region){
 
 async function fetchFlights(){
   setLive('connecting');
-  const allRaw=[];
-  let success=0;
-
-  // Fetch regioni in sequenza con piccolo delay per non fare spam
-  for(const region of REGIONS){
+  const all=[];
+  let ok=0;
+  for(const r of REGIONS){
     try{
-      const fl=await fetchRegion(region);
-      allRaw.push(...fl);
-      success++;
-      // Piccolo delay tra richieste per rispettare rate limit
-      await new Promise(r=>setTimeout(r,1500));
+      const fl=await fetchRegion(r);
+      all.push(...fl);ok++;
+      await new Promise(res=>setTimeout(res,1500));
     }catch(e){
-      console.warn('Region failed:',region.name,e.message);
-      if(e.message.includes('429')){
-        // Rate limited — aspetta di più prima della prossima
-        await new Promise(r=>setTimeout(r,5000));
-      }
+      console.warn(r.n,e.message);
+      if(e.message.includes('429'))await new Promise(res=>setTimeout(res,5000));
     }
   }
-
-  if(success===0){
+  if(!ok){
     setLive('error');
     document.getElementById('loading').style.display='none';
-    document.getElementById('feed-list').innerHTML=`
-      <div style="color:var(--orange);font-size:9px;padding:8px;border:1px solid var(--orange);background:rgba(232,80,10,.04)">
-        ⚠ OpenSky rate limited<br>
-        <span style="color:var(--grey2)">Retrying in 5 minutes...</span>
-      </div>`;
+    document.getElementById('feed-list').innerHTML=`<div style="color:var(--orange);font-size:9px;padding:8px;border:1px solid var(--orange);background:rgba(232,80,10,.04)">⚠ OpenSky rate limited<br><span style="color:var(--grey2)">Retrying in 2 min...</span></div>`;
     return;
   }
-
-  // Deduplicazione per icao
   const seen=new Set();
-  let fl=allRaw.filter(f=>{
-    if(seen.has(f.icao))return false;
-    seen.add(f.icao);return true;
-  });
-
-  fl.sort((a,b)=>{
-    if(a.ano!==b.ano)return a.ano?-1:1;
-    if((a.cat==='MILITARY')!==(b.cat==='MILITARY'))return a.cat==='MILITARY'?-1:1;
-    return 0;
-  });
+  let fl=all.filter(f=>{if(seen.has(f.icao))return false;seen.add(f.icao);return true;});
+  fl.sort((a,b)=>{if(a.ano!==b.ano)return a.ano?-1:1;if((a.cat==='MILITARY')!==(b.cat==='MILITARY'))return a.cat==='MILITARY'?-1:1;return 0;});
   fl=fl.slice(0,MAX_AC);
-
   const np={};allFlights.forEach(f=>np[f.icao]={lat:f.lat,lon:f.lon});
   prevPos=np;allFlights=fl;
-
   render2D(fl);updateStats(fl);updateFeed(fl);updateStatsTab(fl);
   setLive('live');
-  retryDelay=REFRESH_MS; // reset delay on success
   document.getElementById('b-time').textContent=utcNow()+' UTC';
   document.getElementById('loading').style.display='none';
 }
 
-// ══════════════════════════════════════
-// MAP — stile riferimento cinese
-// ══════════════════════════════════════
 function init2D(){
-  map2d=L.map('map',{
-    center:[20,0],zoom:2,
-    minZoom:2,maxZoom:14,
-    worldCopyJump:true,
-    zoomSnap:0.25,
-  });
+  map2d=L.map('map',{center:[20,0],zoom:2,minZoom:2,maxZoom:14,worldCopyJump:true,zoomSnap:0.25});
 
-  // Tile layer scuro stile reference
-  L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',{
-    attribution:'© CartoDB © OpenStreetMap',
-    subdomains:'abcd',maxZoom:14,
+  // Tile layer con filtro CSS sci-fi applicato via JS dopo il caricamento
+  const tileLayer=L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png',{
+    attribution:'© CartoDB © OpenStreetMap',subdomains:'abcd',maxZoom:14,
   }).addTo(map2d);
 
   map2d.setMaxBounds([[-85,-260],[85,260]]);
@@ -561,14 +556,11 @@ function init2D(){
   });
 }
 
-// ══════════════════════════════════════
-// ICON — aereo SVG orientato + animazione
-// ══════════════════════════════════════
 function makeIcon(f){
   const col=f.ano?'#E8500A':CAT_COLOR[f.cat]||'#2E4450';
   const sz=f.ano?24:f.cat==='MILITARY'?22:18;
   const glow=f.ano
-    ?'filter:drop-shadow(0 0 6px #E8500A) drop-shadow(0 0 12px rgba(232,80,10,.5));'
+    ?'filter:drop-shadow(0 0 6px #E8500A) drop-shadow(0 0 12px rgba(232,80,10,.4));'
     :f.cat==='MILITARY'
     ?'filter:drop-shadow(0 0 4px #CC2200);'
     :`filter:drop-shadow(0 0 2px ${col});`;
@@ -582,9 +574,6 @@ function makeIcon(f){
   return L.divIcon({className:'',html,iconSize:[36,36],iconAnchor:[18,18]});
 }
 
-// ══════════════════════════════════════
-// FLIGHT PANEL
-// ══════════════════════════════════════
 function openPanel(f){
   const route=resolveRoute(f);
   const near=nearSens(f.lat,f.lon);
@@ -662,9 +651,6 @@ function closePanel(){
   routeLayer.clearLayers();
 }
 
-// ══════════════════════════════════════
-// RENDER + ANIMAZIONE
-// ══════════════════════════════════════
 function render2D(flights){
   markerLayer.clearLayers();routeLayer.clearLayers();
   document.getElementById('fp').style.display='none';
@@ -673,10 +659,7 @@ function render2D(flights){
     if(f.gnd)return;
     if(!layerVis[f.cat.toLowerCase()])return;
     if(!layerVis.anomaly&&f.ano)return;
-    const m=L.marker([f.lat,f.lon],{
-      icon:makeIcon(f),
-      zIndexOffset:f.ano?2000:f.cat==='MILITARY'?1000:0,
-    });
+    const m=L.marker([f.lat,f.lon],{icon:makeIcon(f),zIndexOffset:f.ano?2000:f.cat==='MILITARY'?1000:0});
     m.on('click',()=>openPanel(f));
     m.addTo(markerLayer);
     animMarkers[f.icao]={m,f};
@@ -684,36 +667,27 @@ function render2D(flights){
   startAnim();
 }
 
-// Animazione smooth — interpola posizione tra vecchio e nuovo update
 function startAnim(){
   if(animRaf)cancelAnimationFrame(animRaf);
   animStart=Date.now();
   animStep();
 }
 function animStep(){
-  const elapsed=Date.now()-animStart;
-  const t=Math.min(elapsed/55000,1); // interpola su 55 secondi
+  const t=Math.min((Date.now()-animStart)/55000,1);
   for(const{m,f}of Object.values(animMarkers)){
     const p=prevPos[f.icao];
-    if(!p||!f.spd||f.spd<10)continue; // non animare aerei fermi
-    const lat=p.lat+(f.lat-p.lat)*t;
-    const lon=p.lon+(f.lon-p.lon)*t;
-    try{m.setLatLng([lat,lon]);}catch(e){}
+    if(!p||!f.spd||f.spd<10)continue;
+    try{m.setLatLng([p.lat+(f.lat-p.lat)*t,p.lon+(f.lon-p.lon)*t]);}catch(e){}
   }
   if(t<1)animRaf=requestAnimationFrame(animStep);
 }
 
-// ══════════════════════════════════════
-// STATS
-// ══════════════════════════════════════
 function updateStats(fl){
   const C={military:0,state:0,cargo:0,unknown:0};
   let ano=0,xp=0,cr=0;
   fl.forEach(f=>{
-    if(!f.gnd){
-      C[f.cat.toLowerCase()]=(C[f.cat.toLowerCase()]||0)+1;
-      if(f.ano)ano++;if((f.sil||0)>300)xp++;if(['7500','7700'].includes(f.sqk))cr++;
-    }
+    if(!f.gnd){C[f.cat.toLowerCase()]=(C[f.cat.toLowerCase()]||0)+1;
+      if(f.ano)ano++;if((f.sil||0)>300)xp++;if(['7500','7700'].includes(f.sqk))cr++;}
   });
   const tot=Object.values(C).reduce((a,b)=>a+b,0);
   document.getElementById('s-total').textContent=tot;
