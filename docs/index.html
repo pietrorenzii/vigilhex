@@ -61,7 +61,6 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(
 #map-wrap{flex:1;position:relative;overflow:hidden}
 #map{width:100%;height:100%;background:#020304}
 .leaflet-container{background:#020304!important}
-/* Stile mappa sci-fi — filtro leggero sui tile */
 .leaflet-tile-pane{filter:brightness(0.8) contrast(1.1) saturate(0.3)!important}
 .leaflet-control-zoom{border:1px solid var(--border2)!important;border-radius:0!important}
 .leaflet-control-zoom a{background:var(--bg2)!important;color:var(--grey3)!important;border-bottom:1px solid var(--border)!important;border-radius:0!important;width:26px!important;height:26px!important;line-height:26px!important}
@@ -103,7 +102,6 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(
 .fp-badge{display:inline-block;font-size:7px;padding:2px 6px;border:1px solid;margin:2px 2px 0 0;letter-spacing:1px}
 .fp-badge.mil{color:var(--red2);border-color:var(--red);background:rgba(204,34,0,.1)}
 .fp-badge.ano{color:var(--orange);border-color:var(--orange);background:rgba(232,80,10,.08)}
-.fp-badge.com{color:var(--grey3);border-color:var(--grey2)}
 .fp-badge.sta{color:#886600;border-color:#664400}
 .fp-badge.unk{color:var(--grey2);border-color:var(--grey1)}
 .fp-badge.crg{color:#8844AA;border-color:#6622AA}
@@ -138,10 +136,10 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(
 .ftag.m{color:var(--red2);border-color:var(--red);background:rgba(204,34,0,.08)}
 .ftag.a{color:var(--orange);border-color:var(--orange);background:rgba(232,80,10,.06)}
 .ftag.u{color:var(--grey2);border-color:var(--grey1)}
-#bot{position:fixed;bottom:0;left:0;right:0;height:28px;z-index:2000;background:rgba(4,6,8,.98);border-top:1px solid var(--border);display:flex;align-items:center}
+#bot{position:fixed;bottom:0;left:0;right:0;height:28px;z-index:2000;background:rgba(4,6,8,.98);border-top:1px solid var(--border);display:flex;align-items:center;overflow:hidden}
 .bstat{font-size:7px;color:var(--grey3);padding:0 10px;border-right:1px solid var(--border);height:100%;display:flex;align-items:center;gap:4px;white-space:nowrap}
 .bstat .v{color:var(--white)}.bstat .v.r{color:var(--red2)}.bstat .v.o{color:var(--orange)}
-#last-update{margin-left:auto;padding-right:10px;font-size:7px;color:var(--grey2)}
+#last-update{margin-left:auto;padding-right:10px;font-size:7px;color:var(--grey2);white-space:nowrap}
 #loading{position:fixed;inset:0;z-index:9999;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px}
 .load-hex{width:52px;height:52px;clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);background:var(--orange);animation:hpulse 1s ease-in-out infinite}
 .load-txt{font-family:'Orbitron',monospace;font-size:12px;color:var(--white);letter-spacing:4px}
@@ -283,7 +281,8 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(
         <div style="margin-bottom:8px">Tracks military, state, cargo and unknown aircraft worldwide. Commercial excluded.</div>
         <div style="color:var(--grey2);font-size:7px;margin-bottom:3px">SOURCE</div>
         <div>· OpenSky Network ADS-B</div>
-        <div>· Multi-region worldwide coverage</div>
+        <div>· Cloudflare Worker proxy</div>
+        <div>· Worldwide coverage</div>
         <div style="margin-top:8px;border-top:1px solid var(--border);padding-top:8px">
           <a href="https://github.com/pietrorenzii/vigilhex" target="_blank" style="color:var(--orange);text-decoration:none">⭐ github.com/pietrorenzii/vigilhex</a>
         </div>
@@ -307,6 +306,14 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(
 const REFRESH_MS=120000,MAX_AC=800;
 const WORKER_URL='https://vigilhex-proxy.suegboy666.workers.dev';
 
+// Fallback bbox regionali — worldwide
+const BBOXES=[
+  '?lamin=30&lamax=72&lomin=-25&lomax=50',   // Europe+NATO
+  '?lamin=15&lamax=75&lomin=-170&lomax=-50',  // North America
+  '?lamin=-10&lamax=60&lomin=60&lomax=180',   // Asia-Pacific
+  '?lamin=-40&lamax=40&lomin=-20&lomax=60',   // Middle East+Africa
+];
+
 const SENSITIVE=[
   {n:'Ramstein AFB',lat:49.44,lon:7.60,r:50,t:'military'},
   {n:'RAF Lakenheath',lat:52.41,lon:0.56,r:40,t:'military'},
@@ -328,36 +335,21 @@ const CARGO_CS=['UPS','FDX','CLX','BOX','GTI','DHL','MPH','ABX','KMI','PAC'];
 const CAT_COLOR={MILITARY:'#CC2200',STATE:'#886600',CARGO:'#6A3A8A',UNKNOWN:'#2E4450'};
 
 const APT={
-  LHR:{n:'Heathrow',c:'London',lat:51.47,lon:-0.46},
-  CDG:{n:'Charles de Gaulle',c:'Paris',lat:49.01,lon:2.55},
-  AMS:{n:'Schiphol',c:'Amsterdam',lat:52.31,lon:4.76},
-  FRA:{n:'Frankfurt Main',c:'Frankfurt',lat:50.03,lon:8.57},
-  MAD:{n:'Barajas',c:'Madrid',lat:40.47,lon:-3.57},
-  FCO:{n:'Fiumicino',c:'Rome',lat:41.80,lon:12.24},
-  MUC:{n:'Franz Josef Strauss',c:'Munich',lat:48.35,lon:11.79},
-  IST:{n:'Istanbul Airport',c:'Istanbul',lat:41.27,lon:28.75},
-  JFK:{n:'JFK International',c:'New York',lat:40.64,lon:-73.78},
-  LAX:{n:'Los Angeles Intl',c:'Los Angeles',lat:33.94,lon:-118.41},
-  ORD:{n:"O'Hare International",c:'Chicago',lat:41.98,lon:-87.91},
-  ATL:{n:'Hartsfield-Jackson',c:'Atlanta',lat:33.64,lon:-84.43},
-  DFW:{n:'Dallas/Fort Worth',c:'Dallas',lat:32.90,lon:-97.04},
-  DXB:{n:'Dubai International',c:'Dubai',lat:25.25,lon:55.36},
-  DOH:{n:'Hamad International',c:'Doha',lat:25.27,lon:51.61},
-  SIN:{n:'Changi Airport',c:'Singapore',lat:1.36,lon:103.99},
-  NRT:{n:'Narita International',c:'Tokyo',lat:35.77,lon:140.39},
-  PEK:{n:'Beijing Capital',c:'Beijing',lat:40.08,lon:116.59},
-  SYD:{n:'Kingsford Smith',c:'Sydney',lat:-33.94,lon:151.18},
-  VIE:{n:'Vienna International',c:'Vienna',lat:48.11,lon:16.57},
-  ZRH:{n:'Zurich Airport',c:'Zurich',lat:47.46,lon:8.55},
-  CPH:{n:'Copenhagen Kastrup',c:'Copenhagen',lat:55.62,lon:12.66},
-  WAW:{n:'Chopin Airport',c:'Warsaw',lat:52.17,lon:20.97},
-  OSL:{n:'Oslo Gardermoen',c:'Oslo',lat:60.20,lon:11.08},
-  DUB:{n:'Dublin Airport',c:'Dublin',lat:53.43,lon:-6.27},
-  HEL:{n:'Helsinki-Vantaa',c:'Helsinki',lat:60.32,lon:24.96},
-  ATH:{n:'Eleftherios Venizelos',c:'Athens',lat:37.94,lon:23.95},
-  GRU:{n:'Guarulhos Intl',c:'São Paulo',lat:-23.43,lon:-46.47},
-  CAI:{n:'Cairo International',c:'Cairo',lat:30.12,lon:31.41},
-  JNB:{n:'OR Tambo',c:'Johannesburg',lat:-26.13,lon:28.24},
+  LHR:{n:'Heathrow',c:'London',lat:51.47,lon:-0.46},CDG:{n:'Charles de Gaulle',c:'Paris',lat:49.01,lon:2.55},
+  AMS:{n:'Schiphol',c:'Amsterdam',lat:52.31,lon:4.76},FRA:{n:'Frankfurt Main',c:'Frankfurt',lat:50.03,lon:8.57},
+  MAD:{n:'Barajas',c:'Madrid',lat:40.47,lon:-3.57},FCO:{n:'Fiumicino',c:'Rome',lat:41.80,lon:12.24},
+  MUC:{n:'Franz Josef Strauss',c:'Munich',lat:48.35,lon:11.79},IST:{n:'Istanbul Airport',c:'Istanbul',lat:41.27,lon:28.75},
+  JFK:{n:'JFK International',c:'New York',lat:40.64,lon:-73.78},LAX:{n:'Los Angeles Intl',c:'Los Angeles',lat:33.94,lon:-118.41},
+  ORD:{n:"O'Hare International",c:'Chicago',lat:41.98,lon:-87.91},ATL:{n:'Hartsfield-Jackson',c:'Atlanta',lat:33.64,lon:-84.43},
+  DFW:{n:'Dallas/Fort Worth',c:'Dallas',lat:32.90,lon:-97.04},DXB:{n:'Dubai International',c:'Dubai',lat:25.25,lon:55.36},
+  DOH:{n:'Hamad International',c:'Doha',lat:25.27,lon:51.61},SIN:{n:'Changi Airport',c:'Singapore',lat:1.36,lon:103.99},
+  NRT:{n:'Narita International',c:'Tokyo',lat:35.77,lon:140.39},PEK:{n:'Beijing Capital',c:'Beijing',lat:40.08,lon:116.59},
+  SYD:{n:'Kingsford Smith',c:'Sydney',lat:-33.94,lon:151.18},VIE:{n:'Vienna International',c:'Vienna',lat:48.11,lon:16.57},
+  ZRH:{n:'Zurich Airport',c:'Zurich',lat:47.46,lon:8.55},CPH:{n:'Copenhagen Kastrup',c:'Copenhagen',lat:55.62,lon:12.66},
+  WAW:{n:'Chopin Airport',c:'Warsaw',lat:52.17,lon:20.97},OSL:{n:'Oslo Gardermoen',c:'Oslo',lat:60.20,lon:11.08},
+  DUB:{n:'Dublin Airport',c:'Dublin',lat:53.43,lon:-6.27},HEL:{n:'Helsinki-Vantaa',c:'Helsinki',lat:60.32,lon:24.96},
+  ATH:{n:'Eleftherios Venizelos',c:'Athens',lat:37.94,lon:23.95},GRU:{n:'Guarulhos Intl',c:'São Paulo',lat:-23.43,lon:-46.47},
+  CAI:{n:'Cairo International',c:'Cairo',lat:30.12,lon:31.41},JNB:{n:'OR Tambo',c:'Johannesburg',lat:-26.13,lon:28.24},
 };
 const COUNTRY_HUB={
   'United Kingdom':'LHR','France':'CDG','Germany':'FRA','Italy':'FCO','Spain':'MAD',
@@ -442,70 +434,77 @@ function estimateDest(f,skip){
   return best;
 }
 
-// FETCH — usa Cloudflare Worker come proxy
+// ── FETCH PRINCIPALE — usa Worker Cloudflare ─────────────
 async function fetchFlights(){
   setLive('connecting');
   try{
-    const res=await fetch(WORKER_URL+'/api/flights',{
-      signal:AbortSignal.timeout(30000),
-    });
-    if(!res.ok)throw new Error('HTTP '+res.status);
+    const res=await fetch(WORKER_URL+'/api/flights',{signal:AbortSignal.timeout(30000)});
+    if(!res.ok)throw new Error('Worker HTTP '+res.status);
     const data=await res.json();
-
-    if(data.error||!data.flights||data.flights.length===0){
-      // Worker ha dati vuoti — fallback diretto OpenSky Europa
-      await fetchFallback();
+    if(data.flights&&data.flights.length>0){
+      let fl=data.flights;
+      fl.forEach(f=>{const{ano,rsn}=chkAno(f);f.ano=ano;f.rsn=rsn;});
+      processFlights(fl);
       return;
     }
-
-    let fl=data.flights;
-    fl.forEach(f=>{const{ano,rsn}=chkAno(f);f.ano=ano;f.rsn=rsn;});
-    processFlights(fl);
-
+    throw new Error('Worker returned 0 flights');
   }catch(e){
-    console.warn('Worker failed, trying direct:',e.message);
-    await fetchFallback();
+    console.warn('Worker failed:',e.message,'; trying direct OpenSky...');
+    fetchFallback();
   }
 }
 
-// Fallback diretto OpenSky Europa
+// ── FALLBACK — OpenSky diretto, 4 regioni worldwide ──────
 async function fetchFallback(){
-  try{
-    const res=await fetch(
-      'https://opensky-network.org/api/states/all?lamin=30&lamax=72&lomin=-25&lomax=50',
-      {headers:{'User-Agent':'VigilHex/0.1'},signal:AbortSignal.timeout(20000)}
-    );
-    if(!res.ok)throw new Error('HTTP '+res.status);
-    const data=await res.json();
-    if(!data?.states?.length)throw new Error('Empty');
-    const now=Math.floor(Date.now()/1000);
-    let fl=[];
-    for(const s of data.states){
-      if(s[5]==null||s[6]==null)continue;
-      const cat=classify(s);
-      if(cat==='COMMERCIAL')continue;
-      const f={
-        icao:s[0],cs:(s[1]||'').trim()||null,country:s[2],
-        lon:s[5],lat:s[6],
-        alt:s[7]?Math.round(s[7]*3.281):null,gnd:s[8],
-        spd:s[9]?Math.round(s[9]*1.944):null,
-        trk:s[10]!=null?Math.round(s[10]):0,
-        vrt:s[11]?Math.round(s[11]*196.85):null,
-        sqk:s[14],sil:s[4]?now-s[4]:null,src:s[16],cat,
-      };
-      const{ano,rsn}=chkAno(f);f.ano=ano;f.rsn=rsn;
-      fl.push(f);
+  const now=Math.floor(Date.now()/1000);
+  const allStates=[];
+  let ok=0;
+  for(const bbox of BBOXES){
+    try{
+      const res=await fetch('https://opensky-network.org/api/states/all'+bbox,{
+        headers:{'User-Agent':'VigilHex/0.1'},
+        signal:AbortSignal.timeout(15000),
+      });
+      if(!res.ok)throw new Error('HTTP '+res.status);
+      const data=await res.json();
+      if(data?.states){allStates.push(...data.states);ok++;}
+      await new Promise(r=>setTimeout(r,1500));
+    }catch(e){
+      console.warn('Bbox failed:',bbox,e.message);
+      if(e.message.includes('429'))await new Promise(r=>setTimeout(r,5000));
     }
-    processFlights(fl);
-  }catch(e){
+  }
+  if(!ok){
     setLive('error');
     document.getElementById('loading').style.display='none';
     document.getElementById('feed-list').innerHTML=`
       <div style="color:var(--orange);font-size:9px;padding:8px;border:1px solid var(--orange);background:rgba(232,80,10,.04)">
-        ⚠ ${e.message}<br>
-        <span style="color:var(--grey2)">Retrying in 2 min...</span>
+        ⚠ Feed unavailable — OpenSky rate limited<br>
+        <span style="color:var(--grey2)">Auto-retry in 2 min</span>
       </div>`;
+    return;
   }
+  const seen=new Set();
+  const fl=[];
+  for(const s of allStates){
+    if(s[5]==null||s[6]==null)continue;
+    if(seen.has(s[0]))continue;
+    seen.add(s[0]);
+    const cat=classify(s);
+    if(cat==='COMMERCIAL')continue;
+    const f={
+      icao:s[0],cs:(s[1]||'').trim()||null,country:s[2],
+      lon:s[5],lat:s[6],
+      alt:s[7]?Math.round(s[7]*3.281):null,gnd:s[8],
+      spd:s[9]?Math.round(s[9]*1.944):null,
+      trk:s[10]!=null?Math.round(s[10]):0,
+      vrt:s[11]?Math.round(s[11]*196.85):null,
+      sqk:s[14],sil:s[4]?now-s[4]:null,src:s[16],cat,
+    };
+    const{ano,rsn}=chkAno(f);f.ano=ano;f.rsn=rsn;
+    fl.push(f);
+  }
+  processFlights(fl);
 }
 
 function processFlights(fl){
@@ -523,12 +522,9 @@ function processFlights(fl){
   document.getElementById('loading').style.display='none';
 }
 
+// ── MAP INIT ─────────────────────────────────────────────
 function init2D(){
-  map2d=L.map('map',{
-    center:[20,0],zoom:2,minZoom:2,maxZoom:14,
-    worldCopyJump:true,zoomSnap:0.25,
-  });
-  // Tile layer CartoDB dark senza etichette — più pulito
+  map2d=L.map('map',{center:[20,0],zoom:2,minZoom:2,maxZoom:14,worldCopyJump:true,zoomSnap:0.25});
   L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png',{
     attribution:'© CartoDB © OpenStreetMap',subdomains:'abcd',maxZoom:14,
   }).addTo(map2d);
@@ -549,11 +545,7 @@ function init2D(){
 function makeIcon(f){
   const col=f.ano?'#E8500A':CAT_COLOR[f.cat]||'#2E4450';
   const sz=f.ano?24:f.cat==='MILITARY'?22:18;
-  const glow=f.ano
-    ?'filter:drop-shadow(0 0 6px #E8500A);'
-    :f.cat==='MILITARY'
-    ?'filter:drop-shadow(0 0 4px #CC2200);'
-    :`filter:drop-shadow(0 0 2px ${col});`;
+  const glow=f.ano?'filter:drop-shadow(0 0 6px #E8500A);':f.cat==='MILITARY'?'filter:drop-shadow(0 0 4px #CC2200);':`filter:drop-shadow(0 0 2px ${col});`;
   const anim=f.ano?'animation:blink .7s infinite;':'';
   const html=`<div style="width:36px;height:36px;display:flex;align-items:center;justify-content:center;cursor:pointer">
     <svg xmlns="http://www.w3.org/2000/svg" width="${sz}" height="${sz}" viewBox="0 0 24 24"
@@ -636,10 +628,7 @@ function openPanel(f){
   map2d.panTo([f.lat,f.lon],{animate:true,duration:.5});
 }
 
-function closePanel(){
-  document.getElementById('fp').style.display='none';
-  routeLayer.clearLayers();
-}
+function closePanel(){document.getElementById('fp').style.display='none';routeLayer.clearLayers();}
 
 function render2D(flights){
   markerLayer.clearLayers();routeLayer.clearLayers();
