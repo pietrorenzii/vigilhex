@@ -8,41 +8,31 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r152/three.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.152/examples/js/controls/OrbitControls.js"></script>
 
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
-
 <style>
-body{margin:0;background:#020304;color:#aaa;font-family:Orbitron;overflow:hidden}
+body{
+  margin:0;
+  overflow:hidden;
+  background:#000;
+  color:#fff;
+  font-family:Arial;
+}
 
 #hdr{
-  position:fixed;top:0;left:0;right:0;height:40px;
-  background:#050708;border-bottom:1px solid #1a2a30;
-  display:flex;align-items:center;justify-content:space-between;
-  padding:0 15px;color:#fff;z-index:10;
-}
-
-#globe{
-  position:absolute;
-  top:40px;
-  width:100%;
-  height:calc(100% - 40px);
-}
-
-.panel{
-  position:absolute;
+  position:fixed;
+  top:0;
+  left:0;
   right:0;
-  top:40px;
-  width:260px;
-  height:calc(100% - 40px);
-  background:#050708;
-  border-left:1px solid #1a2a30;
-  padding:10px;
+  height:40px;
+  background:#111;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 10px;
+  z-index:10;
 }
 
-.stat{
-  background:#0a0f12;
-  border:1px solid #1a2a30;
-  padding:8px;
-  margin-bottom:6px;
+canvas{
+  display:block;
 }
 </style>
 </head>
@@ -51,161 +41,69 @@ body{margin:0;background:#020304;color:#aaa;font-family:Orbitron;overflow:hidden
 
 <div id="hdr">
   <div>VIGILHEX RADAR</div>
-  <div id="status">CONNECTING</div>
-</div>
-
-<canvas id="globe"></canvas>
-
-<div class="panel">
-  <div class="stat">TOTAL: <span id="total">0</span></div>
-  <div class="stat">ANOMALY: <span id="ano">0</span></div>
+  <div id="status">BOOT</div>
 </div>
 
 <script>
-const WORKER_URL="https://vigilhex-proxy.suegboy666.workers.dev";
-
-let scene,camera,renderer,controls;
-let globe,pointsGroup,linesGroup;
+let scene, camera, renderer, globe;
 
 init();
 animate();
-fetchData();
 
 function init(){
-  const canvas=document.getElementById("globe");
 
-  scene=new THREE.Scene();
+  // SCENE
+  scene = new THREE.Scene();
 
-  camera=new THREE.PerspectiveCamera(60,window.innerWidth/window.innerHeight,0.1,1000);
-  camera.position.z=2.5;
+  // CAMERA
+  camera = new THREE.PerspectiveCamera(
+    60,
+    window.innerWidth / window.innerHeight,
+    0.1,
+    1000
+  );
+  camera.position.z = 3;
 
-  renderer=new THREE.WebGLRenderer({canvas,antialias:true});
-  renderer.setSize(window.innerWidth,window.innerHeight);
-  renderer.setPixelRatio(window.devicePixelRatio);
+  // RENDERER (ATTACCATO DIRETTAMENTE AL BODY)
+  renderer = new THREE.WebGLRenderer({antialias:true});
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  document.body.appendChild(renderer.domElement);
 
-  // GLOBE
-  const geo=new THREE.SphereGeometry(1,64,64);
-  const tex=new THREE.TextureLoader().load("https://threejs.org/examples/textures/earth_atmos_2048.jpg");
+  // GLOBO (SENZA TEXTURE → ZERO RISCHI)
+  const geometry = new THREE.SphereGeometry(1, 32, 32);
 
-  const mat=new THREE.MeshStandardMaterial({
-    map:tex,
-    emissive:new THREE.Color(0x111111)
+  const material = new THREE.MeshBasicMaterial({
+    color: 0x00ff88,
+    wireframe: true
   });
 
-  globe=new THREE.Mesh(geo,mat);
+  globe = new THREE.Mesh(geometry, material);
   scene.add(globe);
 
-  // WIREFRAME
-  const wire=new THREE.Mesh(
-    geo,
-    new THREE.MeshBasicMaterial({
-      color:0xff5500,
-      wireframe:true,
-      transparent:true,
-      opacity:0.05
-    })
+  // PUNTI TEST
+  const dot = new THREE.Mesh(
+    new THREE.SphereGeometry(0.05, 8, 8),
+    new THREE.MeshBasicMaterial({color:0xff0000})
   );
-  scene.add(wire);
+  dot.position.set(1.2,0,0);
+  scene.add(dot);
 
-  // LIGHTS
-  const light=new THREE.PointLight(0xffffff,1.5);
-  light.position.set(5,3,5);
-  scene.add(light);
-  scene.add(new THREE.AmbientLight(0x404040));
+  // RESIZE
+  window.addEventListener("resize", () => {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+  });
 
-  // GROUPS
-  pointsGroup=new THREE.Group();
-  linesGroup=new THREE.Group();
-  scene.add(pointsGroup);
-  scene.add(linesGroup);
-
-  // CONTROLS
-  controls=new THREE.OrbitControls(camera,renderer.domElement);
-  controls.enablePan=false;
-
-  window.addEventListener("resize",resize);
+  document.getElementById("status").innerText = "RENDER OK";
 }
 
 function animate(){
   requestAnimationFrame(animate);
 
-  globe.rotation.y+=0.0007;
+  globe.rotation.y += 0.01;
 
-  // flicker linee stile radar
-  linesGroup.children.forEach(l=>{
-    l.material.opacity=Math.random()*0.5+0.2;
-  });
-
-  renderer.render(scene,camera);
-}
-
-async function fetchData(){
-  try{
-    // TEST STATICO (serve solo per vedere se il 3D funziona)
-    const fakeData = {
-      states: [
-        [null,null,null,null,null,9,45],   // Italia
-        [null,null,null,null,null,-74,40], // USA
-        [null,null,null,null,null,139,35]  // Giappone
-      ]
-    };
-
-    render(fakeData.states);
-
-    document.getElementById("status").innerText="TEST MODE";
-
-  }catch(e){
-    console.error(e);
-  }
-}
-
-// RENDER
-function render(list){
-
-  pointsGroup.clear();
-  linesGroup.clear();
-
-  let total=0;
-
-  list.slice(0,600).forEach(ac=>{
-    const lat=ac[6];
-    const lon=ac[5];
-    if(!lat||!lon)return;
-
-    total++;
-
-    const pos=toVec(lat,lon,1.01);
-
-    // PUNTO
-    const p=new THREE.Mesh(
-      new THREE.SphereGeometry(0.01,6,6),
-      new THREE.MeshBasicMaterial({color:0xff3300})
-    );
-    p.position.copy(pos);
-    pointsGroup.add(p);
-
-    // LINEA DINAMICA
-    const target=toVec(
-      lat+(Math.random()*10-5),
-      lon+(Math.random()*10-5),
-      1.01
-    );
-
-    const geo=new THREE.BufferGeometry().setFromPoints([pos,target]);
-
-    const line=new THREE.Line(
-      geo,
-      new THREE.LineBasicMaterial({
-        color:0xff5500,
-        transparent:true,
-        opacity:0.4
-      })
-    );
-
-    linesGroup.add(line);
-  });
-
-  document.getElementById("total").innerText=total;
+  renderer.render(scene, camera);
 }
 </script>
 
