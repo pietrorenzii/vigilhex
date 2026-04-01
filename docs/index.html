@@ -1,111 +1,896 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>VIGILHEX RADAR</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>互联网+智慧机场可视化界面 - DAYAV</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Rajdhani', 'Noto Sans SC', sans-serif;
+            background: #0a0a0f;
+            color: #fff;
+            overflow: hidden;
+            height: 100vh;
+            width: 100vw;
+        }
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r152/three.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.152/examples/js/controls/OrbitControls.js"></script>
+        .dashboard {
+            display: grid;
+            grid-template-columns: 320px 1fr 320px;
+            grid-template-rows: 60px 1fr;
+            height: 100vh;
+            gap: 20px;
+            padding: 20px;
+            background: radial-gradient(ellipse at center, #0f1419 0%, #000000 100%);
+        }
 
-<style>
-body{
-  margin:0;
-  overflow:hidden;
-  background:#000;
-  color:#fff;
-  font-family:Arial;
-}
+        /* Header */
+        .header {
+            grid-column: 1 / -1;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding-bottom: 15px;
+        }
 
-#hdr{
-  position:fixed;
-  top:0;
-  left:0;
-  right:0;
-  height:40px;
-  background:#111;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  padding:0 10px;
-  z-index:10;
-}
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
 
-canvas{
-  display:block;
-}
-</style>
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            background: linear-gradient(135deg, #fff 0%, #888 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .title {
+            font-size: 18px;
+            color: #fff;
+            font-weight: 500;
+            letter-spacing: 1px;
+        }
+
+        .header-center {
+            display: flex;
+            gap: 30px;
+            font-size: 12px;
+            color: #666;
+        }
+
+        .header-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .header-label {
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 4px;
+        }
+
+        .header-value {
+            color: #fff;
+            font-weight: 600;
+            font-family: monospace;
+        }
+
+        /* Panels */
+        .panel {
+            background: rgba(255,255,255,0.02);
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 4px;
+            padding: 15px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .panel::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255,165,0,0.5), transparent);
+        }
+
+        .panel-title {
+            font-size: 12px;
+            color: #fff;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 500;
+        }
+
+        .panel-title::before {
+            content: '';
+            width: 3px;
+            height: 12px;
+            background: #ff6b35;
+        }
+
+        /* Left Column */
+        .left-col {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .aircraft-status {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 10px;
+        }
+
+        .aircraft-icon {
+            width: 80px;
+            height: 60px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+        }
+
+        .aircraft-stats {
+            flex: 1;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+
+        .stat-box {
+            background: rgba(255,255,255,0.03);
+            padding: 8px;
+            text-align: center;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .stat-label {
+            font-size: 10px;
+            color: #666;
+            text-transform: uppercase;
+        }
+
+        .stat-value {
+            font-size: 16px;
+            font-weight: 700;
+            color: #fff;
+            margin-top: 4px;
+            font-family: monospace;
+        }
+
+        .stat-value.orange {
+            color: #ff6b35;
+        }
+
+        /* Charts */
+        .chart-container {
+            height: 100px;
+            position: relative;
+            margin-top: 10px;
+        }
+
+        .chart-svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .data-table {
+            width: 100%;
+            font-size: 11px;
+            border-collapse: collapse;
+        }
+
+        .data-table th {
+            text-align: left;
+            color: #666;
+            font-weight: 400;
+            padding: 6px 4px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .data-table td {
+            padding: 6px 4px;
+            color: #aaa;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .data-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Center Globe */
+        .center-col {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #globe-container {
+            width: 100%;
+            height: 100%;
+            position: relative;
+        }
+
+        .globe-overlay {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            font-size: 11px;
+            color: #666;
+        }
+
+        .flight-arcs {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 15px;
+        }
+
+        .arc-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 10px;
+        }
+
+        .arc-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+
+        .arc-dot.red { background: #ff4444; }
+        .arc-dot.yellow { background: #ffaa00; }
+        .arc-dot.green { background: #00ff88; }
+        .arc-dot.blue { background: #4488ff; }
+
+        /* Right Column */
+        .right-col {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .alert-box {
+            background: rgba(255,0,0,0.1);
+            border: 1px solid rgba(255,0,0,0.3);
+            padding: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .alert-icon {
+            width: 30px;
+            height: 30px;
+            background: rgba(255,0,0,0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ff4444;
+            font-size: 16px;
+        }
+
+        .alert-text {
+            font-size: 11px;
+            color: #ff6666;
+        }
+
+        .gauge-container {
+            display: flex;
+            justify-content: space-around;
+            margin: 15px 0;
+        }
+
+        .gauge {
+            text-align: center;
+        }
+
+        .gauge-circle {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            border: 3px solid rgba(255,255,255,0.1);
+            border-top-color: #ff6b35;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 700;
+            position: relative;
+        }
+
+        .gauge-label {
+            font-size: 10px;
+            color: #666;
+            margin-top: 8px;
+        }
+
+        .progress-bar {
+            height: 4px;
+            background: rgba(255,255,255,0.1);
+            margin: 10px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #ff6b35, #ffaa00);
+            width: 65%;
+        }
+
+        .legend {
+            display: flex;
+            gap: 15px;
+            font-size: 10px;
+            color: #666;
+            margin-top: 10px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .legend-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+        }
+
+        .bottom-bar {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 30px;
+            font-size: 11px;
+            color: #666;
+        }
+
+        .bottom-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .bottom-dot {
+            width: 8px;
+            height: 8px;
+            background: #ff6b35;
+            border-radius: 2px;
+        }
+
+        /* Animations */
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .rotating {
+            animation: rotate 20s linear infinite;
+        }
+    </style>
 </head>
-
 <body>
+    <div class="dashboard">
+        <!-- Header -->
+        <div class="header">
+            <div class="logo-section">
+                <div class="logo">DAYAV</div>
+                <div class="title">互联网+智慧机场可视化界面</div>
+            </div>
+            <div class="header-center">
+                <div class="header-item">
+                    <div class="header-label">FLIGHT ID</div>
+                    <div class="header-value">HX2513/052513</div>
+                </div>
+                <div class="header-item">
+                    <div class="header-value">HX2513/052513</div>
+                </div>
+                <div class="header-item">
+                    <div class="header-value">HX2513/052513</div>
+                </div>
+            </div>
+            <div class="header-right" style="display: flex; gap: 20px; font-size: 11px; color: #666;">
+                <div style="display: flex; align-items: center; gap: 5px;">
+                    <div style="width: 8px; height: 8px; background: #ff6b35; border-radius: 50%;"></div>
+                    正常
+                </div>
+                <div style="display: flex; align-items: center; gap: 5px;">
+                    <div style="width: 8px; height: 8px; background: #ff4444; border-radius: 50%;"></div>
+                    延误
+                </div>
+                <div style="display: flex; align-items: center; gap: 5px;">
+                    <div style="width: 8px; height: 8px; background: #00ff88; border-radius: 50%;"></div>
+                    到达
+                </div>
+                <div style="display: flex; align-items: center; gap: 5px;">
+                    <div style="width: 8px; height: 8px; background: #4488ff; border-radius: 50%;"></div>
+                    起飞
+                </div>
+            </div>
+        </div>
 
-<div id="hdr">
-  <div>VIGILHEX RADAR</div>
-  <div id="status">BOOT</div>
-</div>
+        <!-- Left Column -->
+        <div class="left-col">
+            <!-- Aircraft Status -->
+            <div class="panel">
+                <div class="panel-title">当日办理值机人数</div>
+                <div class="aircraft-status">
+                    <div class="aircraft-icon">✈</div>
+                    <div class="aircraft-stats">
+                        <div class="stat-box">
+                            <div class="stat-label">航班数</div>
+                            <div class="stat-value orange">268</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-label">旅客数</div>
+                            <div class="stat-value">36845</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-label">货邮数</div>
+                            <div class="stat-value orange">30690</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-label">行李数</div>
+                            <div class="stat-value">90645</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="chart-container">
+                    <svg class="chart-svg" viewBox="0 0 300 80">
+                        <defs>
+                            <linearGradient id="areaGrad1" x1="0%" y1="0%" x2="0%" y2="100%">
+                                <stop offset="0%" style="stop-color:#ff6b35;stop-opacity:0.3" />
+                                <stop offset="100%" style="stop-color:#ff6b35;stop-opacity:0" />
+                            </linearGradient>
+                        </defs>
+                        <path d="M0,60 Q30,50 60,45 T120,40 T180,35 T240,30 T300,25" fill="none" stroke="#ff6b35" stroke-width="2"/>
+                        <path d="M0,60 Q30,50 60,45 T120,40 T180,35 T240,30 T300,25 L300,80 L0,80 Z" fill="url(#areaGrad1)"/>
+                        <path d="M0,70 Q50,65 100,60 T200,50 T300,40" fill="none" stroke="#666" stroke-width="1" stroke-dasharray="3,3"/>
+                    </svg>
+                </div>
+            </div>
 
-<script>
-let scene, camera, renderer, globe;
+            <!-- Flight Data -->
+            <div class="panel">
+                <div class="panel-title">航班延误情况</div>
+                <div class="chart-container" style="height: 120px;">
+                    <svg class="chart-svg" viewBox="0 0 300 100">
+                        <defs>
+                            <linearGradient id="areaGrad2" x1="0%" y1="0%" x2="0%" y2="100%">
+                                <stop offset="0%" style="stop-color:#4488ff;stop-opacity:0.2" />
+                                <stop offset="100%" style="stop-color:#4488ff;stop-opacity:0" />
+                            </linearGradient>
+                        </defs>
+                        <!-- Grid -->
+                        <line x1="0" y1="20" x2="300" y2="20" stroke="rgba(255,255,255,0.05)" stroke-width="1"/>
+                        <line x1="0" y1="50" x2="300" y2="50" stroke="rgba(255,255,255,0.05)" stroke-width="1"/>
+                        <line x1="0" y1="80" x2="300" y2="80" stroke="rgba(255,255,255,0.05)" stroke-width="1"/>
+                        <!-- Wave lines -->
+                        <path d="M0,50 Q30,30 60,40 T120,35 T180,45 T240,30 T300,40" fill="none" stroke="#4488ff" stroke-width="2"/>
+                        <path d="M0,60 Q40,45 80,55 T160,50 T240,40 T300,55" fill="none" stroke="#ff6b35" stroke-width="1.5"/>
+                        <path d="M0,70 Q50,60 100,65 T200,55 T300,60" fill="none" stroke="#666" stroke-width="1"/>
+                    </svg>
+                </div>
+            </div>
 
-init();
-animate();
+            <!-- Cargo Status -->
+            <div class="panel">
+                <div class="panel-title">当日货运情况</div>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>地区</th>
+                            <th>AC重量</th>
+                            <th>货物重量</th>
+                            <th>邮件重量</th>
+                            <th>总重量</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>国内</td>
+                            <td>1000000</td>
+                            <td>98%</td>
+                            <td>10.2</td>
+                            <td>1.2</td>
+                        </tr>
+                        <tr>
+                            <td>国际</td>
+                            <td>500000</td>
+                            <td>95%</td>
+                            <td>5.2</td>
+                            <td>0.8</td>
+                        </tr>
+                        <tr>
+                            <td>地区</td>
+                            <td>200000</td>
+                            <td>92%</td>
+                            <td>2.1</td>
+                            <td>0.5</td>
+                        </tr>
+                        <tr>
+                            <td>总计</td>
+                            <td>1200000</td>
+                            <td>97%</td>
+                            <td>12.5</td>
+                            <td>1.2</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="chart-container" style="height: 60px; margin-top: 15px;">
+                    <svg class="chart-svg" viewBox="0 0 300 60">
+                        <path d="M0,30 Q50,20 100,25 T200,20 T300,25" fill="none" stroke="#ff6b35" stroke-width="2"/>
+                        <path d="M0,35 Q60,25 120,30 T240,25 T300,30" fill="none" stroke="#666" stroke-width="1"/>
+                    </svg>
+                </div>
+            </div>
+        </div>
 
-function init(){
+        <!-- Center Globe -->
+        <div class="center-col">
+            <div id="globe-container"></div>
+            <div class="globe-overlay">
+                <div style="font-size: 10px; color: #666; margin-bottom: 5px;">实时航班追踪</div>
+                <div style="font-size: 14px; color: #ff6b35;">● LIVE MONITORING</div>
+            </div>
+            <div class="flight-arcs">
+                <div class="arc-item"><div class="arc-dot red"></div>异常</div>
+                <div class="arc-item"><div class="arc-dot yellow"></div>预警</div>
+                <div class="arc-item"><div class="arc-dot green"></div>正常</div>
+                <div class="arc-item"><div class="arc-dot blue"></div>监控</div>
+            </div>
+            
+            <div class="bottom-bar">
+                <div class="bottom-item"><div class="bottom-dot"></div>北京: 10412</div>
+                <div class="bottom-item"><div class="bottom-dot" style="background: #ff4444;"></div>上海: 9054</div>
+                <div class="bottom-item"><div class="bottom-dot" style="background: #00ff88;"></div>广州: 22091</div>
+                <div class="bottom-item"><div class="bottom-dot" style="background: #4488ff;"></div>深圳: 43665</div>
+                <div class="bottom-item"><div class="bottom-dot" style="background: #ffaa00;"></div>成都: 84521</div>
+                <div class="bottom-item"><div class="bottom-dot" style="background: #666;"></div>杭州: 33213</div>
+            </div>
+        </div>
 
-  // SCENE
-  scene = new THREE.Scene();
+        <!-- Right Column -->
+        <div class="right-col">
+            <!-- Alert Section -->
+            <div class="panel">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                    <div class="panel-title" style="margin: 0;">一级预警</div>
+                    <div class="panel-title" style="margin: 0;">二级预警</div>
+                </div>
+                <div class="alert-box">
+                    <div class="alert-icon">!</div>
+                    <div class="alert-text">异常事件处理: 00077<br>请及时处理延误航班</div>
+                </div>
+                
+                <div class="panel-title">人流密度统计</div>
+                <div class="gauge-container">
+                    <div class="gauge">
+                        <div class="gauge-circle">85%</div>
+                        <div class="gauge-label">T1航站楼</div>
+                    </div>
+                    <div class="gauge">
+                        <div class="gauge-circle" style="border-top-color: #ff4444;">72%</div>
+                        <div class="gauge-label">T2航站楼</div>
+                    </div>
+                    <div class="gauge">
+                        <div class="gauge-circle" style="border-top-color: #00ff88;">68%</div>
+                        <div class="gauge-label">T3航站楼</div>
+                    </div>
+                </div>
+            </div>
 
-  // CAMERA
-  camera = new THREE.PerspectiveCamera(
-    60,
-    window.innerWidth / window.innerHeight,
-    0.1,
-    1000
-  );
-  camera.position.z = 3;
+            <!-- Baggage Stats -->
+            <div class="panel">
+                <div class="panel-title">行李传输统计</div>
+                <div class="chart-container" style="height: 80px;">
+                    <svg class="chart-svg" viewBox="0 0 300 80">
+                        <defs>
+                            <linearGradient id="areaGrad3" x1="0%" y1="0%" x2="0%" y2="100%">
+                                <stop offset="0%" style="stop-color:#00ff88;stop-opacity:0.3" />
+                                <stop offset="100%" style="stop-color:#00ff88;stop-opacity:0" />
+                            </linearGradient>
+                        </defs>
+                        <path d="M0,60 Q40,40 80,35 T160,30 T240,35 T300,25" fill="none" stroke="#00ff88" stroke-width="2"/>
+                        <path d="M0,60 Q40,40 80,35 T160,30 T240,35 T300,25 L300,80 L0,80 Z" fill="url(#areaGrad3)"/>
+                        <path d="M0,50 Q60,45 120,48 T240,45 T300,50" fill="none" stroke="#ff6b35" stroke-width="1.5"/>
+                    </svg>
+                </div>
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; font-size: 10px;">
+                    <div style="background: rgba(255,255,255,0.03); padding: 8px;">
+                        <div style="color: #666;">9月12日 20:15起飞</div>
+                        <div style="color: #fff; font-size: 14px; margin-top: 4px;">2014次航班</div>
+                        <div style="color: #ff6b35; margin-top: 4px;">延误 30分钟</div>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.03); padding: 8px;">
+                        <div style="color: #666;">10月12日 20:15到达</div>
+                        <div style="color: #fff; font-size: 14px; margin-top: 4px;">2014次航班</div>
+                        <div style="color: #00ff88; margin-top: 4px;">准点</div>
+                    </div>
+                </div>
+            </div>
 
-  // RENDERER (ATTACCATO DIRETTAMENTE AL BODY)
-  renderer = new THREE.WebGLRenderer({antialias:true});
-  renderer.setSize(window.innerWidth, window.innerHeight);
-  document.body.appendChild(renderer.domElement);
+            <!-- Flight Delay Analysis -->
+            <div class="panel">
+                <div class="panel-title">航班延误情况</div>
+                <div style="font-size: 10px; color: #666; margin-bottom: 10px;">北京、上海、广州、深圳、厦门、青岛、南京、成都等机场</div>
+                
+                <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                    <div style="text-align: center;">
+                        <div style="font-size: 24px; font-weight: 700; color: #fff;">24</div>
+                        <div style="font-size: 10px; color: #666;">总航班</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 24px; font-weight: 700; color: #ff6b35;">8</div>
+                        <div style="font-size: 10px; color: #666;">延误</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 24px; font-weight: 700; color: #00ff88;">16</div>
+                        <div style="font-size: 10px; color: #666;">正常</div>
+                    </div>
+                </div>
 
-  // GLOBO (SENZA TEXTURE → ZERO RISCHI)
-  const geometry = new THREE.SphereGeometry(1, 32, 32);
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 33%; background: linear-gradient(90deg, #ff4444, #ff6b35);"></div>
+                </div>
 
-  const material = new THREE.MeshBasicMaterial({
-    color: 0x00ff88,
-    wireframe: true
-  });
+                <div class="legend">
+                    <div class="legend-item"><div class="legend-dot" style="background: #fff;"></div>正常</div>
+                    <div class="legend-item"><div class="legend-dot" style="background: #ff6b35;"></div>延误</div>
+                    <div class="legend-item"><div class="legend-dot" style="background: #ff4444;"></div>取消</div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-  globe = new THREE.Mesh(geometry, material);
-  scene.add(globe);
+    <script>
+        // Three.js Globe Setup
+        const container = document.getElementById('globe-container');
+        const scene = new THREE.Scene();
+        
+        const camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 1000);
+        camera.position.z = 2.5;
+        camera.position.y = 0.5;
+        
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        renderer.setSize(container.clientWidth, container.clientHeight);
+        renderer.setClearColor(0x000000, 0);
+        container.appendChild(renderer.domElement);
 
-  // PUNTI TEST
-  const dot = new THREE.Mesh(
-    new THREE.SphereGeometry(0.05, 8, 8),
-    new THREE.MeshBasicMaterial({color:0xff0000})
-  );
-  dot.position.set(1.2,0,0);
-  scene.add(dot);
+        // Globe Group
+        const globeGroup = new THREE.Group();
+        scene.add(globeGroup);
 
-  // RESIZE
-  window.addEventListener("resize", () => {
-    camera.aspect = window.innerWidth / window.innerHeight;
-    camera.updateProjectionMatrix();
-    renderer.setSize(window.innerWidth, window.innerHeight);
-  });
+        // Wireframe Globe
+        const geometry = new THREE.SphereGeometry(1, 64, 64);
+        const wireframeMaterial = new THREE.MeshBasicMaterial({
+            color: 0x333333,
+            wireframe: true,
+            transparent: true,
+            opacity: 0.3
+        });
+        const wireframeGlobe = new THREE.Mesh(geometry, wireframeMaterial);
+        globeGroup.add(wireframeGlobe);
 
-  document.getElementById("status").innerText = "RENDER OK";
-}
+        // Inner sphere for depth
+        const innerGeometry = new THREE.SphereGeometry(0.98, 32, 32);
+        const innerMaterial = new THREE.MeshBasicMaterial({
+            color: 0x0a0a0f,
+            transparent: true,
+            opacity: 0.8
+        });
+        const innerSphere = new THREE.Mesh(innerGeometry, innerMaterial);
+        globeGroup.add(innerSphere);
 
-function animate(){
-  requestAnimationFrame(animate);
+        // Grid lines (latitude/longitude)
+        const gridHelper = new THREE.PolarGridHelper(1, 16, 8, 64, 0x444444, 0x222222);
+        gridHelper.rotation.x = Math.PI / 2;
+        globeGroup.add(gridHelper);
 
-  globe.rotation.y += 0.01;
+        // Additional wireframe for tech look
+        const techGeometry = new THREE.IcosahedronGeometry(1.02, 2);
+        const techMaterial = new THREE.MeshBasicMaterial({
+            color: 0xff6b35,
+            wireframe: true,
+            transparent: true,
+            opacity: 0.1
+        });
+        const techWireframe = new THREE.Mesh(techGeometry, techMaterial);
+        globeGroup.add(techWireframe);
 
-  renderer.render(scene, camera);
-}
-</script>
+        // Data points (cities)
+        const cities = [
+            { lat: 39.9, lon: 116.4, name: 'Beijing', color: 0xff6b35 },
+            { lat: 31.2, lon: 121.4, name: 'Shanghai', color: 0xff4444 },
+            { lat: 23.1, lon: 113.2, name: 'Guangzhou', color: 0x00ff88 },
+            { lat: 22.5, lon: 114.0, name: 'Shenzhen', color: 0x4488ff },
+            { lat: 30.5, lon: 104.0, name: 'Chengdu', color: 0xffaa00 },
+            { lat: 30.2, lon: 120.1, name: 'Hangzhou', color: 0x666666 }
+        ];
 
+        function latLonToVector3(lat, lon, radius) {
+            const phi = (90 - lat) * (Math.PI / 180);
+            const theta = (lon + 180) * (Math.PI / 180);
+            const x = -(radius * Math.sin(phi) * Math.cos(theta));
+            const z = (radius * Math.sin(phi) * Math.sin(theta));
+            const y = (radius * Math.cos(phi));
+            return new THREE.Vector3(x, y, z);
+        }
+
+        // Add city markers
+        cities.forEach(city => {
+            const pos = latLonToVector3(city.lat, city.lon, 1.05);
+            
+            // Marker dot
+            const dotGeometry = new THREE.SphereGeometry(0.02, 8, 8);
+            const dotMaterial = new THREE.MeshBasicMaterial({ color: city.color });
+            const dot = new THREE.Mesh(dotGeometry, dotMaterial);
+            dot.position.copy(pos);
+            globeGroup.add(dot);
+
+            // Glow effect
+            const glowGeometry = new THREE.SphereGeometry(0.04, 8, 8);
+            const glowMaterial = new THREE.MeshBasicMaterial({
+                color: city.color,
+                transparent: true,
+                opacity: 0.3
+            });
+            const glow = new THREE.Mesh(glowGeometry, glowMaterial);
+            glow.position.copy(pos);
+            globeGroup.add(glow);
+
+            // Connection lines (arcs)
+            if (city.name === 'Beijing') {
+                cities.forEach(target => {
+                    if (target.name !== 'Beijing') {
+                        const targetPos = latLonToVector3(target.lat, target.lon, 1.05);
+                        const curve = new THREE.QuadraticBezierCurve3(
+                            pos,
+                            pos.clone().add(targetPos).multiplyScalar(0.5).normalize().multiplyScalar(1.3),
+                            targetPos
+                        );
+                        const points = curve.getPoints(50);
+                        const lineGeometry = new THREE.BufferGeometry().setFromPoints(points);
+                        const lineMaterial = new THREE.LineBasicMaterial({
+                            color: 0xff6b35,
+                            transparent: true,
+                            opacity: 0.3
+                        });
+                        const line = new THREE.Line(lineGeometry, lineMaterial);
+                        globeGroup.add(line);
+                    }
+                });
+            }
+        });
+
+        // Particles around globe
+        const particlesGeometry = new THREE.BufferGeometry();
+        const particlesCount = 200;
+        const posArray = new Float32Array(particlesCount * 3);
+        
+        for(let i = 0; i < particlesCount * 3; i++) {
+            posArray[i] = (Math.random() - 0.5) * 4;
+        }
+        
+        particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+        const particlesMaterial = new THREE.PointsMaterial({
+            size: 0.005,
+            color: 0xff6b35,
+            transparent: true,
+            opacity: 0.6
+        });
+        const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
+        scene.add(particlesMesh);
+
+        // Lighting
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+        scene.add(ambientLight);
+
+        const directionalLight = new THREE.DirectionalLight(0xff6b35, 0.5);
+        directionalLight.position.set(5, 3, 5);
+        scene.add(directionalLight);
+
+        // Animation
+        let mouseX = 0;
+        let mouseY = 0;
+        let targetRotationX = 0;
+        let targetRotationY = 0;
+
+        document.addEventListener('mousemove', (event) => {
+            mouseX = (event.clientX / window.innerWidth) * 2 - 1;
+            mouseY = -(event.clientY / window.innerHeight) * 2 + 1;
+        });
+
+        function animate() {
+            requestAnimationFrame(animate);
+
+            // Auto rotation
+            globeGroup.rotation.y += 0.001;
+            
+            // Mouse interaction
+            targetRotationY = mouseX * 0.5;
+            targetRotationX = mouseY * 0.3;
+            
+            globeGroup.rotation.y += (targetRotationY - globeGroup.rotation.y) * 0.05;
+            globeGroup.rotation.x += (targetRotationX - globeGroup.rotation.x) * 0.05;
+
+            // Pulse effect for tech wireframe
+            techWireframe.material.opacity = 0.1 + Math.sin(Date.now() * 0.001) * 0.05;
+
+            // Rotate particles
+            particlesMesh.rotation.y -= 0.0005;
+
+            renderer.render(scene, camera);
+        }
+
+        animate();
+
+        // Handle resize
+        window.addEventListener('resize', () => {
+            camera.aspect = container.clientWidth / container.clientHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(container.clientWidth, container.clientHeight);
+        });
+
+        // Update charts with animation
+        const paths = document.querySelectorAll('.chart-svg path');
+        paths.forEach((path, index) => {
+            const length = path.getTotalLength();
+            path.style.strokeDasharray = length;
+            path.style.strokeDashoffset = length;
+            path.style.animation = `draw 2s ease-in-out ${index * 0.2}s forwards`;
+        });
+
+        // Add CSS animation for chart drawing
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes draw {
+                to { stroke-dashoffset: 0; }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
 </body>
 </html>
