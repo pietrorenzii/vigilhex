@@ -139,39 +139,23 @@ function animate(){
   renderer.render(scene,camera);
 }
 
-function resize(){
-  camera.aspect=window.innerWidth/window.innerHeight;
-  camera.updateProjectionMatrix();
-  renderer.setSize(window.innerWidth,window.innerHeight);
-}
-
-// CONVERSIONE LAT/LON
-function toVec(lat,lon,r=1){
-  const phi=(90-lat)*Math.PI/180;
-  const theta=(lon+180)*Math.PI/180;
-
-  return new THREE.Vector3(
-    -r*Math.sin(phi)*Math.cos(theta),
-    r*Math.cos(phi),
-    r*Math.sin(phi)*Math.sin(theta)
-  );
-}
-
-// FETCH DATI
 async function fetchData(){
   try{
-    const res=await fetch(WORKER_URL);
-    const data=await res.json();
+    // TEST STATICO (serve solo per vedere se il 3D funziona)
+    const fakeData = {
+      states: [
+        [null,null,null,null,null,9,45],   // Italia
+        [null,null,null,null,null,-74,40], // USA
+        [null,null,null,null,null,139,35]  // Giappone
+      ]
+    };
 
-    render(data.states||[]);
-    document.getElementById("status").innerText="LIVE";
+    render(fakeData.states);
 
-    setTimeout(fetchData,60000);
+    document.getElementById("status").innerText="TEST MODE";
 
   }catch(e){
-    document.getElementById("status").innerText="ERROR";
     console.error(e);
-    setTimeout(fetchData,60000);
   }
 }
 
