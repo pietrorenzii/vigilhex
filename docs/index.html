@@ -213,35 +213,18 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(
       <div class="layer" onclick="toggleLayer('anomaly',this)" style="border-color:rgba(232,80,10,.3)">
         <div class="layer-l"><div class="ldot-i" style="background:var(--orange);box-shadow:0 0 5px rgba(232,80,10,.6);animation:blink 1s infinite"></div><div><div class="layer-name" style="color:var(--orange)">ANOMALIES</div><div class="layer-count" id="c-anomaly" style="color:var(--orange)">0 FLAGGED</div></div></div>
         <div class="tog on" id="t-anomaly" style="background:var(--orange)"></div>
-      // Globe — wireframe + solid base
-  const geo=new THREE.SphereGeometry(1,64,64);
-
-  // 1. CARICHIAMO LA TEXTURE DELLA TERRA (Stile Dark/Tech)
-  const textureLoader = new THREE.TextureLoader();
-  const earthTex = textureLoader.load('https://unpkg.com/three-globe/example/img/earth-dark.jpg');
-
-  // 2. APPLICHIAMO LA TEXTURE AL MATERIALE
-  const baseMat=new THREE.MeshPhongMaterial({
-    map: earthTex,         // Questa fa comparire i continenti
-    color: 0xcccccc,       // Schiarisce leggermente la texture base
-    emissive: 0x020508,    // Bagliore di fondo minimo
-    specular: 0x335577,    // Riflesso della luce sugli oceani
-    shininess: 25,
-  });
-  globe=new THREE.Mesh(geo,baseMat);
-  scene.add(globe);
-
-  // 3. MIGLIORIAMO IL WIREFRAME (Per l'effetto HUD della reference)
-  // Usiamo meno segmenti (es. 24) per creare una griglia più netta in stile radar
-  const wfGeo=new THREE.SphereGeometry(1.002, 24, 24); 
-  const wfMat=new THREE.MeshBasicMaterial({
-    color: 0x5A7888,       // Colore grigio/azzurro tech (var(--grey3))
-    wireframe: true,
-    transparent: true,
-    opacity: 0.15,         // Delicato per non coprire i continenti
-    blending: THREE.AdditiveBlending // Fa "brillare" la griglia dove si sovrappone
-  });
-  scene.add(new THREE.Mesh(wfGeo,wfMat));
+      </div>
+    </div>
+    <div class="sec">
+      <div class="sec-title">// sensitive areas</div>
+      <div class="layer" onclick="toggleSensitive('military',this)">
+        <div class="layer-l"><div class="ldot-i" style="background:#0A1820;border:1px solid #1A3A50"></div><div><div class="layer-name">MILITARY BASES</div><div class="layer-count">BUFFER 50km</div></div></div>
+        <div class="tog on" id="t-bases"></div>
+      </div>
+      <div class="layer" onclick="toggleSensitive('nuclear',this)">
+        <div class="layer-l"><div class="ldot-i" style="background:#1A0800;border:1px solid #3A1400"></div><div><div class="layer-name">NUCLEAR SITES</div><div class="layer-count">BUFFER 100km</div></div></div>
+        <div class="tog on" id="t-nuclear"></div>
+      </div>
     </div>
     <div class="sec">
       <div class="sec-title">// active threats</div>
@@ -450,8 +433,8 @@ function initGlobe(){
   renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
   renderer.setClearColor(0x020304,1);
 
-  // Ambient + directional light
-  scene.add(new THREE.AmbientLight(0x223344,0.8));
+  // Ambient + directional light (Modificato per visibilità uniforme)
+  scene.add(new THREE.AmbientLight(0xffffff,0.6));
   const sun=new THREE.DirectionalLight(0x4488AA,0.6);
   sun.position.set(5,3,5);
   scene.add(sun);
@@ -459,26 +442,32 @@ function initGlobe(){
   sun2.position.set(-5,-2,-3);
   scene.add(sun2);
 
-  // Globe — wireframe + solid base
+  // Globe — wireframe + solid base con texture terrestre
   const geo=new THREE.SphereGeometry(1,64,64);
 
-  // Base sphere — dark ocean
+  // CARICHIAMO LA TEXTURE DELLA TERRA (Stile Dark/Tech)
+  const textureLoader = new THREE.TextureLoader();
+  const earthTex = textureLoader.load('https://unpkg.com/three-globe/example/img/earth-dark.jpg');
+
+  // APPLICHIAMO LA TEXTURE AL MATERIALE
   const baseMat=new THREE.MeshPhongMaterial({
-    color:0x030810,
-    emissive:0x010408,
-    specular:0x112233,
-    shininess:20,
+    map: earthTex,
+    color: 0xcccccc,
+    emissive: 0x020508,
+    specular: 0x335577,
+    shininess: 25,
   });
   globe=new THREE.Mesh(geo,baseMat);
   scene.add(globe);
 
-  // Wireframe overlay — latitude/longitude lines
-  const wfGeo=new THREE.SphereGeometry(1.001,32,32);
+  // MIGLIORIAMO IL WIREFRAME (Per l'effetto HUD)
+  const wfGeo=new THREE.SphereGeometry(1.002, 24, 24); 
   const wfMat=new THREE.MeshBasicMaterial({
-    color:0x0E2030,
-    wireframe:true,
-    transparent:true,
-    opacity:0.35,
+    color: 0x5A7888,
+    wireframe: true,
+    transparent: true,
+    opacity: 0.15,
+    blending: THREE.AdditiveBlending
   });
   scene.add(new THREE.Mesh(wfGeo,wfMat));
 
@@ -940,4 +929,3 @@ window.addEventListener('load',async()=>{
 </script>
 </body>
 </html>
-```
