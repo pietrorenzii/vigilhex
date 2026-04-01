@@ -4,18 +4,19 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>VIGILHEX — Global Airspace Intelligence</title>
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
 <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{
-  --bg:#020304;--bg1:#040608;--bg2:#060A0C;--bg3:#0A0F12;
+  --bg:#020304;--bg2:#060A0C;--bg3:#0A0F12;
   --border:#0E1820;--border2:#162030;
   --orange:#E8500A;--red:#CC2200;--red2:#FF3311;
   --grey1:#1A2830;--grey2:#2E4450;--grey3:#5A7888;--white:#A8C4CC;
 }
 html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(--grey3);font-family:'Share Tech Mono',monospace;font-size:11px}
+
+/* HEADER */
 #hdr{position:fixed;top:0;left:0;right:0;height:40px;z-index:2000;background:rgba(4,6,8,.98);border-bottom:1px solid var(--border2);display:flex;align-items:center;justify-content:space-between;padding:0 14px}
 .logo{font-family:'Orbitron',monospace;font-size:14px;font-weight:900;color:var(--white);letter-spacing:4px;display:flex;align-items:center;gap:10px}
 .logo-hex{width:24px;height:24px;clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);background:var(--orange);display:flex;align-items:center;justify-content:center;animation:hpulse 3s ease-in-out infinite}
@@ -36,7 +37,11 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(
 .gh-btn:hover{color:var(--orange);border-color:var(--orange)}
 .gh-btn svg{width:13px;height:13px;fill:currentColor;flex-shrink:0}
 #clock{font-size:11px;color:var(--orange);border:1px solid var(--border2);padding:3px 9px;letter-spacing:2px}
+
+/* LAYOUT */
 #layout{position:fixed;top:40px;left:0;right:0;bottom:28px;display:flex}
+
+/* SIDEBAR */
 #sidebar{width:200px;min-width:200px;background:rgba(4,6,8,.97);border-right:1px solid var(--border);overflow-y:auto;display:flex;flex-direction:column;z-index:100}
 .sec{padding:8px 10px;border-bottom:1px solid var(--border)}
 .sec-title{font-size:7px;color:var(--grey1);letter-spacing:3px;text-transform:uppercase;margin-bottom:6px}
@@ -58,20 +63,26 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(
 .threat-body b{color:var(--white);display:block}
 .preset{padding:5px 6px;margin-bottom:2px;background:var(--bg2);border:1px solid var(--border);cursor:pointer;font-size:8px;color:var(--grey3);transition:.15s}
 .preset:hover{border-color:var(--orange);color:var(--orange)}
-#map-wrap{flex:1;position:relative;overflow:hidden}
-#map{width:100%;height:100%;background:#020304}
-.leaflet-container{background:#020304!important}
-.leaflet-tile-pane{filter:brightness(0.8) contrast(1.1) saturate(0.3)!important}
-.leaflet-control-zoom{border:1px solid var(--border2)!important;border-radius:0!important}
-.leaflet-control-zoom a{background:var(--bg2)!important;color:var(--grey3)!important;border-bottom:1px solid var(--border)!important;border-radius:0!important;width:26px!important;height:26px!important;line-height:26px!important}
-.leaflet-control-zoom a:hover{color:var(--orange)!important;background:var(--bg3)!important}
-.leaflet-control-attribution{background:rgba(2,3,4,.8)!important;color:var(--grey1)!important;font-size:7px!important}
-.leaflet-control-attribution a{color:var(--grey2)!important}
-.corner{position:absolute;width:12px;height:12px;pointer-events:none;z-index:500}
+
+/* GLOBE */
+#globe-wrap{flex:1;position:relative;overflow:hidden;background:#020304}
+#globe-canvas{width:100%;height:100%;display:block;cursor:grab}
+#globe-canvas:active{cursor:grabbing}
+.corner{position:absolute;width:12px;height:12px;pointer-events:none;z-index:10}
 .corner.tl{top:8px;left:8px;border-top:1px solid var(--orange);border-left:1px solid var(--orange)}
 .corner.tr{top:8px;right:8px;border-top:1px solid var(--orange);border-right:1px solid var(--orange)}
 .corner.bl{bottom:8px;left:8px;border-bottom:1px solid var(--orange);border-left:1px solid var(--orange)}
 .corner.br{bottom:8px;right:8px;border-bottom:1px solid var(--orange);border-right:1px solid var(--orange)}
+
+/* TOOLTIP aereo */
+#tooltip{position:absolute;background:rgba(2,3,4,.95);border:1px solid var(--border2);padding:8px 10px;font-size:9px;color:var(--white);pointer-events:none;display:none;z-index:500;min-width:160px}
+#tooltip .t-call{font-family:'Orbitron',monospace;font-size:13px;color:var(--white);margin-bottom:4px}
+#tooltip .t-cat{font-size:7px;letter-spacing:2px;margin-bottom:3px}
+#tooltip .t-cat.mil{color:var(--red2)}.t-cat.sta{color:#886600}.t-cat.crg{color:#8844AA}.t-cat.unk{color:var(--grey3)}
+#tooltip .t-ano{color:var(--orange);font-size:8px;margin-top:3px}
+#tooltip .t-info{color:var(--grey3);font-size:8px;line-height:1.6}
+
+/* FLIGHT PANEL */
 #fp{position:absolute;top:0;right:0;bottom:0;width:320px;background:rgba(2,3,4,.98);border-left:1px solid var(--border2);z-index:800;display:none;overflow-y:auto;box-shadow:-10px 0 40px rgba(0,0,0,.8)}
 .fp-hdr{background:rgba(232,80,10,.06);border-bottom:1px solid var(--border2);padding:12px 14px;display:flex;justify-content:space-between;align-items:flex-start;position:sticky;top:0;z-index:10}
 .fp-call{font-family:'Orbitron',monospace;font-size:18px;color:var(--white);letter-spacing:2px}
@@ -81,17 +92,6 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(
 .fp-body{padding:12px 14px}
 .fp-sec{margin-bottom:14px}
 .fp-sec-title{font-size:7px;color:var(--grey1);letter-spacing:3px;text-transform:uppercase;margin-bottom:8px;padding-bottom:4px;border-bottom:1px solid var(--border)}
-.fp-route{display:flex;align-items:center;background:var(--bg2);border:1px solid var(--border2);padding:12px;margin-bottom:12px}
-.fp-apt{flex:1;text-align:center}
-.fp-apt-code{font-family:'Orbitron',monospace;font-size:22px;color:var(--white);letter-spacing:2px}
-.fp-apt-name{font-size:8px;color:var(--grey2);margin-top:3px;line-height:1.4}
-.fp-apt-city{font-size:7px;color:var(--grey1);margin-top:1px}
-.fp-route-mid{flex:0 0 72px;display:flex;flex-direction:column;align-items:center;gap:5px}
-.fp-route-line{width:100%;height:1px;background:linear-gradient(90deg,rgba(232,80,10,.2),var(--orange),rgba(232,80,10,.2));position:relative}
-.fp-route-line::before{content:'●';position:absolute;left:-4px;top:-5px;font-size:8px;color:var(--orange)}
-.fp-route-line::after{content:'▶';position:absolute;right:-5px;top:-5px;font-size:8px;color:var(--orange)}
-.fp-route-cs{font-size:8px;color:var(--grey3);letter-spacing:1px}
-.fp-route-note{font-size:7px;color:var(--grey2)}
 .fp-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border);border:1px solid var(--border)}
 .fp-cell{background:var(--bg2);padding:9px 10px}
 .fp-cell.full{grid-column:1/-1}
@@ -110,6 +110,8 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(
 .fp-near{background:rgba(204,34,0,.06);border:1px solid var(--red);padding:7px 10px;margin-bottom:10px;font-size:9px;color:var(--red2)}
 .fp-prog{height:3px;background:var(--border2);margin-top:6px}
 .fp-prog-bar{height:100%;background:var(--orange);transition:width .5s}
+
+/* RIGHT PANEL */
 #rpanel{width:220px;min-width:220px;background:rgba(4,6,8,.97);border-left:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden;z-index:100}
 .tabs{display:flex;border-bottom:1px solid var(--border)}
 .tab{flex:1;padding:8px 2px;text-align:center;font-size:7px;color:var(--grey2);cursor:pointer;border-bottom:1px solid transparent;transition:.2s;letter-spacing:1px}
@@ -135,11 +137,14 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(
 .ftag{display:inline-block;font-size:7px;padding:0 3px;border:1px solid;margin-right:2px}
 .ftag.m{color:var(--red2);border-color:var(--red);background:rgba(204,34,0,.08)}
 .ftag.a{color:var(--orange);border-color:var(--orange);background:rgba(232,80,10,.06)}
-.ftag.u{color:var(--grey2);border-color:var(--grey1)}
+
+/* BOTTOM */
 #bot{position:fixed;bottom:0;left:0;right:0;height:28px;z-index:2000;background:rgba(4,6,8,.98);border-top:1px solid var(--border);display:flex;align-items:center;overflow:hidden}
 .bstat{font-size:7px;color:var(--grey3);padding:0 10px;border-right:1px solid var(--border);height:100%;display:flex;align-items:center;gap:4px;white-space:nowrap}
 .bstat .v{color:var(--white)}.bstat .v.r{color:var(--red2)}.bstat .v.o{color:var(--orange)}
 #last-update{margin-left:auto;padding-right:10px;font-size:7px;color:var(--grey2);white-space:nowrap}
+
+/* LOADING */
 #loading{position:fixed;inset:0;z-index:9999;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px}
 .load-hex{width:52px;height:52px;clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);background:var(--orange);animation:hpulse 1s ease-in-out infinite}
 .load-txt{font-family:'Orbitron',monospace;font-size:12px;color:var(--white);letter-spacing:4px}
@@ -154,7 +159,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(
 <div id="loading">
   <div class="load-hex"></div>
   <div class="load-txt">VIGILHEX</div>
-  <div class="load-sub">LOADING GLOBAL FEED...</div>
+  <div class="load-sub">INITIALIZING 3D GLOBE...</div>
   <div class="load-bar"></div>
 </div>
 
@@ -232,12 +237,26 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(
       <div class="preset" onclick="setPreset('ano')">ANOMALIES ONLY</div>
       <div class="preset" onclick="setPreset('full')">FULL VIEW</div>
     </div>
+    <div class="sec">
+      <div class="sec-title">// globe controls</div>
+      <div style="font-size:8px;color:var(--grey2);line-height:1.8;padding:4px 0">
+        <div>🖱 Drag — rotate globe</div>
+        <div>⚙ Scroll — zoom</div>
+        <div>✈ Click marker — details</div>
+      </div>
+    </div>
   </div>
 
-  <div id="map-wrap">
-    <div id="map"></div>
+  <div id="globe-wrap">
+    <canvas id="globe-canvas"></canvas>
     <div class="corner tl"></div><div class="corner tr"></div>
     <div class="corner bl"></div><div class="corner br"></div>
+    <div id="tooltip">
+      <div class="t-call" id="tt-call">—</div>
+      <div class="t-cat" id="tt-cat">—</div>
+      <div class="t-info" id="tt-info">—</div>
+      <div class="t-ano" id="tt-ano"></div>
+    </div>
     <div id="fp">
       <div class="fp-hdr">
         <div>
@@ -278,11 +297,11 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(
       <div style="color:var(--grey3);line-height:1.8;font-size:9px">
         <div style="color:var(--white);font-family:'Orbitron',monospace;font-size:11px;margin-bottom:5px">VIGILHEX v0.1</div>
         <div style="color:var(--grey2);margin-bottom:8px;font-size:7px;letter-spacing:1px">GLOBAL AIRSPACE INTELLIGENCE</div>
-        <div style="margin-bottom:8px">Tracks military, state, cargo and unknown aircraft worldwide. Commercial excluded.</div>
+        <div style="margin-bottom:8px">3D real-time globe. Military, state, cargo and unknown aircraft worldwide.</div>
         <div style="color:var(--grey2);font-size:7px;margin-bottom:3px">SOURCE</div>
         <div>· OpenSky Network ADS-B</div>
         <div>· Cloudflare Worker proxy</div>
-        <div>· Worldwide coverage</div>
+        <div>· Three.js WebGL globe</div>
         <div style="margin-top:8px;border-top:1px solid var(--border);padding-top:8px">
           <a href="https://github.com/pietrorenzii/vigilhex" target="_blank" style="color:var(--orange);text-decoration:none">⭐ github.com/pietrorenzii/vigilhex</a>
         </div>
@@ -295,23 +314,22 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(
   <div class="bstat"><div class="ldot" style="width:5px;height:5px;background:#00FF88;box-shadow:0 0 5px #00FF88;animation:blink 1.2s infinite"></div>VIGILHEX</div>
   <div class="bstat">SOURCE <span class="v">OPENSKY NETWORK</span></div>
   <div class="bstat">MODE <span class="v">MILITARY + PRIORITY</span></div>
-  <div class="bstat">COVERAGE <span class="v">WORLDWIDE</span></div>
+  <div class="bstat">ENGINE <span class="v">THREE.JS WebGL</span></div>
   <div class="bstat">ANOMALIES <span class="v o" id="b-ano">—</span></div>
   <div class="bstat">CRITICAL <span class="v r" id="b-crit">—</span></div>
   <div id="last-update">LAST UPDATE: <span id="b-time">—</span></div>
   <div class="bstat" style="border-right:none;font-size:7px;color:var(--grey1)">Public ADS-B data only · No interception · Not affiliated with any government</div>
 </div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
 const REFRESH_MS=120000,MAX_AC=800;
 const WORKER_URL='https://vigilhex-proxy.suegboy666.workers.dev';
-
-// Fallback bbox regionali — worldwide
 const BBOXES=[
-  '?lamin=30&lamax=72&lomin=-25&lomax=50',   // Europe+NATO
-  '?lamin=15&lamax=75&lomin=-170&lomax=-50',  // North America
-  '?lamin=-10&lamax=60&lomin=60&lomax=180',   // Asia-Pacific
-  '?lamin=-40&lamax=40&lomin=-20&lomax=60',   // Middle East+Africa
+  '?lamin=30&lamax=72&lomin=-25&lomax=50',
+  '?lamin=15&lamax=75&lomin=-170&lomax=-50',
+  '?lamin=-10&lamax=60&lomin=60&lomax=180',
+  '?lamin=-40&lamax=40&lomin=-20&lomax=60',
 ];
 
 const SENSITIVE=[
@@ -320,52 +338,46 @@ const SENSITIVE=[
   {n:'Aviano AFB',lat:46.03,lon:12.60,r:40,t:'military'},
   {n:'Incirlik AFB',lat:37.00,lon:35.43,r:60,t:'military'},
   {n:'Kaliningrad MZ',lat:54.71,lon:20.45,r:80,t:'military'},
-  {n:'NATO HQ Brussels',lat:50.87,lon:4.41,r:30,t:'military'},
   {n:'Diego Garcia',lat:-7.32,lon:72.42,r:50,t:'military'},
   {n:'Andersen AFB',lat:13.58,lon:144.93,r:60,t:'military'},
   {n:'Zaporizhzhia NPP',lat:47.51,lon:34.59,r:100,t:'nuclear'},
   {n:'Cattenom NPP',lat:49.41,lon:6.22,r:60,t:'nuclear'},
-  {n:'Paks NPP',lat:46.57,lon:18.85,r:60,t:'nuclear'},
 ];
 
 const MIL_HEX=[[0xAE0000,0xAFFFFF],[0x43C000,0x43CFFF],[0x3B0000,0x3BFFFF],[0x140000,0x157FFF],[0x3DC000,0x3DCFFF],[0x45D000,0x45D0FF]];
-const MIL_CS=['RRR','GAF','FAF','USAF','REACH','DUKE','STEEL','NATO','MMM','JAKE','NAVY','TURC','CTM','CASA','EVY','BAFE','ROMEO','ASCOT'];
+const MIL_CS=['RRR','GAF','FAF','USAF','REACH','DUKE','STEEL','NATO','MMM','JAKE','NAVY','TURC','CTM','CASA','EVY','BAFE','ROMEO'];
 const STATE_CS=['SAM','AF1','AF2','EXEC','GOVT','USCG','FRON','EU'];
 const CARGO_CS=['UPS','FDX','CLX','BOX','GTI','DHL','MPH','ABX','KMI','PAC'];
-const CAT_COLOR={MILITARY:'#CC2200',STATE:'#886600',CARGO:'#6A3A8A',UNKNOWN:'#2E4450'};
+const CAT_COLOR_HEX={MILITARY:0xCC2200,STATE:0x886600,CARGO:0x6A3A8A,UNKNOWN:0x2E4450};
+const CAT_COLOR_ANO=0xE8500A;
 
 const APT={
   LHR:{n:'Heathrow',c:'London',lat:51.47,lon:-0.46},CDG:{n:'Charles de Gaulle',c:'Paris',lat:49.01,lon:2.55},
-  AMS:{n:'Schiphol',c:'Amsterdam',lat:52.31,lon:4.76},FRA:{n:'Frankfurt Main',c:'Frankfurt',lat:50.03,lon:8.57},
+  AMS:{n:'Schiphol',c:'Amsterdam',lat:52.31,lon:4.76},FRA:{n:'Frankfurt',c:'Frankfurt',lat:50.03,lon:8.57},
   MAD:{n:'Barajas',c:'Madrid',lat:40.47,lon:-3.57},FCO:{n:'Fiumicino',c:'Rome',lat:41.80,lon:12.24},
-  MUC:{n:'Franz Josef Strauss',c:'Munich',lat:48.35,lon:11.79},IST:{n:'Istanbul Airport',c:'Istanbul',lat:41.27,lon:28.75},
-  JFK:{n:'JFK International',c:'New York',lat:40.64,lon:-73.78},LAX:{n:'Los Angeles Intl',c:'Los Angeles',lat:33.94,lon:-118.41},
-  ORD:{n:"O'Hare International",c:'Chicago',lat:41.98,lon:-87.91},ATL:{n:'Hartsfield-Jackson',c:'Atlanta',lat:33.64,lon:-84.43},
-  DFW:{n:'Dallas/Fort Worth',c:'Dallas',lat:32.90,lon:-97.04},DXB:{n:'Dubai International',c:'Dubai',lat:25.25,lon:55.36},
-  DOH:{n:'Hamad International',c:'Doha',lat:25.27,lon:51.61},SIN:{n:'Changi Airport',c:'Singapore',lat:1.36,lon:103.99},
-  NRT:{n:'Narita International',c:'Tokyo',lat:35.77,lon:140.39},PEK:{n:'Beijing Capital',c:'Beijing',lat:40.08,lon:116.59},
-  SYD:{n:'Kingsford Smith',c:'Sydney',lat:-33.94,lon:151.18},VIE:{n:'Vienna International',c:'Vienna',lat:48.11,lon:16.57},
-  ZRH:{n:'Zurich Airport',c:'Zurich',lat:47.46,lon:8.55},CPH:{n:'Copenhagen Kastrup',c:'Copenhagen',lat:55.62,lon:12.66},
-  WAW:{n:'Chopin Airport',c:'Warsaw',lat:52.17,lon:20.97},OSL:{n:'Oslo Gardermoen',c:'Oslo',lat:60.20,lon:11.08},
-  DUB:{n:'Dublin Airport',c:'Dublin',lat:53.43,lon:-6.27},HEL:{n:'Helsinki-Vantaa',c:'Helsinki',lat:60.32,lon:24.96},
-  ATH:{n:'Eleftherios Venizelos',c:'Athens',lat:37.94,lon:23.95},GRU:{n:'Guarulhos Intl',c:'São Paulo',lat:-23.43,lon:-46.47},
-  CAI:{n:'Cairo International',c:'Cairo',lat:30.12,lon:31.41},JNB:{n:'OR Tambo',c:'Johannesburg',lat:-26.13,lon:28.24},
+  IST:{n:'Istanbul',c:'Istanbul',lat:41.27,lon:28.75},JFK:{n:'JFK Intl',c:'New York',lat:40.64,lon:-73.78},
+  LAX:{n:'Los Angeles Intl',c:'Los Angeles',lat:33.94,lon:-118.41},ATL:{n:'Hartsfield',c:'Atlanta',lat:33.64,lon:-84.43},
+  DXB:{n:'Dubai Intl',c:'Dubai',lat:25.25,lon:55.36},DOH:{n:'Hamad Intl',c:'Doha',lat:25.27,lon:51.61},
+  SIN:{n:'Changi',c:'Singapore',lat:1.36,lon:103.99},NRT:{n:'Narita',c:'Tokyo',lat:35.77,lon:140.39},
+  PEK:{n:'Beijing Capital',c:'Beijing',lat:40.08,lon:116.59},SYD:{n:'Kingsford Smith',c:'Sydney',lat:-33.94,lon:151.18},
 };
 const COUNTRY_HUB={
   'United Kingdom':'LHR','France':'CDG','Germany':'FRA','Italy':'FCO','Spain':'MAD',
   'Netherlands':'AMS','Turkey':'IST','United States':'JFK','United Arab Emirates':'DXB',
-  'Japan':'NRT','China':'PEK','Australia':'SYD','Austria':'VIE','Switzerland':'ZRH',
-  'Denmark':'CPH','Poland':'WAW','Norway':'OSL','Ireland':'DUB','Qatar':'DOH',
-  'Singapore':'SIN','Finland':'HEL','Greece':'ATH','Brazil':'GRU','Egypt':'CAI','South Africa':'JNB',
+  'Japan':'NRT','China':'PEK','Australia':'SYD','Qatar':'DOH','Singapore':'SIN',
 };
 
-let map2d,markerLayer,routeLayer,sensitiveCircles=[];
-let layerVis={military:true,state:true,cargo:true,unknown:true,anomaly:true};
+// STATE
+let allFlights=[],layerVis={military:true,state:true,cargo:true,unknown:true,anomaly:true};
 let sensitiveVis={military:true,nuclear:true};
-let allFlights=[],prevPos={},animMarkers={};
 let anomalyHist=Array(24).fill(0);
-let animRaf=null,animStart=0;
+let scene,camera,renderer,globe,markerGroup,sensitiveGroup;
+let isDragging=false,prevMouse={x:0,y:0},rotVel={x:0,y:0};
+let autoRotate=true;
+let raycaster,mouse;
+let markerMeshes=[];
 
+// UTILS
 function classify(s){
   const ic=(s[0]||'').toUpperCase(),cs=((s[1]||'').trim()).toUpperCase();
   try{const h=parseInt(ic,16);for(const[lo,hi]of MIL_HEX)if(h>=lo&&h<=hi)return'MILITARY';}catch(e){}
@@ -394,47 +406,347 @@ function fmtSpd(v){return v?v+' kts':'—';}
 function fmtVrt(v){if(!v)return'—';return(v>0?'+':'')+v.toLocaleString()+' fpm';}
 function hdgName(h){return['N','NNE','NE','ENE','E','ESE','SE','SSE','S','SSW','SW','WSW','W','WNW','NW','NNW'][Math.round(h/22.5)%16];}
 
-function gc(la1,lo1,la2,lo2,n=50){
-  const R=Math.PI/180,D=180/Math.PI;
-  const φ1=la1*R,λ1=lo1*R,φ2=la2*R,λ2=lo2*R;
-  const d=2*Math.asin(Math.sqrt(Math.sin((φ2-φ1)/2)**2+Math.cos(φ1)*Math.cos(φ2)*Math.sin((λ2-λ1)/2)**2));
-  if(d<0.001)return[[la1,lo1],[la2,lo2]];
-  const pts=[];
-  for(let i=0;i<=n;i++){
-    const f=i/n,A=Math.sin((1-f)*d)/Math.sin(d),B=Math.sin(f*d)/Math.sin(d);
-    const x=A*Math.cos(φ1)*Math.cos(λ1)+B*Math.cos(φ2)*Math.cos(λ2);
-    const y=A*Math.cos(φ1)*Math.sin(λ1)+B*Math.cos(φ2)*Math.sin(λ2);
-    const z=A*Math.sin(φ1)+B*Math.sin(φ2);
-    pts.push([Math.atan2(z,Math.sqrt(x*x+y*y))*D,Math.atan2(y,x)*D]);
-  }
-  return pts;
+// lat/lon → 3D point on sphere radius R
+function latLonToVec3(lat,lon,R){
+  const phi=(90-lat)*Math.PI/180;
+  const theta=(lon+180)*Math.PI/180;
+  return new THREE.Vector3(
+    -R*Math.sin(phi)*Math.cos(theta),
+    R*Math.cos(phi),
+    R*Math.sin(phi)*Math.sin(theta)
+  );
 }
 
-function resolveRoute(f){
+// ── GLOBE INIT ───────────────────────────────────────────
+function initGlobe(){
+  const wrap=document.getElementById('globe-wrap');
+  const canvas=document.getElementById('globe-canvas');
+  const W=wrap.clientWidth,H=wrap.clientHeight;
+
+  // Scene
+  scene=new THREE.Scene();
+  camera=new THREE.PerspectiveCamera(45,W/H,0.1,1000);
+  camera.position.z=2.8;
+
+  renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:true});
+  renderer.setSize(W,H);
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
+  renderer.setClearColor(0x020304,1);
+
+  // Ambient + directional light
+  scene.add(new THREE.AmbientLight(0x223344,0.8));
+  const sun=new THREE.DirectionalLight(0x4488AA,0.6);
+  sun.position.set(5,3,5);
+  scene.add(sun);
+  const sun2=new THREE.DirectionalLight(0xE8500A,0.15);
+  sun2.position.set(-5,-2,-3);
+  scene.add(sun2);
+
+  // Globe — wireframe + solid base
+  const geo=new THREE.SphereGeometry(1,64,64);
+
+  // Base sphere — dark ocean
+  const baseMat=new THREE.MeshPhongMaterial({
+    color:0x030810,
+    emissive:0x010408,
+    specular:0x112233,
+    shininess:20,
+  });
+  globe=new THREE.Mesh(geo,baseMat);
+  scene.add(globe);
+
+  // Wireframe overlay — latitude/longitude lines
+  const wfGeo=new THREE.SphereGeometry(1.001,32,32);
+  const wfMat=new THREE.MeshBasicMaterial({
+    color:0x0E2030,
+    wireframe:true,
+    transparent:true,
+    opacity:0.35,
+  });
+  scene.add(new THREE.Mesh(wfGeo,wfMat));
+
+  // Outer glow ring
+  const glowGeo=new THREE.SphereGeometry(1.02,32,32);
+  const glowMat=new THREE.MeshBasicMaterial({
+    color:0x0A1825,
+    transparent:true,
+    opacity:0.12,
+    side:THREE.BackSide,
+  });
+  scene.add(new THREE.Mesh(glowGeo,glowMat));
+
+  // Atmosphere halo
+  const atmGeo=new THREE.SphereGeometry(1.08,32,32);
+  const atmMat=new THREE.MeshBasicMaterial({
+    color:0x0A2040,
+    transparent:true,
+    opacity:0.07,
+    side:THREE.BackSide,
+  });
+  scene.add(new THREE.Mesh(atmGeo,atmMat));
+
+  // Groups for markers
+  markerGroup=new THREE.Group();
+  sensitiveGroup=new THREE.Group();
+  scene.add(markerGroup);
+  scene.add(sensitiveGroup);
+
+  // Raycaster for clicks
+  raycaster=new THREE.Raycaster();
+  mouse=new THREE.Vector2();
+
+  // Draw sensitive areas
+  drawSensitive();
+
+  // Stars background
+  const starGeo=new THREE.BufferGeometry();
+  const starVerts=[];
+  for(let i=0;i<2000;i++){
+    starVerts.push((Math.random()-0.5)*200,(Math.random()-0.5)*200,(Math.random()-0.5)*200);
+  }
+  starGeo.setAttribute('position',new THREE.Float32BufferAttribute(starVerts,3));
+  const starMat=new THREE.PointsMaterial({color:0x334455,size:0.08});
+  scene.add(new THREE.Points(starGeo,starMat));
+
+  // Events
+  canvas.addEventListener('mousedown',onMouseDown);
+  canvas.addEventListener('mousemove',onMouseMove);
+  canvas.addEventListener('mouseup',onMouseUp);
+  canvas.addEventListener('mouseleave',onMouseUp);
+  canvas.addEventListener('wheel',onWheel,{passive:true});
+  canvas.addEventListener('click',onGlobeClick);
+  window.addEventListener('resize',onResize);
+
+  animate();
+}
+
+function drawSensitive(){
+  sensitiveGroup.clear();
+  if(!sensitiveVis.military&&!sensitiveVis.nuclear)return;
+  SENSITIVE.forEach(a=>{
+    if(a.t==='military'&&!sensitiveVis.military)return;
+    if(a.t==='nuclear'&&!sensitiveVis.nuclear)return;
+    const col=a.t==='military'?0x1A4060:0x3A1400;
+    const pos=latLonToVec3(a.lat,a.lon,1.002);
+    const geo=new THREE.SphereGeometry(0.015,8,8);
+    const mat=new THREE.MeshBasicMaterial({color:col,transparent:true,opacity:0.6});
+    const m=new THREE.Mesh(geo,mat);
+    m.position.copy(pos);
+    m.userData={sensitive:true,name:a.n};
+    sensitiveGroup.add(m);
+  });
+}
+
+// ── MARKERS ─────────────────────────────────────────────
+function buildMarkers(flights){
+  // Remove old
+  while(markerGroup.children.length)markerGroup.remove(markerGroup.children[0]);
+  markerMeshes=[];
+
+  flights.forEach(f=>{
+    if(f.gnd)return;
+    if(!layerVis[f.cat.toLowerCase()])return;
+    if(!layerVis.anomaly&&f.ano)return;
+
+    const col=f.ano?CAT_COLOR_ANO:(CAT_COLOR_HEX[f.cat]||0x2E4450);
+    const sz=f.ano?0.022:f.cat==='MILITARY'?0.018:0.014;
+
+    const pos=latLonToVec3(f.lat,f.lon,1.012);
+
+    // Marker — cone pointing outward from globe surface
+    const geo=new THREE.ConeGeometry(sz,sz*2,4);
+    const mat=new THREE.MeshBasicMaterial({color:col});
+    const m=new THREE.Mesh(geo,mat);
+    m.position.copy(pos);
+
+    // Orient cone to point away from globe center
+    m.lookAt(pos.clone().multiplyScalar(2));
+    m.rotateX(Math.PI/2);
+
+    m.userData={flight:f};
+    markerGroup.add(m);
+    markerMeshes.push(m);
+
+    // Anomaly ring
+    if(f.ano){
+      const ringGeo=new THREE.RingGeometry(sz*1.8,sz*2.2,16);
+      const ringMat=new THREE.MeshBasicMaterial({color:0xE8500A,side:THREE.DoubleSide,transparent:true,opacity:0.6});
+      const ring=new THREE.Mesh(ringGeo,ringMat);
+      ring.position.copy(pos);
+      ring.lookAt(pos.clone().multiplyScalar(2));
+      markerGroup.add(ring);
+    }
+  });
+}
+
+// ── ANIMATION LOOP ───────────────────────────────────────
+let aniFrame;
+function animate(){
+  aniFrame=requestAnimationFrame(animate);
+
+  // Auto rotate
+  if(autoRotate&&!isDragging){
+    globe.rotation.y+=0.0008;
+    markerGroup.rotation.y+=0.0008;
+    sensitiveGroup.rotation.y+=0.0008;
+  }
+
+  // Apply drag velocity
+  if(!isDragging&&(Math.abs(rotVel.x)>0.0001||Math.abs(rotVel.y)>0.0001)){
+    globe.rotation.y+=rotVel.x;
+    globe.rotation.x+=rotVel.y;
+    markerGroup.rotation.y+=rotVel.x;
+    markerGroup.rotation.x+=rotVel.y;
+    sensitiveGroup.rotation.y+=rotVel.x;
+    sensitiveGroup.rotation.x+=rotVel.y;
+    rotVel.x*=0.92;rotVel.y*=0.92;
+  }
+
+  // Pulse anomaly markers
+  const t=Date.now()*0.003;
+  markerMeshes.forEach(m=>{
+    if(m.userData.flight?.ano){
+      m.material.opacity=0.5+0.5*Math.sin(t);
+    }
+  });
+
+  renderer.render(scene,camera);
+}
+
+// ── MOUSE EVENTS ─────────────────────────────────────────
+function onMouseDown(e){
+  isDragging=true;autoRotate=false;
+  prevMouse={x:e.clientX,y:e.clientY};
+  rotVel={x:0,y:0};
+}
+function onMouseMove(e){
+  if(!isDragging)return;
+  const dx=(e.clientX-prevMouse.x)*0.005;
+  const dy=(e.clientY-prevMouse.y)*0.005;
+  globe.rotation.y+=dx;globe.rotation.x+=dy;
+  markerGroup.rotation.y+=dx;markerGroup.rotation.x+=dy;
+  sensitiveGroup.rotation.y+=dx;sensitiveGroup.rotation.x+=dy;
+  rotVel.x=dx;rotVel.y=dy;
+  prevMouse={x:e.clientX,y:e.clientY};
+
+  // Hover tooltip
+  updateTooltip(e);
+}
+function onMouseUp(){isDragging=false;}
+function onWheel(e){
+  camera.position.z=Math.max(1.5,Math.min(5,camera.position.z+e.deltaY*0.002));
+}
+function onResize(){
+  const wrap=document.getElementById('globe-wrap');
+  const W=wrap.clientWidth,H=wrap.clientHeight;
+  camera.aspect=W/H;camera.updateProjectionMatrix();
+  renderer.setSize(W,H);
+}
+
+function getIntersects(e){
+  const wrap=document.getElementById('globe-wrap');
+  const rect=wrap.getBoundingClientRect();
+  mouse.x=((e.clientX-rect.left)/rect.width)*2-1;
+  mouse.y=-((e.clientY-rect.top)/rect.height)*2+1;
+  raycaster.setFromCamera(mouse,camera);
+  return raycaster.intersectObjects(markerMeshes);
+}
+
+function updateTooltip(e){
+  const hits=getIntersects(e);
+  const tt=document.getElementById('tooltip');
+  if(hits.length>0){
+    const f=hits[0].object.userData.flight;
+    if(!f){tt.style.display='none';return;}
+    document.getElementById('tt-call').textContent=f.cs||'NO CALLSIGN';
+    const tc={MILITARY:'mil',STATE:'sta',CARGO:'crg',UNKNOWN:'unk'}[f.cat]||'unk';
+    const el=document.getElementById('tt-cat');
+    el.textContent=f.cat;el.className='t-cat '+tc;
+    document.getElementById('tt-info').innerHTML=
+      `${f.country||'Unknown'} · ALT: ${fmtAlt(f.alt)}<br>SPD: ${fmtSpd(f.spd)} · HDG: ${f.trk!=null?f.trk+'° '+hdgName(f.trk):'—'}`;
+    document.getElementById('tt-ano').textContent=f.ano?'⚠ '+f.rsn:'';
+    const wrap=document.getElementById('globe-wrap');
+    const rect=wrap.getBoundingClientRect();
+    tt.style.left=(e.clientX-rect.left+15)+'px';
+    tt.style.top=(e.clientY-rect.top-10)+'px';
+    tt.style.display='block';
+  }else{
+    tt.style.display='none';
+  }
+}
+
+function onGlobeClick(e){
+  const hits=getIntersects(e);
+  if(hits.length>0){
+    const f=hits[0].object.userData.flight;
+    if(f)openPanel(f);
+  }
+}
+
+// ── FLIGHT PANEL ─────────────────────────────────────────
+function openPanel(f){
+  const near=nearSens(f.lat,f.lon);
   const origCode=COUNTRY_HUB[f.country||'']||null;
   const orig=origCode?APT[origCode]:null;
-  const destInfo=estimateDest(f,origCode);
-  return{origCode,orig,destCode:destInfo?.code||null,dest:destInfo?.apt||null};
-}
-function estimateDest(f,skip){
-  if(!f.trk||!f.lat||!f.lon)return null;
-  let best=null,bs=Infinity;
-  for(const[code,apt]of Object.entries(APT)){
-    if(code===skip)continue;
-    const d=hav(f.lat,f.lon,apt.lat,apt.lon);
-    if(d>4000||d<80)continue;
-    const dLat=(apt.lat-f.lat)*Math.PI/180,dLon=(apt.lon-f.lon)*Math.PI/180;
-    const la1=f.lat*Math.PI/180,la2=apt.lat*Math.PI/180;
-    const y_=Math.sin(dLon)*Math.cos(la2);
-    const x_=Math.cos(la1)*Math.sin(la2)-Math.sin(la1)*Math.cos(la2)*Math.cos(dLon);
-    const bear=(Math.atan2(y_,x_)*180/Math.PI+360)%360;
-    const diff=Math.abs(((bear-f.trk)+180+360)%360-180);
-    if(diff<50){const s=d*(1+diff/50);if(s<bs){bs=s;best={code,apt};}}
-  }
-  return best;
-}
+  const tc={MILITARY:'mil',STATE:'sta',CARGO:'crg',UNKNOWN:'unk'}[f.cat]||'unk';
 
-// ── FETCH PRINCIPALE — usa Worker Cloudflare ─────────────
+  document.getElementById('fp-call').textContent=f.cs||'NO CALLSIGN';
+  document.getElementById('fp-sub').innerHTML=`ICAO: <b style="color:var(--white)">${f.icao.toUpperCase()}</b> &nbsp;·&nbsp; ${f.country||'Unknown'}`;
+
+  let html='';
+  if(f.sqk==='7500')html+=`<div class="fp-alert crit">🚨 SQUAWK 7500 — HIJACK DECLARED</div>`;
+  else if(f.sqk==='7700')html+=`<div class="fp-alert crit">🚨 SQUAWK 7700 — GENERAL EMERGENCY</div>`;
+  else if(f.sqk==='7600')html+=`<div class="fp-alert">📡 SQUAWK 7600 — RADIO FAILURE</div>`;
+  else if(f.ano)html+=`<div class="fp-alert">⚠ ${f.rsn}</div>`;
+  if(near)html+=`<div class="fp-near">⬡ NEAR SENSITIVE AREA: ${near}</div>`;
+
+  html+=`<div style="margin-bottom:12px"><span class="fp-badge ${tc}">${f.cat}</span>${f.ano?'<span class="fp-badge ano">ANOMALY</span>':''}</div>`;
+
+  if(orig){
+    html+=`<div style="background:var(--bg2);border:1px solid var(--border2);padding:10px;margin-bottom:12px;font-size:9px">
+      <div style="color:var(--grey2);font-size:7px;letter-spacing:2px;margin-bottom:4px">LIKELY ORIGIN</div>
+      <div style="font-family:'Orbitron',monospace;font-size:16px;color:var(--white)">${origCode}</div>
+      <div style="color:var(--grey2);font-size:8px">${orig.n} · ${orig.c}</div>
+    </div>`;
+  }
+
+  const phase=f.gnd?'ON GROUND':f.vrt&&f.vrt>300?'CLIMBING ↑':f.vrt&&f.vrt<-300?'DESCENDING ↓':'CRUISE →';
+  const phaseCol=f.gnd?'var(--grey3)':f.vrt&&f.vrt>300?'#00CC66':f.vrt&&f.vrt<-300?'var(--red2)':'var(--orange)';
+
+  html+=`<div class="fp-sec"><div class="fp-sec-title">// flight data</div><div class="fp-grid">
+    <div class="fp-cell"><div class="lbl">ALTITUDE</div><div class="val ${f.alt&&f.alt<1000&&!f.gnd?'r':''}">${fmtAlt(f.alt)}</div><div class="sub">${f.alt?f.alt>35000?'HIGH CRUISE':f.alt>20000?'CRUISE':f.alt>10000?'CLIMB/DESCENT':'LOW ALT':''}</div></div>
+    <div class="fp-cell"><div class="lbl">SPEED</div><div class="val">${fmtSpd(f.spd)}</div><div class="sub">${f.spd?f.spd>500?'HIGH':f.spd>300?'CRUISE':'LOW':''}</div></div>
+    <div class="fp-cell"><div class="lbl">HEADING</div><div class="val">${f.trk!=null?f.trk+'°':'—'}</div><div class="sub">${f.trk!=null?hdgName(f.trk):''}</div></div>
+    <div class="fp-cell"><div class="lbl">VERT RATE</div><div class="val ${f.vrt&&f.vrt<-2000?'r':f.vrt&&f.vrt>2000?'g':''}">${fmtVrt(f.vrt)}</div><div class="sub">${f.vrt?Math.abs(f.vrt)>3000?'RAPID':'NORMAL':''}</div></div>
+    <div class="fp-cell full"><div class="lbl">FLIGHT PHASE</div><div class="val" style="color:${phaseCol};font-size:13px">${phase}</div></div>
+  </div></div>`;
+
+  html+=`<div class="fp-sec"><div class="fp-sec-title">// transponder</div><div class="fp-grid">
+    <div class="fp-cell"><div class="lbl">SQUAWK</div><div class="val ${['7500','7600','7700'].includes(f.sqk)?'r':''}">${f.sqk||'—'}</div><div class="sub">${f.sqk==='7500'?'HIJACK':f.sqk==='7700'?'EMERGENCY':f.sqk==='7600'?'RADIO FAIL':'NORMAL'}</div></div>
+    <div class="fp-cell"><div class="lbl">LAST CONTACT</div><div class="val ${(f.sil||0)>300?'r':(f.sil||0)>60?'o':''}">${(f.sil||0)>60?Math.floor(f.sil/60)+'m ago':'LIVE'}</div><div class="sub">${(f.sil||0)>600?'CRITICAL':(f.sil||0)>300?'WARNING':'ACTIVE'}</div></div>
+    <div class="fp-cell"><div class="lbl">ADS-B</div><div class="val" style="font-size:11px">${['ADS-B','ASTERIX','MLAT','—'][f.src||0]}</div></div>
+    <div class="fp-cell"><div class="lbl">ON GROUND</div><div class="val ${f.gnd?'o':''}">${f.gnd?'YES':'NO'}</div></div>
+  </div></div>`;
+
+  html+=`<div class="fp-sec"><div class="fp-sec-title">// identity</div><div class="fp-grid">
+    <div class="fp-cell"><div class="lbl">ICAO24</div><div class="val" style="font-size:14px">${f.icao.toUpperCase()}</div></div>
+    <div class="fp-cell"><div class="lbl">CALLSIGN</div><div class="val" style="font-size:14px">${f.cs||'BLOCKED'}</div></div>
+    <div class="fp-cell full"><div class="lbl">COUNTRY</div><div class="val" style="font-size:13px">${f.country||'Unknown'}</div></div>
+    <div class="fp-cell full"><div class="lbl">CLASSIFICATION</div><div class="val" style="font-size:12px;color:#${(CAT_COLOR_HEX[f.cat]||0x2E4450).toString(16).padStart(6,'0')}">${f.cat}</div></div>
+  </div></div>`;
+
+  html+=`<div class="fp-sec"><div class="fp-sec-title">// position</div><div class="fp-grid">
+    <div class="fp-cell"><div class="lbl">LATITUDE</div><div class="val" style="font-size:13px">${f.lat.toFixed(4)}°</div></div>
+    <div class="fp-cell"><div class="lbl">LONGITUDE</div><div class="val" style="font-size:13px">${f.lon.toFixed(4)}°</div></div>
+    ${near?`<div class="fp-cell full"><div class="lbl">SENSITIVE AREA</div><div class="val r" style="font-size:11px">${near}</div></div>`:''}
+  </div></div>`;
+
+  document.getElementById('fp-body').innerHTML=html;
+  document.getElementById('fp').style.display='block';
+}
+function closePanel(){document.getElementById('fp').style.display='none';}
+
+// ── FETCH ────────────────────────────────────────────────
 async function fetchFlights(){
   setLive('connecting');
   try{
@@ -444,229 +756,66 @@ async function fetchFlights(){
     if(data.flights&&data.flights.length>0){
       let fl=data.flights;
       fl.forEach(f=>{const{ano,rsn}=chkAno(f);f.ano=ano;f.rsn=rsn;});
-      processFlights(fl);
-      return;
+      processFlights(fl);return;
     }
-    throw new Error('Worker returned 0 flights');
+    throw new Error('0 flights from worker');
   }catch(e){
-    console.warn('Worker failed:',e.message,'; trying direct OpenSky...');
+    console.warn('Worker failed:',e.message);
     fetchFallback();
   }
 }
 
-// ── FALLBACK — OpenSky diretto, 4 regioni worldwide ──────
 async function fetchFallback(){
   const now=Math.floor(Date.now()/1000);
-  const allStates=[];
-  let ok=0;
+  const allStates=[];let ok=0;
   for(const bbox of BBOXES){
     try{
       const res=await fetch('https://opensky-network.org/api/states/all'+bbox,{
-        headers:{'User-Agent':'VigilHex/0.1'},
-        signal:AbortSignal.timeout(15000),
+        headers:{'User-Agent':'VigilHex/0.1'},signal:AbortSignal.timeout(15000),
       });
       if(!res.ok)throw new Error('HTTP '+res.status);
       const data=await res.json();
       if(data?.states){allStates.push(...data.states);ok++;}
       await new Promise(r=>setTimeout(r,1500));
-    }catch(e){
-      console.warn('Bbox failed:',bbox,e.message);
-      if(e.message.includes('429'))await new Promise(r=>setTimeout(r,5000));
-    }
+    }catch(e){console.warn(e.message);}
   }
   if(!ok){
     setLive('error');
     document.getElementById('loading').style.display='none';
-    document.getElementById('feed-list').innerHTML=`
-      <div style="color:var(--orange);font-size:9px;padding:8px;border:1px solid var(--orange);background:rgba(232,80,10,.04)">
-        ⚠ Feed unavailable — OpenSky rate limited<br>
-        <span style="color:var(--grey2)">Auto-retry in 2 min</span>
-      </div>`;
+    document.getElementById('feed-list').innerHTML=`<div style="color:var(--orange);font-size:9px;padding:8px;border:1px solid var(--orange);background:rgba(232,80,10,.04)">⚠ OpenSky rate limited<br><span style="color:var(--grey2)">Auto-retry in 2 min</span></div>`;
     return;
   }
-  const seen=new Set();
-  const fl=[];
+  const seen=new Set();const fl=[];
   for(const s of allStates){
     if(s[5]==null||s[6]==null)continue;
-    if(seen.has(s[0]))continue;
-    seen.add(s[0]);
-    const cat=classify(s);
-    if(cat==='COMMERCIAL')continue;
-    const f={
-      icao:s[0],cs:(s[1]||'').trim()||null,country:s[2],
-      lon:s[5],lat:s[6],
-      alt:s[7]?Math.round(s[7]*3.281):null,gnd:s[8],
-      spd:s[9]?Math.round(s[9]*1.944):null,
-      trk:s[10]!=null?Math.round(s[10]):0,
-      vrt:s[11]?Math.round(s[11]*196.85):null,
-      sqk:s[14],sil:s[4]?now-s[4]:null,src:s[16],cat,
-    };
-    const{ano,rsn}=chkAno(f);f.ano=ano;f.rsn=rsn;
-    fl.push(f);
+    if(seen.has(s[0]))continue;seen.add(s[0]);
+    const cat=classify(s);if(cat==='COMMERCIAL')continue;
+    const f={icao:s[0],cs:(s[1]||'').trim()||null,country:s[2],lon:s[5],lat:s[6],
+      alt:s[7]?Math.round(s[7]*3.281):null,gnd:s[8],spd:s[9]?Math.round(s[9]*1.944):null,
+      trk:s[10]!=null?Math.round(s[10]):0,vrt:s[11]?Math.round(s[11]*196.85):null,
+      sqk:s[14],sil:s[4]?now-s[4]:null,src:s[16],cat,};
+    const{ano,rsn}=chkAno(f);f.ano=ano;f.rsn=rsn;fl.push(f);
   }
   processFlights(fl);
 }
 
 function processFlights(fl){
-  fl.sort((a,b)=>{
-    if(a.ano!==b.ano)return a.ano?-1:1;
-    if((a.cat==='MILITARY')!==(b.cat==='MILITARY'))return a.cat==='MILITARY'?-1:1;
-    return 0;
-  });
+  fl.sort((a,b)=>{if(a.ano!==b.ano)return a.ano?-1:1;if((a.cat==='MILITARY')!==(b.cat==='MILITARY'))return a.cat==='MILITARY'?-1:1;return 0;});
   fl=fl.slice(0,MAX_AC);
-  const np={};allFlights.forEach(f=>np[f.icao]={lat:f.lat,lon:f.lon});
-  prevPos=np;allFlights=fl;
-  render2D(fl);updateStats(fl);updateFeed(fl);updateStatsTab(fl);
+  allFlights=fl;
+  buildMarkers(fl);
+  updateStats(fl);updateFeed(fl);updateStatsTab(fl);
   setLive('live');
   document.getElementById('b-time').textContent=utcNow()+' UTC';
   document.getElementById('loading').style.display='none';
 }
 
-// ── MAP INIT ─────────────────────────────────────────────
-function init2D(){
-  map2d=L.map('map',{center:[20,0],zoom:2,minZoom:2,maxZoom:14,worldCopyJump:true,zoomSnap:0.25});
-  L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png',{
-    attribution:'© CartoDB © OpenStreetMap',subdomains:'abcd',maxZoom:14,
-  }).addTo(map2d);
-  map2d.setMaxBounds([[-85,-260],[85,260]]);
-  markerLayer=L.layerGroup().addTo(map2d);
-  routeLayer=L.layerGroup().addTo(map2d);
-  SENSITIVE.forEach(a=>{
-    const isMil=a.t==='military';
-    const c=L.circle([a.lat,a.lon],{
-      radius:a.r*1000,color:isMil?'#1A4060':'#3A1400',weight:1,
-      fill:true,fillColor:isMil?'#0A1820':'#180800',fillOpacity:0.14,
-    }).bindTooltip(`<span style="font-family:monospace;font-size:10px;color:#A8C4CC">${a.n}</span>`,{sticky:true});
-    sensitiveCircles.push({circle:c,type:a.t});
-    if((isMil&&sensitiveVis.military)||(!isMil&&sensitiveVis.nuclear))c.addTo(map2d);
-  });
-}
-
-function makeIcon(f){
-  const col=f.ano?'#E8500A':CAT_COLOR[f.cat]||'#2E4450';
-  const sz=f.ano?24:f.cat==='MILITARY'?22:18;
-  const glow=f.ano?'filter:drop-shadow(0 0 6px #E8500A);':f.cat==='MILITARY'?'filter:drop-shadow(0 0 4px #CC2200);':`filter:drop-shadow(0 0 2px ${col});`;
-  const anim=f.ano?'animation:blink .7s infinite;':'';
-  const html=`<div style="width:36px;height:36px;display:flex;align-items:center;justify-content:center;cursor:pointer">
-    <svg xmlns="http://www.w3.org/2000/svg" width="${sz}" height="${sz}" viewBox="0 0 24 24"
-      style="transform:rotate(${f.trk||0}deg);${glow}${anim}transition:transform .5s ease">
-      <path fill="${col}" d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"/>
-    </svg>
-  </div>`;
-  return L.divIcon({className:'',html,iconSize:[36,36],iconAnchor:[18,18]});
-}
-
-function openPanel(f){
-  const route=resolveRoute(f);
-  const near=nearSens(f.lat,f.lon);
-  const tc={MILITARY:'mil',STATE:'sta',CARGO:'crg',UNKNOWN:'unk'}[f.cat]||'unk';
-  document.getElementById('fp-call').textContent=f.cs||'NO CALLSIGN';
-  document.getElementById('fp-sub').innerHTML=`ICAO: <b style="color:var(--white)">${f.icao.toUpperCase()}</b> &nbsp;·&nbsp; ${f.country||'Unknown'}`;
-  let html='';
-  if(f.sqk==='7500')html+=`<div class="fp-alert crit">🚨 SQUAWK 7500 — HIJACK DECLARED</div>`;
-  else if(f.sqk==='7700')html+=`<div class="fp-alert crit">🚨 SQUAWK 7700 — GENERAL EMERGENCY</div>`;
-  else if(f.sqk==='7600')html+=`<div class="fp-alert">📡 SQUAWK 7600 — RADIO FAILURE</div>`;
-  else if(f.ano)html+=`<div class="fp-alert">⚠ ${f.rsn}</div>`;
-  if(near)html+=`<div class="fp-near">⬡ NEAR SENSITIVE AREA: ${near}</div>`;
-  html+=`<div style="margin-bottom:12px"><span class="fp-badge ${tc}">${f.cat}</span>${f.ano?'<span class="fp-badge ano">ANOMALY</span>':''}</div>`;
-  const oC=route.origCode||'???',oA=route.orig,dC=route.destCode||'???',dA=route.dest;
-  html+=`<div class="fp-route">
-    <div class="fp-apt"><div class="fp-apt-code">${oC}</div><div class="fp-apt-name">${oA?.n||'Unknown'}</div><div class="fp-apt-city">${oA?.c||''}</div></div>
-    <div class="fp-route-mid"><div class="fp-route-line"></div><div class="fp-route-cs">${f.cs||f.icao.toUpperCase()}</div><div class="fp-route-note">${f.spd?f.spd+'kts':''}</div></div>
-    <div class="fp-apt"><div class="fp-apt-code" style="${!dA?'color:var(--grey2)':''}">${dC}</div><div class="fp-apt-name" style="${!dA?'color:var(--grey1)':''}">${dA?.n||'Estimating...'}</div><div class="fp-apt-city">${dA?.c||''}</div></div>
-  </div>`;
-  if(oA&&dA){
-    const total=hav(oA.lat,oA.lon,dA.lat,dA.lon),rem=hav(f.lat,f.lon,dA.lat,dA.lon);
-    const pct=Math.max(0,Math.min(100,Math.round((1-rem/total)*100)));
-    const eta=f.spd&&rem?Math.round(rem/f.spd*60):null;
-    html+=`<div style="margin-bottom:12px;font-size:8px;color:var(--grey2)">
-      PROGRESS: <span style="color:var(--white)">${pct}%</span>
-      ${eta?`&nbsp;·&nbsp; ETA: <span style="color:var(--orange)">${eta} min</span>`:''}
-      &nbsp;·&nbsp; REMAINING: <span style="color:var(--white)">${Math.round(rem).toLocaleString()} km</span>
-      <div class="fp-prog"><div class="fp-prog-bar" style="width:${pct}%"></div></div>
-    </div>`;
-  }
-  const phase=f.gnd?'ON GROUND':f.vrt&&f.vrt>300?'CLIMBING ↑':f.vrt&&f.vrt<-300?'DESCENDING ↓':'CRUISE →';
-  const phaseCol=f.gnd?'var(--grey3)':f.vrt&&f.vrt>300?'#00CC66':f.vrt&&f.vrt<-300?'var(--red2)':'var(--orange)';
-  html+=`<div class="fp-sec"><div class="fp-sec-title">// flight data</div><div class="fp-grid">
-    <div class="fp-cell"><div class="lbl">ALTITUDE</div><div class="val ${f.alt&&f.alt<1000&&!f.gnd?'r':''}">${fmtAlt(f.alt)}</div><div class="sub">${f.alt?f.alt>35000?'HIGH CRUISE':f.alt>20000?'CRUISE':f.alt>10000?'CLIMB/DESCENT':'LOW ALT':''}</div></div>
-    <div class="fp-cell"><div class="lbl">SPEED</div><div class="val">${fmtSpd(f.spd)}</div><div class="sub">${f.spd?f.spd>500?'HIGH':f.spd>300?'CRUISE':'LOW':''}</div></div>
-    <div class="fp-cell"><div class="lbl">HEADING</div><div class="val">${f.trk!=null?f.trk+'°':'—'}</div><div class="sub">${f.trk!=null?hdgName(f.trk):''}</div></div>
-    <div class="fp-cell"><div class="lbl">VERT RATE</div><div class="val ${f.vrt&&f.vrt<-2000?'r':f.vrt&&f.vrt>2000?'g':''}">${fmtVrt(f.vrt)}</div><div class="sub">${f.vrt?Math.abs(f.vrt)>3000?'RAPID':'NORMAL':''}</div></div>
-    <div class="fp-cell full"><div class="lbl">FLIGHT PHASE</div><div class="val" style="color:${phaseCol};font-size:13px">${phase}</div></div>
-  </div></div>`;
-  html+=`<div class="fp-sec"><div class="fp-sec-title">// transponder</div><div class="fp-grid">
-    <div class="fp-cell"><div class="lbl">SQUAWK</div><div class="val ${['7500','7600','7700'].includes(f.sqk)?'r':''}">${f.sqk||'—'}</div><div class="sub">${f.sqk==='7500'?'HIJACK':f.sqk==='7700'?'EMERGENCY':f.sqk==='7600'?'RADIO FAIL':'NORMAL'}</div></div>
-    <div class="fp-cell"><div class="lbl">LAST CONTACT</div><div class="val ${(f.sil||0)>300?'r':(f.sil||0)>60?'o':''}">${(f.sil||0)>60?Math.floor(f.sil/60)+'m ago':'LIVE'}</div><div class="sub">${(f.sil||0)>600?'CRITICAL':(f.sil||0)>300?'WARNING':'ACTIVE'}</div></div>
-    <div class="fp-cell"><div class="lbl">ADS-B SOURCE</div><div class="val" style="font-size:11px">${['ADS-B','ASTERIX','MLAT','—'][f.src||0]}</div></div>
-    <div class="fp-cell"><div class="lbl">ON GROUND</div><div class="val ${f.gnd?'o':''}">${f.gnd?'YES':'NO'}</div></div>
-  </div></div>`;
-  html+=`<div class="fp-sec"><div class="fp-sec-title">// identity</div><div class="fp-grid">
-    <div class="fp-cell"><div class="lbl">ICAO24</div><div class="val" style="font-size:14px">${f.icao.toUpperCase()}</div></div>
-    <div class="fp-cell"><div class="lbl">CALLSIGN</div><div class="val" style="font-size:14px">${f.cs||'BLOCKED'}</div></div>
-    <div class="fp-cell full"><div class="lbl">COUNTRY</div><div class="val" style="font-size:13px">${f.country||'Unknown'}</div></div>
-    <div class="fp-cell full"><div class="lbl">CLASSIFICATION</div><div class="val" style="font-size:12px;color:${CAT_COLOR[f.cat]||'var(--white)'}">${f.cat}</div></div>
-  </div></div>`;
-  html+=`<div class="fp-sec"><div class="fp-sec-title">// position</div><div class="fp-grid">
-    <div class="fp-cell"><div class="lbl">LATITUDE</div><div class="val" style="font-size:13px">${f.lat.toFixed(4)}°</div></div>
-    <div class="fp-cell"><div class="lbl">LONGITUDE</div><div class="val" style="font-size:13px">${f.lon.toFixed(4)}°</div></div>
-    ${near?`<div class="fp-cell full"><div class="lbl">SENSITIVE AREA</div><div class="val r" style="font-size:11px">${near}</div></div>`:''}
-  </div></div>`;
-  document.getElementById('fp-body').innerHTML=html;
-  document.getElementById('fp').style.display='block';
-  routeLayer.clearLayers();
-  try{
-    if(oA){
-      L.polyline(gc(oA.lat,oA.lon,f.lat,f.lon),{color:'rgba(232,80,10,.6)',weight:2,dashArray:'8,4'}).addTo(routeLayer);
-      L.circleMarker([oA.lat,oA.lon],{radius:5,color:'#E8500A',fill:true,fillColor:'#E8500A',fillOpacity:.9,weight:1}).bindTooltip(oC,{permanent:true,offset:[0,-5]}).addTo(routeLayer);
-    }
-    if(dA){
-      L.polyline(gc(f.lat,f.lon,dA.lat,dA.lon),{color:'rgba(232,80,10,.25)',weight:1.5,dashArray:'4,6'}).addTo(routeLayer);
-      L.circleMarker([dA.lat,dA.lon],{radius:5,color:'rgba(232,80,10,.7)',fill:true,fillColor:'rgba(232,80,10,.3)',fillOpacity:.8,weight:1}).bindTooltip(dC,{permanent:true,offset:[0,-5]}).addTo(routeLayer);
-    }
-  }catch(e){}
-  map2d.panTo([f.lat,f.lon],{animate:true,duration:.5});
-}
-
-function closePanel(){document.getElementById('fp').style.display='none';routeLayer.clearLayers();}
-
-function render2D(flights){
-  markerLayer.clearLayers();routeLayer.clearLayers();
-  document.getElementById('fp').style.display='none';
-  animMarkers={};
-  flights.forEach(f=>{
-    if(f.gnd)return;
-    if(!layerVis[f.cat.toLowerCase()])return;
-    if(!layerVis.anomaly&&f.ano)return;
-    const m=L.marker([f.lat,f.lon],{icon:makeIcon(f),zIndexOffset:f.ano?2000:f.cat==='MILITARY'?1000:0});
-    m.on('click',()=>openPanel(f));
-    m.addTo(markerLayer);
-    animMarkers[f.icao]={m,f};
-  });
-  startAnim();
-}
-
-function startAnim(){
-  if(animRaf)cancelAnimationFrame(animRaf);
-  animStart=Date.now();animStep();
-}
-function animStep(){
-  const t=Math.min((Date.now()-animStart)/55000,1);
-  for(const{m,f}of Object.values(animMarkers)){
-    const p=prevPos[f.icao];
-    if(!p||!f.spd||f.spd<10)continue;
-    try{m.setLatLng([p.lat+(f.lat-p.lat)*t,p.lon+(f.lon-p.lon)*t]);}catch(e){}
-  }
-  if(t<1)animRaf=requestAnimationFrame(animStep);
-}
-
+// ── STATS ────────────────────────────────────────────────
 function updateStats(fl){
   const C={military:0,state:0,cargo:0,unknown:0};
   let ano=0,xp=0,cr=0;
-  fl.forEach(f=>{
-    if(!f.gnd){C[f.cat.toLowerCase()]=(C[f.cat.toLowerCase()]||0)+1;
-      if(f.ano)ano++;if((f.sil||0)>300)xp++;if(['7500','7700'].includes(f.sqk))cr++;}
-  });
+  fl.forEach(f=>{if(!f.gnd){C[f.cat.toLowerCase()]=(C[f.cat.toLowerCase()]||0)+1;
+    if(f.ano)ano++;if((f.sil||0)>300)xp++;if(['7500','7700'].includes(f.sqk))cr++;}});
   const tot=Object.values(C).reduce((a,b)=>a+b,0);
   document.getElementById('s-total').textContent=tot;
   document.getElementById('s-mil').textContent=C.military;
@@ -715,26 +864,28 @@ function updateStatsTab(fl){
   const C={},Co={};
   fl.filter(f=>!f.gnd).forEach(f=>{C[f.cat]=(C[f.cat]||0)+1;Co[f.country||'?']=(Co[f.country||'?']||0)+1;});
   const tot=Object.values(C).reduce((a,b)=>a+b,1);
+  const catColors={'MILITARY':'#CC2200','STATE':'#886600','CARGO':'#6A3A8A','UNKNOWN':'#2E4450'};
   document.getElementById('cat-bars').innerHTML=Object.entries(C).sort((a,b)=>b[1]-a[1]).map(([k,v])=>`
     <div style="margin-bottom:5px">
       <div style="display:flex;justify-content:space-between;font-size:7px;margin-bottom:2px"><span style="color:var(--grey3)">${k}</span><span style="color:var(--white)">${v}</span></div>
-      <div style="height:2px;background:var(--border)"><div style="height:2px;width:${Math.round(v/tot*100)}%;background:${CAT_COLOR[k]||'#2E4450'}"></div></div>
+      <div style="height:2px;background:var(--border)"><div style="height:2px;width:${Math.round(v/tot*100)}%;background:${catColors[k]||'#2E4450'}"></div></div>
     </div>`).join('');
   document.getElementById('country-list').innerHTML=Object.entries(Co).sort((a,b)=>b[1]-a[1]).slice(0,8)
     .map(([k,v])=>`<div style="display:flex;justify-content:space-between;padding:3px 0;border-bottom:1px solid var(--border);font-size:8px"><span style="color:var(--grey3)">${k}</span><span style="color:var(--white)">${v}</span></div>`).join('');
 }
 
+// ── CONTROLS ─────────────────────────────────────────────
 function toggleLayer(cat,el){
   layerVis[cat]=!layerVis[cat];
   document.getElementById('t-'+cat)?.classList.toggle('on',layerVis[cat]);
   el.style.opacity=layerVis[cat]?'1':'0.35';
-  render2D(allFlights);
+  buildMarkers(allFlights);
 }
 function toggleSensitive(type,el){
   sensitiveVis[type]=!sensitiveVis[type];
   document.getElementById('t-'+(type==='military'?'bases':'nuclear'))?.classList.toggle('on',sensitiveVis[type]);
   el.style.opacity=sensitiveVis[type]?'1':'0.35';
-  sensitiveCircles.forEach(({circle,type:t})=>{if(t===type){if(sensitiveVis[type])circle.addTo(map2d);else map2d.removeLayer(circle);}});
+  drawSensitive();
 }
 function setPreset(p){
   const P={
@@ -748,7 +899,7 @@ function setPreset(p){
     document.getElementById('t-'+k)?.classList.toggle('on',layerVis[k]);
     document.querySelector(`[onclick="toggleLayer('${k}',this)"]`)?.style.setProperty('opacity',layerVis[k]?'1':'0.35');
   });
-  render2D(allFlights);
+  buildMarkers(allFlights);
 }
 function switchTab(id,el){
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));
@@ -763,11 +914,13 @@ function setLive(s){
 }
 setInterval(()=>{document.getElementById('clock').textContent=new Date().toUTCString().split(' ')[4]+' UTC';},1000);
 
+// ── INIT ─────────────────────────────────────────────────
 window.addEventListener('load',async()=>{
-  init2D();
+  initGlobe();
   await fetchFlights();
   setInterval(fetchFlights,REFRESH_MS);
 });
 </script>
 </body>
 </html>
+```
