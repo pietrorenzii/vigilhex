@@ -6,7 +6,7 @@
     <title>互联网+智慧机场可视化界面 - DAYAV</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -14,10 +14,19 @@
             box-sizing: border-box;
         }
         
+        :root {
+            --orange: #FF6B2B;
+            --black: #000000;
+            --white: #FFFFFF;
+            --gray-1: #111111;
+            --gray-2: #222222;
+            --gray-3: #333333;
+        }
+        
         body {
             font-family: 'Rajdhani', 'Noto Sans SC', sans-serif;
-            background: #0a0a0f;
-            color: #fff;
+            background: var(--black);
+            color: var(--white);
             overflow: hidden;
             height: 100vh;
             width: 100vw;
@@ -25,80 +34,162 @@
 
         .dashboard {
             display: grid;
-            grid-template-columns: 320px 1fr 320px;
-            grid-template-rows: 60px 1fr;
+            grid-template-columns: 340px 1fr 340px;
+            grid-template-rows: 70px 1fr;
             height: 100vh;
-            gap: 20px;
-            padding: 20px;
-            background: radial-gradient(ellipse at center, #0f1419 0%, #000000 100%);
+            gap: 1px;
+            background: var(--black);
         }
 
-        /* Header */
+        /* Header - HUD Style */
         .header {
             grid-column: 1 / -1;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-            padding-bottom: 15px;
+            padding: 0 40px;
+            border-bottom: 1px solid var(--gray-2);
+            background: linear-gradient(180deg, var(--gray-1) 0%, var(--black) 100%);
+            position: relative;
+        }
+
+        .header::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--orange), transparent);
+            opacity: 0.5;
         }
 
         .logo-section {
             display: flex;
             align-items: center;
-            gap: 15px;
+            gap: 20px;
         }
 
         .logo {
-            font-size: 24px;
+            font-size: 28px;
             font-weight: 700;
-            letter-spacing: 2px;
-            background: linear-gradient(135deg, #fff 0%, #888 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            letter-spacing: 4px;
+            color: var(--white);
+            position: relative;
+        }
+
+        .logo::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: var(--orange);
         }
 
         .title {
-            font-size: 18px;
-            color: #fff;
-            font-weight: 500;
-            letter-spacing: 1px;
+            font-size: 16px;
+            color: var(--white);
+            font-weight: 300;
+            letter-spacing: 2px;
+            opacity: 0.8;
         }
 
         .header-center {
             display: flex;
-            gap: 30px;
-            font-size: 12px;
-            color: #666;
+            gap: 40px;
+            font-size: 11px;
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
         }
 
         .header-item {
             display: flex;
             flex-direction: column;
             align-items: center;
+            position: relative;
+        }
+
+        .header-item::before {
+            content: '[';
+            position: absolute;
+            left: -10px;
+            color: var(--orange);
+            opacity: 0;
+            transition: all 0.3s;
+        }
+
+        .header-item::after {
+            content: ']';
+            position: absolute;
+            right: -10px;
+            color: var(--orange);
+            opacity: 0;
+            transition: all 0.3s;
+        }
+
+        .header-item:hover::before,
+        .header-item:hover::after {
+            opacity: 1;
         }
 
         .header-label {
-            font-size: 10px;
+            font-size: 9px;
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 2px;
+            color: var(--gray-3);
             margin-bottom: 4px;
         }
 
         .header-value {
-            color: #fff;
-            font-weight: 600;
-            font-family: monospace;
+            color: var(--white);
+            font-weight: 500;
+            font-family: 'Rajdhani', monospace;
+            font-size: 13px;
         }
 
-        /* Panels */
+        .header-status {
+            display: flex;
+            gap: 25px;
+            font-size: 10px;
+            letter-spacing: 1px;
+        }
+
+        .status-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--white);
+            opacity: 0.6;
+            transition: opacity 0.3s;
+        }
+
+        .status-item:hover {
+            opacity: 1;
+        }
+
+        .status-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--white);
+        }
+
+        .status-dot.active {
+            background: var(--orange);
+            box-shadow: 0 0 10px var(--orange);
+        }
+
+        /* Panels - HUD Glass */
         .panel {
-            background: rgba(255,255,255,0.02);
-            border: 1px solid rgba(255,255,255,0.05);
-            border-radius: 4px;
-            padding: 15px;
+            background: rgba(17, 17, 17, 0.6);
+            border: 1px solid var(--gray-2);
+            padding: 20px;
             position: relative;
             overflow: hidden;
+            backdrop-filter: blur(10px);
         }
 
         .panel::before {
@@ -106,118 +197,186 @@
             position: absolute;
             top: 0;
             left: 0;
-            right: 0;
+            width: 100%;
             height: 1px;
-            background: linear-gradient(90deg, transparent, rgba(255,165,0,0.5), transparent);
+            background: linear-gradient(90deg, transparent, var(--orange), transparent);
+            opacity: 0.3;
         }
 
+        .panel-corner {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            border: 1px solid var(--orange);
+            opacity: 0.5;
+        }
+
+        .panel-corner.top-left { top: 0; left: 0; border-right: 0; border-bottom: 0; }
+        .panel-corner.top-right { top: 0; right: 0; border-left: 0; border-bottom: 0; }
+        .panel-corner.bottom-left { bottom: 0; left: 0; border-right: 0; border-top: 0; }
+        .panel-corner.bottom-right { bottom: 0; right: 0; border-left: 0; border-top: 0; }
+
         .panel-title {
-            font-size: 12px;
-            color: #fff;
-            margin-bottom: 15px;
+            font-size: 11px;
+            color: var(--white);
+            margin-bottom: 20px;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
             font-weight: 500;
+            letter-spacing: 1px;
+            text-transform: uppercase;
         }
 
         .panel-title::before {
             content: '';
             width: 3px;
             height: 12px;
-            background: #ff6b35;
+            background: var(--orange);
         }
 
         /* Left Column */
         .left-col {
             display: flex;
             flex-direction: column;
-            gap: 15px;
+            gap: 1px;
+            background: var(--black);
         }
 
-        .aircraft-status {
-            display: flex;
+        .aircraft-grid {
+            display: grid;
+            grid-template-columns: 80px 1fr;
             gap: 15px;
-            margin-bottom: 10px;
+            margin-bottom: 15px;
         }
 
-        .aircraft-icon {
+        .aircraft-icon-box {
             width: 80px;
-            height: 60px;
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.1);
+            height: 70px;
+            border: 1px solid var(--gray-3);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 30px;
+            font-size: 32px;
+            color: var(--white);
+            position: relative;
         }
 
-        .aircraft-stats {
-            flex: 1;
+        .aircraft-icon-box::after {
+            content: '';
+            position: absolute;
+            inset: 5px;
+            border: 1px solid var(--gray-2);
+        }
+
+        .stats-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 8px;
         }
 
-        .stat-box {
-            background: rgba(255,255,255,0.03);
-            padding: 8px;
+        .stat-cell {
+            border: 1px solid var(--gray-2);
+            padding: 10px;
             text-align: center;
-            border: 1px solid rgba(255,255,255,0.05);
+            position: relative;
+            transition: all 0.3s;
+        }
+
+        .stat-cell:hover {
+            border-color: var(--orange);
+            background: rgba(255, 107, 43, 0.05);
         }
 
         .stat-label {
-            font-size: 10px;
-            color: #666;
+            font-size: 9px;
+            color: var(--gray-3);
             text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
         .stat-value {
-            font-size: 16px;
-            font-weight: 700;
-            color: #fff;
-            margin-top: 4px;
-            font-family: monospace;
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--white);
+            margin-top: 5px;
+            font-family: 'Rajdhani', monospace;
         }
 
-        .stat-value.orange {
-            color: #ff6b35;
+        .stat-value.highlight {
+            color: var(--orange);
         }
 
-        /* Charts */
+        /* Charts - Minimal Line */
         .chart-container {
             height: 100px;
             position: relative;
-            margin-top: 10px;
+            margin-top: 15px;
+            border-bottom: 1px solid var(--gray-2);
         }
 
         .chart-svg {
             width: 100%;
             height: 100%;
+            overflow: visible;
         }
 
+        .chart-line {
+            fill: none;
+            stroke: var(--white);
+            stroke-width: 1;
+            opacity: 0.8;
+        }
+
+        .chart-line.orange {
+            stroke: var(--orange);
+            stroke-width: 2;
+        }
+
+        .chart-area {
+            fill: rgba(255, 107, 43, 0.1);
+            stroke: none;
+        }
+
+        .chart-grid {
+            stroke: var(--gray-2);
+            stroke-width: 0.5;
+            stroke-dasharray: 2,4;
+        }
+
+        /* Data Table - HUD */
         .data-table {
             width: 100%;
-            font-size: 11px;
+            font-size: 10px;
             border-collapse: collapse;
         }
 
         .data-table th {
             text-align: left;
-            color: #666;
+            color: var(--gray-3);
             font-weight: 400;
-            padding: 6px 4px;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding: 8px 5px;
+            border-bottom: 1px solid var(--gray-2);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 9px;
         }
 
         .data-table td {
-            padding: 6px 4px;
-            color: #aaa;
-            border-bottom: 1px solid rgba(255,255,255,0.05);
+            padding: 10px 5px;
+            color: var(--white);
+            border-bottom: 1px solid var(--gray-2);
+            font-family: 'Rajdhani', monospace;
+            font-size: 11px;
         }
 
         .data-table tr:last-child td {
             border-bottom: none;
+        }
+
+        .data-table tr:hover td {
+            color: var(--orange);
+            background: rgba(255, 107, 43, 0.05);
         }
 
         /* Center Globe */
@@ -226,191 +385,381 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            background: radial-gradient(ellipse at center, rgba(255,107,43,0.03) 0%, transparent 70%);
         }
 
         #globe-container {
             width: 100%;
             height: 100%;
             position: relative;
+            cursor: grab;
         }
 
-        .globe-overlay {
+        #globe-container:active {
+            cursor: grabbing;
+        }
+
+        .globe-hud {
             position: absolute;
-            top: 20px;
-            left: 20px;
-            font-size: 11px;
-            color: #666;
-        }
-
-        .flight-arcs {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            display: flex;
-            gap: 15px;
-        }
-
-        .arc-item {
-            display: flex;
-            align-items: center;
-            gap: 5px;
+            top: 30px;
+            left: 30px;
             font-size: 10px;
+            letter-spacing: 2px;
         }
 
-        .arc-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
+        .globe-hud-label {
+            color: var(--gray-3);
+            margin-bottom: 5px;
         }
 
-        .arc-dot.red { background: #ff4444; }
-        .arc-dot.yellow { background: #ffaa00; }
-        .arc-dot.green { background: #00ff88; }
-        .arc-dot.blue { background: #4488ff; }
-
-        /* Right Column */
-        .right-col {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-
-        .alert-box {
-            background: rgba(255,0,0,0.1);
-            border: 1px solid rgba(255,0,0,0.3);
-            padding: 10px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 10px;
-        }
-
-        .alert-icon {
-            width: 30px;
-            height: 30px;
-            background: rgba(255,0,0,0.2);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #ff4444;
-            font-size: 16px;
-        }
-
-        .alert-text {
-            font-size: 11px;
-            color: #ff6666;
-        }
-
-        .gauge-container {
-            display: flex;
-            justify-content: space-around;
-            margin: 15px 0;
-        }
-
-        .gauge {
-            text-align: center;
-        }
-
-        .gauge-circle {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            border: 3px solid rgba(255,255,255,0.1);
-            border-top-color: #ff6b35;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 14px;
-            font-weight: 700;
-            position: relative;
-        }
-
-        .gauge-label {
-            font-size: 10px;
-            color: #666;
-            margin-top: 8px;
-        }
-
-        .progress-bar {
-            height: 4px;
-            background: rgba(255,255,255,0.1);
-            margin: 10px 0;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #ff6b35, #ffaa00);
-            width: 65%;
-        }
-
-        .legend {
-            display: flex;
-            gap: 15px;
-            font-size: 10px;
-            color: #666;
-            margin-top: 10px;
-        }
-
-        .legend-item {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        .legend-dot {
-            width: 6px;
-            height: 6px;
-            border-radius: 50%;
-        }
-
-        .bottom-bar {
-            position: absolute;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            display: flex;
-            gap: 30px;
-            font-size: 11px;
-            color: #666;
-        }
-
-        .bottom-item {
+        .globe-hud-value {
+            color: var(--orange);
+            font-size: 12px;
             display: flex;
             align-items: center;
             gap: 8px;
         }
 
-        .bottom-dot {
+        .globe-hud-value::before {
+            content: '';
             width: 8px;
             height: 8px;
-            background: #ff6b35;
-            border-radius: 2px;
-        }
-
-        /* Animations */
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
-        }
-
-        .pulse {
+            background: var(--orange);
+            border-radius: 50%;
             animation: pulse 2s infinite;
         }
 
-        @keyframes rotate {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(0.8); }
         }
 
-        .rotating {
-            animation: rotate 20s linear infinite;
+        .globe-status {
+            position: absolute;
+            top: 30px;
+            right: 30px;
+            display: flex;
+            gap: 20px;
+            font-size: 10px;
+        }
+
+        .status-badge {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--white);
+            opacity: 0.6;
+        }
+
+        .status-badge.active {
+            opacity: 1;
+        }
+
+        .status-badge-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--white);
+        }
+
+        .status-badge.active .status-badge-dot {
+            background: var(--orange);
+            box-shadow: 0 0 8px var(--orange);
+        }
+
+        /* Right Column */
+        .right-col {
+            display: flex;
+            flex-direction: column;
+            gap: 1px;
+            background: var(--black);
+        }
+
+        .alert-panel {
+            background: rgba(255, 107, 43, 0.05);
+            border: 1px solid var(--orange);
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .alert-panel::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 3px;
+            height: 100%;
+            background: var(--orange);
+        }
+
+        .alert-icon {
+            width: 40px;
+            height: 40px;
+            border: 1px solid var(--orange);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            color: var(--orange);
+            font-weight: 700;
+        }
+
+        .alert-content {
+            flex: 1;
+        }
+
+        .alert-title {
+            font-size: 11px;
+            color: var(--orange);
+            margin-bottom: 4px;
+            letter-spacing: 1px;
+        }
+
+        .alert-text {
+            font-size: 10px;
+            color: var(--white);
+            opacity: 0.8;
+        }
+
+        .gauge-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .gauge-item {
+            flex: 1;
+            text-align: center;
+        }
+
+        .gauge-ring {
+            width: 70px;
+            height: 70px;
+            margin: 0 auto 10px;
+            position: relative;
+            border-radius: 50%;
+            border: 2px solid var(--gray-2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .gauge-ring::before {
+            content: '';
+            position: absolute;
+            inset: -2px;
+            border-radius: 50%;
+            border: 2px solid transparent;
+            border-top-color: var(--orange);
+            transform: rotate(45deg);
+        }
+
+        .gauge-value {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--white);
+            font-family: 'Rajdhani', monospace;
+        }
+
+        .gauge-label {
+            font-size: 9px;
+            color: var(--gray-3);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Mini Cards */
+        .mini-cards {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .mini-card {
+            border: 1px solid var(--gray-2);
+            padding: 12px;
+            position: relative;
+        }
+
+        .mini-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 20px;
+            height: 1px;
+            background: var(--orange);
+        }
+
+        .mini-card-date {
+            font-size: 9px;
+            color: var(--gray-3);
+            margin-bottom: 8px;
+        }
+
+        .mini-card-title {
+            font-size: 13px;
+            color: var(--white);
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .mini-card-status {
+            font-size: 10px;
+            color: var(--orange);
+        }
+
+        .mini-card-status.ontime {
+            color: var(--white);
+            opacity: 0.6;
+        }
+
+        /* Stats Summary */
+        .stats-summary {
+            display: flex;
+            justify-content: space-between;
+            margin: 20px 0;
+            padding: 20px 0;
+            border-top: 1px solid var(--gray-2);
+            border-bottom: 1px solid var(--gray-2);
+        }
+
+        .summary-item {
+            text-align: center;
+        }
+
+        .summary-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--white);
+            font-family: 'Rajdhani', monospace;
+            line-height: 1;
+        }
+
+        .summary-value.warning {
+            color: var(--orange);
+        }
+
+        .summary-label {
+            font-size: 9px;
+            color: var(--gray-3);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 8px;
+        }
+
+        /* Progress */
+        .progress-hud {
+            margin-top: 15px;
+        }
+
+        .progress-line {
+            height: 2px;
+            background: var(--gray-2);
+            position: relative;
+            margin-bottom: 15px;
+        }
+
+        .progress-fill {
+            position: absolute;
+            height: 100%;
+            background: var(--orange);
+            width: 65%;
+            box-shadow: 0 0 10px var(--orange);
+        }
+
+        .progress-markers {
+            display: flex;
+            justify-content: space-between;
+            font-size: 9px;
+            color: var(--gray-3);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .progress-markers span {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .progress-markers span::before {
+            content: '';
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            background: currentColor;
+        }
+
+        /* Bottom HUD */
+        .bottom-hud {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 40px;
+            padding: 15px 30px;
+            border: 1px solid var(--gray-2);
+            background: rgba(0,0,0,0.8);
+            font-size: 10px;
+            letter-spacing: 1px;
+        }
+
+        .bottom-hud-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--white);
+        }
+
+        .bottom-hud-dot {
+            width: 6px;
+            height: 6px;
+            background: var(--orange);
+        }
+
+        .bottom-hud-label {
+            color: var(--gray-3);
+        }
+
+        .bottom-hud-value {
+            color: var(--white);
+            font-family: 'Rajdhani', monospace;
+            font-weight: 600;
+        }
+
+        /* Scanline effect */
+        .scanlines {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                to bottom,
+                rgba(255,255,255,0),
+                rgba(255,255,255,0) 50%,
+                rgba(0,0,0,0.1) 50%,
+                rgba(0,0,0,0.1)
+            );
+            background-size: 100% 4px;
+            pointer-events: none;
+            z-index: 1000;
+            opacity: 0.3;
         }
     </style>
+<base target="_blank">
 </head>
 <body>
+    <div class="scanlines"></div>
+    
     <div class="dashboard">
         <!-- Header -->
         <div class="header">
@@ -418,105 +767,117 @@
                 <div class="logo">DAYAV</div>
                 <div class="title">互联网+智慧机场可视化界面</div>
             </div>
+            
             <div class="header-center">
                 <div class="header-item">
-                    <div class="header-label">FLIGHT ID</div>
+                    <div class="header-label">Flight ID</div>
                     <div class="header-value">HX2513/052513</div>
                 </div>
                 <div class="header-item">
+                    <div class="header-label">Tracking</div>
                     <div class="header-value">HX2513/052513</div>
                 </div>
                 <div class="header-item">
+                    <div class="header-label">System</div>
                     <div class="header-value">HX2513/052513</div>
                 </div>
             </div>
-            <div class="header-right" style="display: flex; gap: 20px; font-size: 11px; color: #666;">
-                <div style="display: flex; align-items: center; gap: 5px;">
-                    <div style="width: 8px; height: 8px; background: #ff6b35; border-radius: 50%;"></div>
-                    正常
+
+            <div class="header-status">
+                <div class="status-item">
+                    <div class="status-dot active"></div>
+                    <span>正常</span>
                 </div>
-                <div style="display: flex; align-items: center; gap: 5px;">
-                    <div style="width: 8px; height: 8px; background: #ff4444; border-radius: 50%;"></div>
-                    延误
+                <div class="status-item">
+                    <div class="status-dot"></div>
+                    <span>延误</span>
                 </div>
-                <div style="display: flex; align-items: center; gap: 5px;">
-                    <div style="width: 8px; height: 8px; background: #00ff88; border-radius: 50%;"></div>
-                    到达
+                <div class="status-item">
+                    <div class="status-dot"></div>
+                    <span>到达</span>
                 </div>
-                <div style="display: flex; align-items: center; gap: 5px;">
-                    <div style="width: 8px; height: 8px; background: #4488ff; border-radius: 50%;"></div>
-                    起飞
+                <div class="status-item">
+                    <div class="status-dot"></div>
+                    <span>起飞</span>
                 </div>
             </div>
         </div>
 
         <!-- Left Column -->
         <div class="left-col">
-            <!-- Aircraft Status -->
+            <!-- Check-in Stats -->
             <div class="panel">
+                <div class="panel-corner top-left"></div>
+                <div class="panel-corner top-right"></div>
+                <div class="panel-corner bottom-left"></div>
+                <div class="panel-corner bottom-right"></div>
+                
                 <div class="panel-title">当日办理值机人数</div>
-                <div class="aircraft-status">
-                    <div class="aircraft-icon">✈</div>
-                    <div class="aircraft-stats">
-                        <div class="stat-box">
+                
+                <div class="aircraft-grid">
+                    <div class="aircraft-icon-box">✈</div>
+                    <div class="stats-grid">
+                        <div class="stat-cell">
                             <div class="stat-label">航班数</div>
-                            <div class="stat-value orange">268</div>
+                            <div class="stat-value highlight">268</div>
                         </div>
-                        <div class="stat-box">
+                        <div class="stat-cell">
                             <div class="stat-label">旅客数</div>
                             <div class="stat-value">36845</div>
                         </div>
-                        <div class="stat-box">
+                        <div class="stat-cell">
                             <div class="stat-label">货邮数</div>
-                            <div class="stat-value orange">30690</div>
+                            <div class="stat-value highlight">30690</div>
                         </div>
-                        <div class="stat-box">
+                        <div class="stat-cell">
                             <div class="stat-label">行李数</div>
                             <div class="stat-value">90645</div>
                         </div>
                     </div>
                 </div>
+
                 <div class="chart-container">
-                    <svg class="chart-svg" viewBox="0 0 300 80">
-                        <defs>
-                            <linearGradient id="areaGrad1" x1="0%" y1="0%" x2="0%" y2="100%">
-                                <stop offset="0%" style="stop-color:#ff6b35;stop-opacity:0.3" />
-                                <stop offset="100%" style="stop-color:#ff6b35;stop-opacity:0" />
-                            </linearGradient>
-                        </defs>
-                        <path d="M0,60 Q30,50 60,45 T120,40 T180,35 T240,30 T300,25" fill="none" stroke="#ff6b35" stroke-width="2"/>
-                        <path d="M0,60 Q30,50 60,45 T120,40 T180,35 T240,30 T300,25 L300,80 L0,80 Z" fill="url(#areaGrad1)"/>
-                        <path d="M0,70 Q50,65 100,60 T200,50 T300,40" fill="none" stroke="#666" stroke-width="1" stroke-dasharray="3,3"/>
+                    <svg class="chart-svg" viewBox="0 0 300 100" preserveAspectRatio="none">
+                        <line class="chart-grid" x1="0" y1="25" x2="300" y2="25"/>
+                        <line class="chart-grid" x1="0" y1="50" x2="300" y2="50"/>
+                        <line class="chart-grid" x1="0" y1="75" x2="300" y2="75"/>
+                        <path class="chart-area" d="M0,80 Q50,60 100,50 T200,40 T300,30 L300,100 L0,100 Z"/>
+                        <path class="chart-line orange" d="M0,80 Q50,60 100,50 T200,40 T300,30"/>
+                        <path class="chart-line" d="M0,90 Q75,70 150,75 T300,60" opacity="0.4"/>
                     </svg>
                 </div>
             </div>
 
-            <!-- Flight Data -->
+            <!-- Flight Delays -->
             <div class="panel">
+                <div class="panel-corner top-left"></div>
+                <div class="panel-corner top-right"></div>
+                <div class="panel-corner bottom-left"></div>
+                <div class="panel-corner bottom-right"></div>
+                
                 <div class="panel-title">航班延误情况</div>
+                
                 <div class="chart-container" style="height: 120px;">
-                    <svg class="chart-svg" viewBox="0 0 300 100">
-                        <defs>
-                            <linearGradient id="areaGrad2" x1="0%" y1="0%" x2="0%" y2="100%">
-                                <stop offset="0%" style="stop-color:#4488ff;stop-opacity:0.2" />
-                                <stop offset="100%" style="stop-color:#4488ff;stop-opacity:0" />
-                            </linearGradient>
-                        </defs>
-                        <!-- Grid -->
-                        <line x1="0" y1="20" x2="300" y2="20" stroke="rgba(255,255,255,0.05)" stroke-width="1"/>
-                        <line x1="0" y1="50" x2="300" y2="50" stroke="rgba(255,255,255,0.05)" stroke-width="1"/>
-                        <line x1="0" y1="80" x2="300" y2="80" stroke="rgba(255,255,255,0.05)" stroke-width="1"/>
-                        <!-- Wave lines -->
-                        <path d="M0,50 Q30,30 60,40 T120,35 T180,45 T240,30 T300,40" fill="none" stroke="#4488ff" stroke-width="2"/>
-                        <path d="M0,60 Q40,45 80,55 T160,50 T240,40 T300,55" fill="none" stroke="#ff6b35" stroke-width="1.5"/>
-                        <path d="M0,70 Q50,60 100,65 T200,55 T300,60" fill="none" stroke="#666" stroke-width="1"/>
+                    <svg class="chart-svg" viewBox="0 0 300 120" preserveAspectRatio="none">
+                        <line class="chart-grid" x1="0" y1="30" x2="300" y2="30"/>
+                        <line class="chart-grid" x1="0" y1="60" x2="300" y2="60"/>
+                        <line class="chart-grid" x1="0" y1="90" x2="300" y2="90"/>
+                        <path class="chart-line" d="M0,60 Q40,40 80,50 T160,45 T240,35 T300,40" opacity="0.6"/>
+                        <path class="chart-line orange" d="M0,80 Q60,50 120,60 T240,40 T300,50"/>
+                        <path class="chart-line" d="M0,100 Q50,80 100,85 T200,75 T300,80" opacity="0.3"/>
                     </svg>
                 </div>
             </div>
 
-            <!-- Cargo Status -->
+            <!-- Cargo -->
             <div class="panel">
+                <div class="panel-corner top-left"></div>
+                <div class="panel-corner top-right"></div>
+                <div class="panel-corner bottom-left"></div>
+                <div class="panel-corner bottom-right"></div>
+                
                 <div class="panel-title">当日货运情况</div>
+                
                 <table class="data-table">
                     <thead>
                         <tr>
@@ -558,10 +919,11 @@
                         </tr>
                     </tbody>
                 </table>
+
                 <div class="chart-container" style="height: 60px; margin-top: 15px;">
-                    <svg class="chart-svg" viewBox="0 0 300 60">
-                        <path d="M0,30 Q50,20 100,25 T200,20 T300,25" fill="none" stroke="#ff6b35" stroke-width="2"/>
-                        <path d="M0,35 Q60,25 120,30 T240,25 T300,30" fill="none" stroke="#666" stroke-width="1"/>
+                    <svg class="chart-svg" viewBox="0 0 300 60" preserveAspectRatio="none">
+                        <path class="chart-line orange" d="M0,40 Q75,20 150,30 T300,20"/>
+                        <path class="chart-line" d="M0,50 Q100,35 200,45 T300,40" opacity="0.4"/>
                     </svg>
                 </div>
             </div>
@@ -570,184 +932,285 @@
         <!-- Center Globe -->
         <div class="center-col">
             <div id="globe-container"></div>
-            <div class="globe-overlay">
-                <div style="font-size: 10px; color: #666; margin-bottom: 5px;">实时航班追踪</div>
-                <div style="font-size: 14px; color: #ff6b35;">● LIVE MONITORING</div>
-            </div>
-            <div class="flight-arcs">
-                <div class="arc-item"><div class="arc-dot red"></div>异常</div>
-                <div class="arc-item"><div class="arc-dot yellow"></div>预警</div>
-                <div class="arc-item"><div class="arc-dot green"></div>正常</div>
-                <div class="arc-item"><div class="arc-dot blue"></div>监控</div>
-            </div>
             
-            <div class="bottom-bar">
-                <div class="bottom-item"><div class="bottom-dot"></div>北京: 10412</div>
-                <div class="bottom-item"><div class="bottom-dot" style="background: #ff4444;"></div>上海: 9054</div>
-                <div class="bottom-item"><div class="bottom-dot" style="background: #00ff88;"></div>广州: 22091</div>
-                <div class="bottom-item"><div class="bottom-dot" style="background: #4488ff;"></div>深圳: 43665</div>
-                <div class="bottom-item"><div class="bottom-dot" style="background: #ffaa00;"></div>成都: 84521</div>
-                <div class="bottom-item"><div class="bottom-dot" style="background: #666;"></div>杭州: 33213</div>
+            <div class="globe-hud">
+                <div class="globe-hud-label">实时航班追踪</div>
+                <div class="globe-hud-value">LIVE MONITORING</div>
+            </div>
+
+            <div class="globe-status">
+                <div class="status-badge active">
+                    <div class="status-badge-dot"></div>
+                    <span>异常</span>
+                </div>
+                <div class="status-badge">
+                    <div class="status-badge-dot"></div>
+                    <span>预警</span>
+                </div>
+                <div class="status-badge">
+                    <div class="status-badge-dot"></div>
+                    <span>正常</span>
+                </div>
+                <div class="status-badge">
+                    <div class="status-badge-dot"></div>
+                    <span>监控</span>
+                </div>
+            </div>
+
+            <div class="bottom-hud">
+                <div class="bottom-hud-item">
+                    <div class="bottom-hud-dot"></div>
+                    <span class="bottom-hud-label">北京</span>
+                    <span class="bottom-hud-value">10412</span>
+                </div>
+                <div class="bottom-hud-item">
+                    <div class="bottom-hud-dot" style="background: var(--white);"></div>
+                    <span class="bottom-hud-label">上海</span>
+                    <span class="bottom-hud-value">9054</span>
+                </div>
+                <div class="bottom-hud-item">
+                    <div class="bottom-hud-dot"></div>
+                    <span class="bottom-hud-label">广州</span>
+                    <span class="bottom-hud-value">22091</span>
+                </div>
+                <div class="bottom-hud-item">
+                    <div class="bottom-hud-dot" style="background: var(--white);"></div>
+                    <span class="bottom-hud-label">深圳</span>
+                    <span class="bottom-hud-value">43665</span>
+                </div>
+                <div class="bottom-hud-item">
+                    <div class="bottom-hud-dot"></div>
+                    <span class="bottom-hud-label">成都</span>
+                    <span class="bottom-hud-value">84521</span>
+                </div>
+                <div class="bottom-hud-item">
+                    <div class="bottom-hud-dot" style="background: var(--white);"></div>
+                    <span class="bottom-hud-label">杭州</span>
+                    <span class="bottom-hud-value">33213</span>
+                </div>
             </div>
         </div>
 
         <!-- Right Column -->
         <div class="right-col">
-            <!-- Alert Section -->
+            <!-- Alerts -->
             <div class="panel">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                <div class="panel-corner top-left"></div>
+                <div class="panel-corner top-right"></div>
+                <div class="panel-corner bottom-left"></div>
+                <div class="panel-corner bottom-right"></div>
+                
+                <div style="display: flex; justify-content: space-between; margin-bottom: 15px;">
                     <div class="panel-title" style="margin: 0;">一级预警</div>
                     <div class="panel-title" style="margin: 0;">二级预警</div>
                 </div>
-                <div class="alert-box">
+
+                <div class="alert-panel">
                     <div class="alert-icon">!</div>
-                    <div class="alert-text">异常事件处理: 00077<br>请及时处理延误航班</div>
+                    <div class="alert-content">
+                        <div class="alert-title">异常事件处理: 00077</div>
+                        <div class="alert-text">请及时处理延误航班</div>
+                    </div>
                 </div>
-                
+
                 <div class="panel-title">人流密度统计</div>
-                <div class="gauge-container">
-                    <div class="gauge">
-                        <div class="gauge-circle">85%</div>
+                
+                <div class="gauge-row">
+                    <div class="gauge-item">
+                        <div class="gauge-ring">
+                            <div class="gauge-value">85%</div>
+                        </div>
                         <div class="gauge-label">T1航站楼</div>
                     </div>
-                    <div class="gauge">
-                        <div class="gauge-circle" style="border-top-color: #ff4444;">72%</div>
+                    <div class="gauge-item">
+                        <div class="gauge-ring" style="opacity: 0.7;">
+                            <div class="gauge-value" style="font-size: 14px;">72%</div>
+                        </div>
                         <div class="gauge-label">T2航站楼</div>
                     </div>
-                    <div class="gauge">
-                        <div class="gauge-circle" style="border-top-color: #00ff88;">68%</div>
+                    <div class="gauge-item">
+                        <div class="gauge-ring" style="opacity: 0.5;">
+                            <div class="gauge-value" style="font-size: 14px;">68%</div>
+                        </div>
                         <div class="gauge-label">T3航站楼</div>
                     </div>
                 </div>
             </div>
 
-            <!-- Baggage Stats -->
+            <!-- Baggage -->
             <div class="panel">
+                <div class="panel-corner top-left"></div>
+                <div class="panel-corner top-right"></div>
+                <div class="panel-corner bottom-left"></div>
+                <div class="panel-corner bottom-right"></div>
+                
                 <div class="panel-title">行李传输统计</div>
+                
                 <div class="chart-container" style="height: 80px;">
-                    <svg class="chart-svg" viewBox="0 0 300 80">
-                        <defs>
-                            <linearGradient id="areaGrad3" x1="0%" y1="0%" x2="0%" y2="100%">
-                                <stop offset="0%" style="stop-color:#00ff88;stop-opacity:0.3" />
-                                <stop offset="100%" style="stop-color:#00ff88;stop-opacity:0" />
-                            </linearGradient>
-                        </defs>
-                        <path d="M0,60 Q40,40 80,35 T160,30 T240,35 T300,25" fill="none" stroke="#00ff88" stroke-width="2"/>
-                        <path d="M0,60 Q40,40 80,35 T160,30 T240,35 T300,25 L300,80 L0,80 Z" fill="url(#areaGrad3)"/>
-                        <path d="M0,50 Q60,45 120,48 T240,45 T300,50" fill="none" stroke="#ff6b35" stroke-width="1.5"/>
+                    <svg class="chart-svg" viewBox="0 0 300 80" preserveAspectRatio="none">
+                        <line class="chart-grid" x1="0" y1="20" x2="300" y2="20"/>
+                        <line class="chart-grid" x1="0" y1="40" x2="300" y2="40"/>
+                        <line class="chart-grid" x1="0" y1="60" x2="300" y2="60"/>
+                        <path class="chart-area" d="M0,60 Q50,30 100,25 T200,20 T300,15 L300,80 L0,80 Z" style="fill: rgba(255,255,255,0.05);"/>
+                        <path class="chart-line" d="M0,60 Q50,30 100,25 T200,20 T300,15"/>
+                        <path class="chart-line orange" d="M0,70 Q75,50 150,55 T300,45"/>
                     </svg>
                 </div>
-                
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; font-size: 10px;">
-                    <div style="background: rgba(255,255,255,0.03); padding: 8px;">
-                        <div style="color: #666;">9月12日 20:15起飞</div>
-                        <div style="color: #fff; font-size: 14px; margin-top: 4px;">2014次航班</div>
-                        <div style="color: #ff6b35; margin-top: 4px;">延误 30分钟</div>
+
+                <div class="mini-cards">
+                    <div class="mini-card">
+                        <div class="mini-card-date">9月12日 20:15起飞</div>
+                        <div class="mini-card-title">2014次航班</div>
+                        <div class="mini-card-status">延误 30分钟</div>
                     </div>
-                    <div style="background: rgba(255,255,255,0.03); padding: 8px;">
-                        <div style="color: #666;">10月12日 20:15到达</div>
-                        <div style="color: #fff; font-size: 14px; margin-top: 4px;">2014次航班</div>
-                        <div style="color: #00ff88; margin-top: 4px;">准点</div>
+                    <div class="mini-card">
+                        <div class="mini-card-date">10月12日 20:15到达</div>
+                        <div class="mini-card-title">2014次航班</div>
+                        <div class="mini-card-status ontime">准点</div>
                     </div>
                 </div>
             </div>
 
-            <!-- Flight Delay Analysis -->
+            <!-- Delay Analysis -->
             <div class="panel">
-                <div class="panel-title">航班延误情况</div>
-                <div style="font-size: 10px; color: #666; margin-bottom: 10px;">北京、上海、广州、深圳、厦门、青岛、南京、成都等机场</div>
+                <div class="panel-corner top-left"></div>
+                <div class="panel-corner top-right"></div>
+                <div class="panel-corner bottom-left"></div>
+                <div class="panel-corner bottom-right"></div>
                 
-                <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
-                    <div style="text-align: center;">
-                        <div style="font-size: 24px; font-weight: 700; color: #fff;">24</div>
-                        <div style="font-size: 10px; color: #666;">总航班</div>
+                <div class="panel-title">航班延误情况</div>
+                
+                <div style="font-size: 10px; color: var(--gray-3); margin-bottom: 20px; letter-spacing: 1px;">
+                    北京、上海、广州、深圳、厦门、青岛、南京、成都等机场
+                </div>
+
+                <div class="stats-summary">
+                    <div class="summary-item">
+                        <div class="summary-value">24</div>
+                        <div class="summary-label">总航班</div>
                     </div>
-                    <div style="text-align: center;">
-                        <div style="font-size: 24px; font-weight: 700; color: #ff6b35;">8</div>
-                        <div style="font-size: 10px; color: #666;">延误</div>
+                    <div class="summary-item">
+                        <div class="summary-value warning">8</div>
+                        <div class="summary-label">延误</div>
                     </div>
-                    <div style="text-align: center;">
-                        <div style="font-size: 24px; font-weight: 700; color: #00ff88;">16</div>
-                        <div style="font-size: 10px; color: #666;">正常</div>
+                    <div class="summary-item">
+                        <div class="summary-value">16</div>
+                        <div class="summary-label">正常</div>
                     </div>
                 </div>
 
-                <div class="progress-bar">
-                    <div class="progress-fill" style="width: 33%; background: linear-gradient(90deg, #ff4444, #ff6b35);"></div>
-                </div>
-
-                <div class="legend">
-                    <div class="legend-item"><div class="legend-dot" style="background: #fff;"></div>正常</div>
-                    <div class="legend-item"><div class="legend-dot" style="background: #ff6b35;"></div>延误</div>
-                    <div class="legend-item"><div class="legend-dot" style="background: #ff4444;"></div>取消</div>
+                <div class="progress-hud">
+                    <div class="progress-line">
+                        <div class="progress-fill" style="width: 33%;"></div>
+                    </div>
+                    <div class="progress-markers">
+                        <span style="color: var(--white);">正常</span>
+                        <span style="color: var(--orange);">延误</span>
+                        <span style="color: var(--gray-3);">取消</span>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        // Three.js Globe Setup
+        // Three.js Globe - WHITE WIREframe VERSION
         const container = document.getElementById('globe-container');
         const scene = new THREE.Scene();
         
         const camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 1000);
-        camera.position.z = 2.5;
-        camera.position.y = 0.5;
+        camera.position.z = 2.2;
         
         const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
         renderer.setSize(container.clientWidth, container.clientHeight);
         renderer.setClearColor(0x000000, 0);
         container.appendChild(renderer.domElement);
 
-        // Globe Group
         const globeGroup = new THREE.Group();
         scene.add(globeGroup);
 
-        // Wireframe Globe
-        const geometry = new THREE.SphereGeometry(1, 64, 64);
+        // Main wireframe sphere - WHITE
+        const geometry = new THREE.IcosahedronGeometry(1, 3);
         const wireframeMaterial = new THREE.MeshBasicMaterial({
-            color: 0x333333,
+            color: 0xFFFFFF,
             wireframe: true,
             transparent: true,
-            opacity: 0.3
+            opacity: 0.15
         });
         const wireframeGlobe = new THREE.Mesh(geometry, wireframeMaterial);
         globeGroup.add(wireframeGlobe);
 
-        // Inner sphere for depth
-        const innerGeometry = new THREE.SphereGeometry(0.98, 32, 32);
-        const innerMaterial = new THREE.MeshBasicMaterial({
-            color: 0x0a0a0f,
+        // Inner core
+        const coreGeometry = new THREE.SphereGeometry(0.95, 32, 32);
+        const coreMaterial = new THREE.MeshBasicMaterial({
+            color: 0x000000,
             transparent: true,
-            opacity: 0.8
+            opacity: 0.9
         });
-        const innerSphere = new THREE.Mesh(innerGeometry, innerMaterial);
-        globeGroup.add(innerSphere);
+        const core = new THREE.Mesh(coreGeometry, coreMaterial);
+        globeGroup.add(core);
 
-        // Grid lines (latitude/longitude)
-        const gridHelper = new THREE.PolarGridHelper(1, 16, 8, 64, 0x444444, 0x222222);
-        gridHelper.rotation.x = Math.PI / 2;
-        globeGroup.add(gridHelper);
-
-        // Additional wireframe for tech look
-        const techGeometry = new THREE.IcosahedronGeometry(1.02, 2);
-        const techMaterial = new THREE.MeshBasicMaterial({
-            color: 0xff6b35,
-            wireframe: true,
+        // Latitude/Longitude lines
+        const lineMaterial = new THREE.LineBasicMaterial({ 
+            color: 0xFFFFFF, 
+            transparent: true, 
+            opacity: 0.1 
+        });
+        
+        // Equator
+        const equatorGeometry = new THREE.RingGeometry(0.98, 1.02, 64);
+        const equator = new THREE.Mesh(equatorGeometry, new THREE.MeshBasicMaterial({
+            color: 0xFFFFFF,
             transparent: true,
-            opacity: 0.1
-        });
-        const techWireframe = new THREE.Mesh(techGeometry, techMaterial);
-        globeGroup.add(techWireframe);
+            opacity: 0.2,
+            side: THREE.DoubleSide
+        }));
+        equator.rotation.x = Math.PI / 2;
+        globeGroup.add(equator);
 
-        // Data points (cities)
+        // Meridians
+        for (let i = 0; i < 12; i++) {
+            const meridianGeometry = new THREE.RingGeometry(0.98, 1.02, 64);
+            const meridian = new THREE.Mesh(meridianGeometry, new THREE.MeshBasicMaterial({
+                color: 0xFFFFFF,
+                transparent: true,
+                opacity: 0.1,
+                side: THREE.DoubleSide
+            }));
+            meridian.rotation.y = (i / 12) * Math.PI;
+            globeGroup.add(meridian);
+        }
+
+        // Parallels
+        for (let i = 1; i < 6; i++) {
+            const lat = (i / 6) * Math.PI / 2;
+            const radius = Math.cos(lat);
+            const y = Math.sin(lat);
+            
+            const parallelGeometry = new THREE.RingGeometry(radius * 0.98, radius * 1.02, 64);
+            const parallel = new THREE.Mesh(parallelGeometry, new THREE.MeshBasicMaterial({
+                color: 0xFFFFFF,
+                transparent: true,
+                opacity: 0.1,
+                side: THREE.DoubleSide
+            }));
+            parallel.position.y = y;
+            parallel.rotation.x = Math.PI / 2;
+            globeGroup.add(parallel);
+            
+            const parallel2 = parallel.clone();
+            parallel2.position.y = -y;
+            globeGroup.add(parallel2);
+        }
+
+        // Cities data
         const cities = [
-            { lat: 39.9, lon: 116.4, name: 'Beijing', color: 0xff6b35 },
-            { lat: 31.2, lon: 121.4, name: 'Shanghai', color: 0xff4444 },
-            { lat: 23.1, lon: 113.2, name: 'Guangzhou', color: 0x00ff88 },
-            { lat: 22.5, lon: 114.0, name: 'Shenzhen', color: 0x4488ff },
-            { lat: 30.5, lon: 104.0, name: 'Chengdu', color: 0xffaa00 },
-            { lat: 30.2, lon: 120.1, name: 'Hangzhou', color: 0x666666 }
+            { lat: 39.9, lon: 116.4, name: 'Beijing', value: 10412 },
+            { lat: 31.2, lon: 121.4, name: 'Shanghai', value: 9054 },
+            { lat: 23.1, lon: 113.2, name: 'Guangzhou', value: 22091 },
+            { lat: 22.5, lon: 114.0, name: 'Shenzhen', value: 43665 },
+            { lat: 30.5, lon: 104.0, name: 'Chengdu', value: 84521 },
+            { lat: 30.2, lon: 120.1, name: 'Hangzhou', value: 33213 }
         ];
 
         function latLonToVector3(lat, lon, radius) {
@@ -759,108 +1222,185 @@
             return new THREE.Vector3(x, y, z);
         }
 
-        // Add city markers
-        cities.forEach(city => {
+        // Add city markers - ORANGE
+        cities.forEach((city, index) => {
             const pos = latLonToVector3(city.lat, city.lon, 1.05);
             
-            // Marker dot
-            const dotGeometry = new THREE.SphereGeometry(0.02, 8, 8);
-            const dotMaterial = new THREE.MeshBasicMaterial({ color: city.color });
+            // Main dot
+            const dotGeometry = new THREE.SphereGeometry(0.025, 16, 16);
+            const dotMaterial = new THREE.MeshBasicMaterial({ 
+                color: 0xFF6B2B,
+                transparent: true,
+                opacity: 0.9
+            });
             const dot = new THREE.Mesh(dotGeometry, dotMaterial);
             dot.position.copy(pos);
             globeGroup.add(dot);
 
-            // Glow effect
-            const glowGeometry = new THREE.SphereGeometry(0.04, 8, 8);
-            const glowMaterial = new THREE.MeshBasicMaterial({
-                color: city.color,
+            // Glow ring
+            const ringGeometry = new THREE.RingGeometry(0.04, 0.06, 32);
+            const ringMaterial = new THREE.MeshBasicMaterial({
+                color: 0xFF6B2B,
                 transparent: true,
-                opacity: 0.3
+                opacity: 0.4,
+                side: THREE.DoubleSide
             });
-            const glow = new THREE.Mesh(glowGeometry, glowMaterial);
-            glow.position.copy(pos);
-            globeGroup.add(glow);
+            const ring = new THREE.Mesh(ringGeometry, ringMaterial);
+            ring.position.copy(pos);
+            ring.lookAt(new THREE.Vector3(0,0,0));
+            globeGroup.add(ring);
 
-            // Connection lines (arcs)
-            if (city.name === 'Beijing') {
-                cities.forEach(target => {
-                    if (target.name !== 'Beijing') {
-                        const targetPos = latLonToVector3(target.lat, target.lon, 1.05);
-                        const curve = new THREE.QuadraticBezierCurve3(
-                            pos,
-                            pos.clone().add(targetPos).multiplyScalar(0.5).normalize().multiplyScalar(1.3),
-                            targetPos
-                        );
-                        const points = curve.getPoints(50);
-                        const lineGeometry = new THREE.BufferGeometry().setFromPoints(points);
-                        const lineMaterial = new THREE.LineBasicMaterial({
-                            color: 0xff6b35,
-                            transparent: true,
-                            opacity: 0.3
-                        });
-                        const line = new THREE.Line(lineGeometry, lineMaterial);
-                        globeGroup.add(line);
-                    }
+            // Connection lines from Beijing to others
+            if (index > 0) {
+                const beijingPos = latLonToVector3(cities[0].lat, cities[0].lon, 1.05);
+                const midPoint = pos.clone().add(beijingPos).multiplyScalar(0.5).normalize().multiplyScalar(1.3);
+                
+                const curve = new THREE.QuadraticBezierCurve3(beijingPos, midPoint, pos);
+                const points = curve.getPoints(50);
+                const lineGeometry = new THREE.BufferGeometry().setFromPoints(points);
+                const lineMaterial = new THREE.LineBasicMaterial({
+                    color: 0xFF6B2B,
+                    transparent: true,
+                    opacity: 0.2
                 });
+                const line = new THREE.Line(lineGeometry, lineMaterial);
+                globeGroup.add(line);
             }
         });
 
-        // Particles around globe
+        // Outer decorative ring
+        const outerRingGeometry = new THREE.TorusGeometry(1.4, 0.002, 16, 100);
+        const outerRingMaterial = new THREE.MeshBasicMaterial({ 
+            color: 0xFFFFFF, 
+            transparent: true, 
+            opacity: 0.3 
+        });
+        const outerRing = new THREE.Mesh(outerRingGeometry, outerRingMaterial);
+        outerRing.rotation.x = Math.PI / 2;
+        globeGroup.add(outerRing);
+
+        // Second outer ring
+        const outerRing2 = new THREE.Mesh(
+            new THREE.TorusGeometry(1.5, 0.001, 16, 100),
+            new THREE.MeshBasicMaterial({ color: 0xFF6B2B, transparent: true, opacity: 0.2 })
+        );
+        outerRing2.rotation.x = Math.PI / 2;
+        outerRing2.rotation.y = Math.PI / 6;
+        globeGroup.add(outerRing2);
+
+        // Particles
         const particlesGeometry = new THREE.BufferGeometry();
-        const particlesCount = 200;
+        const particlesCount = 300;
         const posArray = new Float32Array(particlesCount * 3);
         
         for(let i = 0; i < particlesCount * 3; i++) {
-            posArray[i] = (Math.random() - 0.5) * 4;
+            posArray[i] = (Math.random() - 0.5) * 5;
         }
         
         particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
         const particlesMaterial = new THREE.PointsMaterial({
-            size: 0.005,
-            color: 0xff6b35,
+            size: 0.008,
+            color: 0xFFFFFF,
             transparent: true,
-            opacity: 0.6
+            opacity: 0.3
         });
         const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
         scene.add(particlesMesh);
 
-        // Lighting
-        const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
-        scene.add(ambientLight);
+        // Mouse interaction
+        let isDragging = false;
+        let previousMousePosition = { x: 0, y: 0 };
+        let rotationSpeed = { x: 0, y: 0 };
+        let autoRotate = true;
 
-        const directionalLight = new THREE.DirectionalLight(0xff6b35, 0.5);
-        directionalLight.position.set(5, 3, 5);
-        scene.add(directionalLight);
-
-        // Animation
-        let mouseX = 0;
-        let mouseY = 0;
-        let targetRotationX = 0;
-        let targetRotationY = 0;
-
-        document.addEventListener('mousemove', (event) => {
-            mouseX = (event.clientX / window.innerWidth) * 2 - 1;
-            mouseY = -(event.clientY / window.innerHeight) * 2 + 1;
+        container.addEventListener('mousedown', (e) => {
+            isDragging = true;
+            autoRotate = false;
+            previousMousePosition = { x: e.clientX, y: e.clientY };
         });
 
+        document.addEventListener('mouseup', () => {
+            isDragging = false;
+            setTimeout(() => { autoRotate = true; }, 2000);
+        });
+
+        document.addEventListener('mousemove', (e) => {
+            if (isDragging) {
+                const deltaMove = {
+                    x: e.clientX - previousMousePosition.x,
+                    y: e.clientY - previousMousePosition.y
+                };
+                
+                rotationSpeed.y = deltaMove.x * 0.005;
+                rotationSpeed.x = deltaMove.y * 0.005;
+                
+                globeGroup.rotation.y += rotationSpeed.y;
+                globeGroup.rotation.x += rotationSpeed.x;
+                
+                previousMousePosition = { x: e.clientX, y: e.clientY };
+            }
+        });
+
+        // Touch support
+        container.addEventListener('touchstart', (e) => {
+            isDragging = true;
+            autoRotate = false;
+            previousMousePosition = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+        });
+
+        document.addEventListener('touchend', () => {
+            isDragging = false;
+            setTimeout(() => { autoRotate = true; }, 2000);
+        });
+
+        document.addEventListener('touchmove', (e) => {
+            if (isDragging) {
+                const deltaMove = {
+                    x: e.touches[0].clientX - previousMousePosition.x,
+                    y: e.touches[0].clientY - previousMousePosition.y
+                };
+                
+                rotationSpeed.y = deltaMove.x * 0.005;
+                rotationSpeed.x = deltaMove.y * 0.005;
+                
+                globeGroup.rotation.y += rotationSpeed.y;
+                globeGroup.rotation.x += rotationSpeed.x;
+                
+                previousMousePosition = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+            }
+        });
+
+        // Animation
         function animate() {
             requestAnimationFrame(animate);
 
-            // Auto rotation
-            globeGroup.rotation.y += 0.001;
-            
-            // Mouse interaction
-            targetRotationY = mouseX * 0.5;
-            targetRotationX = mouseY * 0.3;
-            
-            globeGroup.rotation.y += (targetRotationY - globeGroup.rotation.y) * 0.05;
-            globeGroup.rotation.x += (targetRotationX - globeGroup.rotation.x) * 0.05;
+            if (autoRotate && !isDragging) {
+                globeGroup.rotation.y += 0.001;
+                rotationSpeed.x *= 0.95;
+                rotationSpeed.y *= 0.95;
+            } else if (!isDragging) {
+                // Inertia
+                globeGroup.rotation.y += rotationSpeed.y;
+                globeGroup.rotation.x += rotationSpeed.x;
+                rotationSpeed.x *= 0.95;
+                rotationSpeed.y *= 0.95;
+            }
 
-            // Pulse effect for tech wireframe
-            techWireframe.material.opacity = 0.1 + Math.sin(Date.now() * 0.001) * 0.05;
+            // Pulse effect for rings
+            const time = Date.now() * 0.001;
+            cities.forEach((city, i) => {
+                const ring = globeGroup.children.find(child => 
+                    child.geometry && child.geometry.type === 'RingGeometry' && 
+                    child.position.x === latLonToVector3(city.lat, city.lon, 1.05).x
+                );
+                if (ring) {
+                    ring.scale.setScalar(1 + Math.sin(time * 2 + i) * 0.1);
+                    ring.material.opacity = 0.3 + Math.sin(time * 2 + i) * 0.1;
+                }
+            });
 
-            // Rotate particles
-            particlesMesh.rotation.y -= 0.0005;
+            outerRing2.rotation.z += 0.0005;
+            particlesMesh.rotation.y -= 0.0002;
 
             renderer.render(scene, camera);
         }
@@ -873,24 +1413,6 @@
             camera.updateProjectionMatrix();
             renderer.setSize(container.clientWidth, container.clientHeight);
         });
-
-        // Update charts with animation
-        const paths = document.querySelectorAll('.chart-svg path');
-        paths.forEach((path, index) => {
-            const length = path.getTotalLength();
-            path.style.strokeDasharray = length;
-            path.style.strokeDashoffset = length;
-            path.style.animation = `draw 2s ease-in-out ${index * 0.2}s forwards`;
-        });
-
-        // Add CSS animation for chart drawing
-        const style = document.createElement('style');
-        style.textContent = `
-            @keyframes draw {
-                to { stroke-dashoffset: 0; }
-            }
-        `;
-        document.head.appendChild(style);
     </script>
 </body>
 </html>
