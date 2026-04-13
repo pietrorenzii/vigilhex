@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>VIGILHEX — Global Airspace Intelligence</title>
+<title>VIGILHEX PRO — Global Airspace Intelligence</title>
 <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
@@ -12,140 +12,157 @@
   --border:#0E1820;--border2:#162030;
   --orange:#E8500A;--red:#CC2200;--red2:#FF3311;
   --grey1:#1A2830;--grey2:#2E4450;--grey3:#5A7888;--white:#A8C4CC;
+  --cyan:#00D4AA;--blue:#0088FF;
 }
 html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(--grey3);font-family:'Share Tech Mono',monospace;font-size:11px}
-#hdr{position:fixed;top:0;left:0;right:0;height:40px;z-index:2000;background:rgba(4,6,8,.98);border-bottom:1px solid var(--border2);display:flex;align-items:center;justify-content:space-between;padding:0 14px}
-.logo{font-family:'Orbitron',monospace;font-size:14px;font-weight:900;color:var(--white);letter-spacing:4px;display:flex;align-items:center;gap:10px}
-.logo-hex{width:24px;height:24px;clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);background:var(--orange);display:flex;align-items:center;justify-content:center;animation:hpulse 3s ease-in-out infinite}
-.logo-hex svg{width:11px;height:11px;fill:#fff}
-@keyframes hpulse{0%,100%{box-shadow:0 0 10px rgba(232,80,10,.3)}50%{box-shadow:0 0 20px rgba(232,80,10,.7)}}
+#hdr{position:fixed;top:0;left:0;right:0;height:44px;z-index:2000;background:rgba(4,6,8,.98);border-bottom:1px solid var(--border2);display:flex;align-items:center;justify-content:space-between;padding:0 14px;backdrop-filter:blur(10px)}
+.logo{font-family:'Orbitron',monospace;font-size:15px;font-weight:900;color:var(--white);letter-spacing:4px;display:flex;align-items:center;gap:10px}
+.logo-hex{width:28px;height:28px;clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);background:var(--orange);display:flex;align-items:center;justify-content:center;animation:hpulse 3s ease-in-out infinite}
+.logo-hex svg{width:12px;height:12px;fill:#fff}
+@keyframes hpulse{0%,100%{box-shadow:0 0 10px rgba(232,80,10,.3)}50%{box-shadow:0 0 25px rgba(232,80,10,.8)}}
 .logo span{color:var(--orange)}
 .logo-sub{font-size:7px;color:var(--grey2);letter-spacing:3px;margin-top:2px}
-.hdr-stats{display:flex}
-.hdr-stat{padding:0 12px;border-left:1px solid var(--border);text-align:center;min-width:64px}
-.hdr-stat .lbl{font-size:7px;color:var(--grey2);letter-spacing:2px}
-.hdr-stat .val{font-family:'Orbitron',monospace;font-size:14px;color:var(--white)}
-.hdr-stat .val.r{color:var(--red2)}.hdr-stat .val.o{color:var(--orange)}
-.hdr-right{display:flex;align-items:center;gap:8px}
-.live-badge{display:flex;align-items:center;gap:5px;font-size:8px;color:var(--grey3)}
-.ldot{width:6px;height:6px;border-radius:50%;animation:blink 1.2s infinite;flex-shrink:0}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:.1}}
-.gh-btn{display:flex;align-items:center;gap:5px;color:var(--grey3);text-decoration:none;border:1px solid var(--border2);padding:3px 9px;font-size:8px;letter-spacing:1px;transition:.15s}
-.gh-btn:hover{color:var(--orange);border-color:var(--orange)}
+.hdr-stats{display:flex;gap:1px}
+.hdr-stat{padding:0 14px;border-left:1px solid var(--border);text-align:center;min-width:70px}
+.hdr-stat .lbl{font-size:7px;color:var(--grey2);letter-spacing:2px;text-transform:uppercase}
+.hdr-stat .val{font-family:'Orbitron',monospace;font-size:15px;color:var(--white);font-weight:700}
+.hdr-stat .val.r{color:var(--red2)}.hdr-stat .val.o{color:var(--orange)}.hdr-stat .val.c{color:var(--cyan)}
+.hdr-right{display:flex;align-items:center;gap:10px}
+.live-badge{display:flex;align-items:center;gap:6px;font-size:8px;color:var(--grey3);padding:4px 10px;border:1px solid var(--border2);border-radius:2px}
+.ldot{width:7px;height:7px;border-radius:50%;animation:blink 1.2s infinite;flex-shrink:0}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
+.gh-btn{display:flex;align-items:center;gap:5px;color:var(--grey3);text-decoration:none;border:1px solid var(--border2);padding:4px 10px;font-size:8px;letter-spacing:1px;transition:.2s;border-radius:2px}
+.gh-btn:hover{color:var(--orange);border-color:var(--orange);background:rgba(232,80,10,.1)}
 .gh-btn svg{width:13px;height:13px;fill:currentColor}
-#clock{font-size:11px;color:var(--orange);border:1px solid var(--border2);padding:3px 9px;letter-spacing:2px}
-#layout{position:fixed;top:40px;left:0;right:0;bottom:28px;display:flex}
-#sidebar{width:200px;min-width:200px;background:rgba(4,6,8,.97);border-right:1px solid var(--border);overflow-y:auto;display:flex;flex-direction:column;z-index:100}
-.sec{padding:8px 10px;border-bottom:1px solid var(--border)}
-.sec-title{font-size:7px;color:var(--grey1);letter-spacing:3px;text-transform:uppercase;margin-bottom:6px}
-.layer{display:flex;align-items:center;justify-content:space-between;padding:5px 6px;margin-bottom:2px;background:var(--bg2);border:1px solid var(--border);cursor:pointer;transition:.15s;user-select:none}
+#clock{font-size:11px;color:var(--orange);border:1px solid var(--border2);padding:4px 10px;letter-spacing:2px;border-radius:2px;background:rgba(232,80,10,.05)}
+#layout{position:fixed;top:44px;left:0;right:0;bottom:28px;display:flex}
+#sidebar{width:220px;min-width:220px;background:rgba(4,6,8,.97);border-right:1px solid var(--border);overflow-y:auto;display:flex;flex-direction:column;z-index:100}
+.sec{padding:10px 12px;border-bottom:1px solid var(--border)}
+.sec-title{font-size:7px;color:var(--grey2);letter-spacing:3px;text-transform:uppercase;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.sec-title::before{content:'//';color:var(--orange)}
+.layer{display:flex;align-items:center;justify-content:space-between;padding:6px 8px;margin-bottom:3px;background:var(--bg2);border:1px solid var(--border);cursor:pointer;transition:.15s;user-select:none;border-radius:2px}
 .layer:hover{border-color:var(--border2);background:var(--bg3)}
-.layer-l{display:flex;align-items:center;gap:6px}
-.ldot-i{width:6px;height:6px;border-radius:50%;flex-shrink:0}
-.layer-name{font-size:9px;color:var(--grey3)}
-.layer-count{font-size:7px;color:var(--grey2)}
-.tog{width:22px;height:11px;border-radius:6px;background:var(--grey1);position:relative;transition:.2s;flex-shrink:0}
+.layer-l{display:flex;align-items:center;gap:8px}
+.ldot-i{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.layer-name{font-size:10px;color:var(--grey3);font-weight:500}
+.layer-count{font-size:7px;color:var(--grey2);margin-top:1px}
+.tog{width:26px;height:13px;border-radius:7px;background:var(--grey1);position:relative;transition:.2s;flex-shrink:0}
 .tog.on{background:var(--orange)}
-.tog::after{content:'';position:absolute;top:2px;left:2px;width:7px;height:7px;border-radius:50%;background:#fff;transition:.2s}
-.tog.on::after{left:13px}
-.threat{padding:5px 6px;margin-bottom:2px;background:var(--bg2);border:1px solid var(--border);border-left:2px solid var(--red)}
+.tog::after{content:'';position:absolute;top:2px;left:2px;width:9px;height:9px;border-radius:50%;background:#fff;transition:.2s;box-shadow:0 1px 3px rgba(0,0,0,.3)}
+.tog.on::after{left:15px}
+.threat{padding:8px;margin-bottom:3px;background:var(--bg2);border:1px solid var(--border);border-left:3px solid var(--red);border-radius:2px;cursor:pointer;transition:.15s}
+.threat:hover{background:var(--bg3)}
 .threat.w{border-left-color:var(--orange)}
-.threat-tag{font-size:7px;color:var(--red2);letter-spacing:1px;margin-bottom:2px}
+.threat-tag{font-size:7px;color:var(--red2);letter-spacing:1px;margin-bottom:3px;font-weight:bold}
 .threat-tag.w{color:var(--orange)}
-.threat-body{font-size:8px;color:var(--grey3);line-height:1.4}
-.threat-body b{color:var(--white);display:block}
-.preset{padding:5px 6px;margin-bottom:2px;background:var(--bg2);border:1px solid var(--border);cursor:pointer;font-size:8px;color:var(--grey3);transition:.15s}
-.preset:hover{border-color:var(--orange);color:var(--orange)}
-#globe-wrap{flex:1;position:relative;overflow:hidden;background:#020304}
+.threat-body{font-size:9px;color:var(--grey3);line-height:1.4}
+.threat-body b{color:var(--white);display:block;margin-bottom:2px;font-size:10px}
+.preset{padding:6px 8px;margin-bottom:3px;background:var(--bg2);border:1px solid var(--border);cursor:pointer;font-size:9px;color:var(--grey3);transition:.15s;border-radius:2px}
+.preset:hover{border-color:var(--orange);color:var(--orange);background:rgba(232,80,10,.05)}
+.preset.active{border-color:var(--orange);color:var(--orange);background:rgba(232,80,10,.1)}
+#globe-wrap{flex:1;position:relative;overflow:hidden;background:radial-gradient(ellipse at center, #0a1520 0%, #020304 100%)}
 #globe-canvas{width:100%;height:100%;display:block;cursor:grab}
 #globe-canvas:active{cursor:grabbing}
-.corner{position:absolute;width:12px;height:12px;pointer-events:none;z-index:500}
-.corner.tl{top:8px;left:8px;border-top:1px solid var(--orange);border-left:1px solid var(--orange)}
-.corner.tr{top:8px;right:8px;border-top:1px solid var(--orange);border-right:1px solid var(--orange)}
-.corner.bl{bottom:8px;left:8px;border-bottom:1px solid var(--orange);border-left:1px solid var(--orange)}
-.corner.br{bottom:8px;right:8px;border-bottom:1px solid var(--orange);border-right:1px solid var(--orange)}
-#tooltip{position:absolute;background:rgba(2,3,4,.95);border:1px solid var(--border2);padding:6px 10px;font-size:9px;color:var(--white);pointer-events:none;display:none;z-index:600;letter-spacing:1px;max-width:220px}
-#fp{position:absolute;top:0;right:0;bottom:0;width:320px;background:rgba(2,3,4,.98);border-left:1px solid var(--border2);z-index:800;display:none;overflow-y:auto;box-shadow:-10px 0 40px rgba(0,0,0,.8)}
-.fp-hdr{background:rgba(232,80,10,.06);border-bottom:1px solid var(--border2);padding:12px 14px;display:flex;justify-content:space-between;align-items:flex-start;position:sticky;top:0;z-index:10}
-.fp-call{font-family:'Orbitron',monospace;font-size:18px;color:var(--white);letter-spacing:2px}
-.fp-sub{font-size:8px;color:var(--grey2);margin-top:3px}
-.fp-x{color:var(--grey2);cursor:pointer;font-size:18px;line-height:1;padding:2px 6px}
-.fp-x:hover{color:var(--orange)}
-.fp-body{padding:12px 14px}
-.fp-sec{margin-bottom:14px}
-.fp-sec-title{font-size:7px;color:var(--grey1);letter-spacing:3px;text-transform:uppercase;margin-bottom:8px;padding-bottom:4px;border-bottom:1px solid var(--border)}
-.fp-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border);border:1px solid var(--border)}
-.fp-cell{background:var(--bg2);padding:9px 10px}
+.corner{position:absolute;width:16px;height:16px;pointer-events:none;z-index:500}
+.corner.tl{top:12px;left:12px;border-top:2px solid var(--orange);border-left:2px solid var(--orange)}
+.corner.tr{top:12px;right:12px;border-top:2px solid var(--orange);border-right:2px solid var(--orange)}
+.corner.bl{bottom:12px;left:12px;border-bottom:2px solid var(--orange);border-left:2px solid var(--orange)}
+.corner.br{bottom:12px;right:12px;border-bottom:2px solid var(--orange);border-right:2px solid var(--orange)}
+#tooltip{position:absolute;background:rgba(2,3,4,.98);border:1px solid var(--border2);padding:10px 14px;font-size:10px;color:var(--white);pointer-events:none;display:none;z-index:600;letter-spacing:1px;max-width:280px;border-radius:3px;box-shadow:0 10px 40px rgba(0,0,0,.8);backdrop-filter:blur(10px)}
+#tooltip::before{content:'';position:absolute;top:-6px;left:20px;width:0;height:0;border-left:6px solid transparent;border-right:6px solid transparent;border-bottom:6px solid var(--border2)}
+#fp{position:absolute;top:0;right:0;bottom:0;width:360px;background:rgba(2,3,4,.98);border-left:1px solid var(--border2);z-index:800;display:none;overflow-y:auto;box-shadow:-10px 0 50px rgba(0,0,0,.9);backdrop-filter:blur(20px)}
+.fp-hdr{background:linear-gradient(135deg, rgba(232,80,10,.1) 0%, transparent 100%);border-bottom:1px solid var(--border2);padding:16px;display:flex;justify-content:space-between;align-items:flex-start;position:sticky;top:0;z-index:10}
+.fp-call{font-family:'Orbitron',monospace;font-size:22px;color:var(--white);letter-spacing:2px;font-weight:900}
+.fp-sub{font-size:9px;color:var(--grey2);margin-top:4px;letter-spacing:1px}
+.fp-x{color:var(--grey2);cursor:pointer;font-size:20px;line-height:1;padding:4px 8px;border-radius:3px;transition:.15s}
+.fp-x:hover{color:var(--orange);background:rgba(232,80,10,.1)}
+.fp-body{padding:16px}
+.fp-sec{margin-bottom:18px}
+.fp-sec-title{font-size:8px;color:var(--grey2);letter-spacing:3px;text-transform:uppercase;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:6px}
+.fp-sec-title::before{content:'▸';color:var(--orange)}
+.fp-grid{display:grid;grid-template-columns:1fr 1fr;gap:2px;background:var(--border);border:1px solid var(--border);border-radius:3px;overflow:hidden}
+.fp-cell{background:var(--bg2);padding:12px;transition:.15s}
+.fp-cell:hover{background:var(--bg3)}
 .fp-cell.full{grid-column:1/-1}
-.fp-cell .lbl{font-size:7px;color:var(--grey2);letter-spacing:2px;margin-bottom:4px}
-.fp-cell .val{font-size:15px;color:var(--white);font-weight:700;font-family:'Orbitron',monospace}
-.fp-cell .val.r{color:var(--red2)}.fp-cell .val.o{color:var(--orange)}.fp-cell .val.g{color:#00CC66}
-.fp-cell .sub{font-size:8px;color:var(--grey3);margin-top:2px}
-.fp-badge{display:inline-block;font-size:7px;padding:2px 6px;border:1px solid;margin:2px 2px 0 0;letter-spacing:1px}
-.fp-badge.mil{color:var(--red2);border-color:var(--red);background:rgba(204,34,0,.1)}
-.fp-badge.ano{color:var(--orange);border-color:var(--orange);background:rgba(232,80,10,.08)}
-.fp-badge.sta{color:#886600;border-color:#664400}
-.fp-badge.unk{color:var(--grey2);border-color:var(--grey1)}
-.fp-badge.crg{color:#8844AA;border-color:#6622AA}
-.fp-alert{background:rgba(232,80,10,.06);border:1px solid var(--orange);padding:8px 10px;margin-bottom:10px;font-size:9px;color:var(--orange)}
-.fp-alert.crit{background:rgba(204,34,0,.08);border-color:var(--red);color:var(--red2)}
-#rpanel{width:220px;min-width:220px;background:rgba(4,6,8,.97);border-left:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden;z-index:100}
-.tabs{display:flex;border-bottom:1px solid var(--border)}
-.tab{flex:1;padding:8px 2px;text-align:center;font-size:7px;color:var(--grey2);cursor:pointer;border-bottom:1px solid transparent;transition:.2s;letter-spacing:1px}
-.tab.on{color:var(--orange);border-bottom-color:var(--orange);background:rgba(232,80,10,.03)}
-.tab-content{display:none;flex:1;overflow-y:auto;padding:10px}
+.fp-cell .lbl{font-size:7px;color:var(--grey2);letter-spacing:2px;margin-bottom:6px;text-transform:uppercase}
+.fp-cell .val{font-size:18px;color:var(--white);font-weight:700;font-family:'Orbitron',monospace}
+.fp-cell .val.r{color:var(--red2)}.fp-cell .val.o{color:var(--orange)}.fp-cell .val.g{color:#00CC66}.fp-cell .val.c{color:var(--cyan)}
+.fp-cell .sub{font-size:8px;color:var(--grey3);margin-top:4px}
+.fp-badge{display:inline-block;font-size:8px;padding:3px 8px;border:1px solid;margin:3px 3px 0 0;letter-spacing:1px;border-radius:2px;font-weight:bold}
+.fp-badge.mil{color:var(--red2);border-color:var(--red);background:rgba(204,34,0,.15)}
+.fp-badge.ano{color:var(--orange);border-color:var(--orange);background:rgba(232,80,10,.12)}
+.fp-badge.sta{color:#AA8800;border-color:#886600;background:rgba(136,102,0,.1)}
+.fp-badge.unk{color:var(--grey2);border-color:var(--grey1);background:rgba(30,48,64,.2)}
+.fp-badge.crg{color:#AA66CC;border-color:#8844AA;background:rgba(136,68,170,.1)}
+.fp-alert{background:linear-gradient(90deg, rgba(232,80,10,.15) 0%, transparent 100%);border:1px solid var(--orange);border-left:4px solid var(--orange);padding:12px 14px;margin-bottom:12px;font-size:10px;color:var(--orange);border-radius:3px}
+.fp-alert.crit{background:linear-gradient(90deg, rgba(204,34,0,.2) 0%, transparent 100%);border-color:var(--red);border-left-color:var(--red);color:var(--red2)}
+.fp-path-info{background:var(--bg2);border:1px solid var(--border);padding:12px;border-radius:3px;margin-top:12px}
+.fp-path-info .lbl{font-size:7px;color:var(--grey2);letter-spacing:2px;margin-bottom:4px}
+.fp-path-info .val{font-size:11px;color:var(--white)}
+#rpanel{width:240px;min-width:240px;background:rgba(4,6,8,.97);border-left:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden;z-index:100}
+.tabs{display:flex;border-bottom:1px solid var(--border);background:var(--bg2)}
+.tab{flex:1;padding:10px 2px;text-align:center;font-size:8px;color:var(--grey2);cursor:pointer;border-bottom:2px solid transparent;transition:.2s;letter-spacing:1px;text-transform:uppercase;font-weight:bold}
+.tab.on{color:var(--orange);border-bottom-color:var(--orange);background:rgba(232,80,10,.05)}
+.tab-content{display:none;flex:1;overflow-y:auto;padding:12px}
 .tab-content.on{display:block}
-.metrics{display:grid;grid-template-columns:1fr 1fr;gap:3px;margin-bottom:10px}
-.mbox{background:var(--bg2);border:1px solid var(--border);padding:7px;border-left:2px solid transparent}
-.mbox.hi{border-left-color:var(--orange)}.mbox.rd{border-left-color:var(--red)}
-.ml{font-size:7px;color:var(--grey2);letter-spacing:2px}
-.mv{font-family:'Orbitron',monospace;font-size:16px;color:var(--white);margin:2px 0}
-.mv.r{color:var(--red2)}.mv.o{color:var(--orange)}
-.md{font-size:7px;color:var(--grey3)}
-.bars-lbl{font-size:7px;color:var(--grey2);letter-spacing:2px;margin-bottom:4px}
-#sparkbars{display:flex;align-items:flex-end;gap:2px;height:32px;margin-bottom:10px}
-.bar{flex:1;background:var(--grey1);min-height:2px;transition:height .3s}
-.bar.hi{background:var(--grey2)}.bar.al{background:var(--orange)}
-.feed-lbl{font-size:7px;color:var(--grey2);letter-spacing:2px;margin-bottom:6px}
-.fi{display:flex;gap:5px;padding-bottom:6px;margin-bottom:6px;border-bottom:1px solid var(--border)}
-.ft{font-size:7px;color:var(--grey2);white-space:nowrap;padding-top:1px;min-width:42px}
-.fb{font-size:8px;color:var(--grey3);line-height:1.4}
-.fb b{color:var(--white);display:block;margin-bottom:1px}
-.ftag{display:inline-block;font-size:7px;padding:0 3px;border:1px solid;margin-right:2px}
-.ftag.m{color:var(--red2);border-color:var(--red);background:rgba(204,34,0,.08)}
-.ftag.a{color:var(--orange);border-color:var(--orange);background:rgba(232,80,10,.06)}
-#bot{position:fixed;bottom:0;left:0;right:0;height:28px;z-index:2000;background:rgba(4,6,8,.98);border-top:1px solid var(--border);display:flex;align-items:center}
-.bstat{font-size:7px;color:var(--grey3);padding:0 10px;border-right:1px solid var(--border);height:100%;display:flex;align-items:center;gap:4px;white-space:nowrap}
-.bstat .v{color:var(--white)}.bstat .v.r{color:var(--red2)}.bstat .v.o{color:var(--orange)}
-#last-update{margin-left:auto;padding-right:10px;font-size:7px;color:var(--grey2)}
-#loading{position:fixed;inset:0;z-index:9999;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px}
-.load-hex{width:52px;height:52px;clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);background:var(--orange);animation:hpulse 1s ease-in-out infinite}
-.load-txt{font-family:'Orbitron',monospace;font-size:12px;color:var(--white);letter-spacing:4px}
-.load-sub{font-size:8px;color:var(--grey2);letter-spacing:3px}
-.load-bar{width:160px;height:1px;background:var(--border);position:relative;overflow:hidden}
-.load-bar::after{content:'';position:absolute;top:0;left:-50%;width:50%;height:100%;background:var(--orange);animation:scan 1s linear infinite}
+.metrics{display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-bottom:12px}
+.mbox{background:var(--bg2);border:1px solid var(--border);padding:10px 8px;border-left:3px solid transparent;border-radius:2px;transition:.15s}
+.mbox:hover{background:var(--bg3)}
+.mbox.hi{border-left-color:var(--orange)}.mbox.rd{border-left-color:var(--red)}.mbox.cy{border-left-color:var(--cyan)}
+.ml{font-size:7px;color:var(--grey2);letter-spacing:2px;text-transform:uppercase}
+.mv{font-family:'Orbitron',monospace;font-size:18px;color:var(--white);margin:4px 0;font-weight:700}
+.mv.r{color:var(--red2)}.mv.o{color:var(--orange)}.mv.c{color:var(--cyan)}
+.md{font-size:8px;color:var(--grey3)}
+.bars-lbl{font-size:8px;color:var(--grey2);letter-spacing:2px;margin-bottom:6px;text-transform:uppercase;display:flex;justify-content:space-between}
+.bars-lbl span{color:var(--grey3)}
+#sparkbars{display:flex;align-items:flex-end;gap:3px;height:40px;margin-bottom:12px;padding:4px;background:var(--bg2);border-radius:3px}
+.bar{flex:1;background:var(--grey1);min-height:3px;border-radius:1px;transition:height .4s ease}
+.bar.hi{background:var(--grey2)}.bar.al{background:var(--orange)}.bar.crit{background:var(--red2)}
+.feed-lbl{font-size:8px;color:var(--grey2);letter-spacing:2px;margin-bottom:8px;text-transform:uppercase}
+.fi{display:flex;gap:8px;padding:8px 0;border-bottom:1px solid var(--border);animation:slideIn .3s ease}
+@keyframes slideIn{from{opacity:0;transform:translateX(-10px)}to{opacity:1;transform:translateX(0)}}
+.ft{font-size:8px;color:var(--grey2);white-space:nowrap;padding-top:2px;min-width:50px;font-family:'Orbitron',monospace}
+.fb{font-size:9px;color:var(--grey3);line-height:1.5;flex:1}
+.fb b{color:var(--white);display:block;margin-bottom:2px;font-size:10px}
+.ftag{display:inline-block;font-size:7px;padding:1px 5px;border:1px solid;margin-right:3px;border-radius:2px;font-weight:bold}
+.ftag.m{color:var(--red2);border-color:var(--red);background:rgba(204,34,0,.1)}
+.ftag.a{color:var(--orange);border-color:var(--orange);background:rgba(232,80,10,.08)}
+.ftag.c{color:var(--cyan);border-color:var(--cyan);background:rgba(0,212,170,.1)}
+#bot{position:fixed;bottom:0;left:0;right:0;height:28px;z-index:2000;background:rgba(4,6,8,.98);border-top:1px solid var(--border);display:flex;align-items:center;font-size:8px}
+.bstat{font-size:8px;color:var(--grey3);padding:0 12px;border-right:1px solid var(--border);height:100%;display:flex;align-items:center;gap:6px;white-space:nowrap}
+.bstat .v{color:var(--white);font-weight:bold}.bstat .v.r{color:var(--red2)}.bstat .v.o{color:var(--orange)}.bstat .v.c{color:var(--cyan)}
+#last-update{margin-left:auto;padding-right:12px;font-size:8px;color:var(--grey2)}
+#loading{position:fixed;inset:0;z-index:9999;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px}
+.load-hex{width:60px;height:60px;clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);background:var(--orange);animation:hpulse 1.5s ease-in-out infinite}
+.load-txt{font-family:'Orbitron',monospace;font-size:14px;color:var(--white);letter-spacing:6px;font-weight:900}
+.load-sub{font-size:9px;color:var(--grey2);letter-spacing:4px}
+.load-bar{width:200px;height:2px;background:var(--border);position:relative;overflow:hidden;border-radius:1px}
+.load-bar::after{content:'';position:absolute;top:0;left:-50%;width:50%;height:100%;background:var(--orange);animation:scan 1.5s linear infinite}
 @keyframes scan{0%{left:-50%}100%{left:150%}}
+.gui-container{position:absolute;top:10px;right:10px;z-index:700}
+#flight-counter{position:absolute;top:60px;left:50%;transform:translateX(-50%);background:rgba(2,3,4,.9);border:1px solid var(--border2);padding:8px 16px;border-radius:3px;font-size:11px;color:var(--white);z-index:600;display:none}
+#flight-counter.visible{display:block}
 </style>
 </head>
 <body>
 <div id="loading">
   <div class="load-hex"></div>
-  <div class="load-txt">VIGILHEX</div>
-  <div class="load-sub">INITIALIZING GLOBE...</div>
+  <div class="load-txt">VIGILHEX PRO</div>
+  <div class="load-sub">INITIALIZING GLOBAL NETWORK...</div>
   <div class="load-bar"></div>
 </div>
 <div id="hdr">
-  <div style="display:flex;align-items:center;gap:14px">
+  <div style="display:flex;align-items:center;gap:16px">
     <div class="logo">
       <div class="logo-hex"><svg viewBox="0 0 24 24"><path d="M12 2L22 8v8l-10 6L2 16V8z"/></svg></div>
-      <div><div>VIGIL<span>HEX</span></div><div class="logo-sub">GLOBAL AIRSPACE INTELLIGENCE</div></div>
+      <div><div>VIGIL<span>HEX</span> PRO</div><div class="logo-sub">GLOBAL AIRSPACE INTELLIGENCE</div></div>
     </div>
   </div>
   <div class="hdr-stats">
     <div class="hdr-stat"><div class="lbl">TRACKED</div><div class="val" id="s-total">—</div></div>
     <div class="hdr-stat"><div class="lbl">MILITARY</div><div class="val r" id="s-mil">—</div></div>
     <div class="hdr-stat"><div class="lbl">ANOMALIES</div><div class="val o" id="s-ano">—</div></div>
-    <div class="hdr-stat"><div class="lbl">UNKNOWN</div><div class="val" id="s-unk">—</div></div>
+    <div class="hdr-stat"><div class="lbl">ACTIVE PATHS</div><div class="val c" id="s-paths">—</div></div>
     <div class="hdr-stat"><div class="lbl">XPDR OFF</div><div class="val r" id="s-xpdr">—</div></div>
   </div>
   <div class="hdr-right">
@@ -163,48 +180,53 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(
 <div id="layout">
   <div id="sidebar">
     <div class="sec">
-      <div class="sec-title">// layer control</div>
+      <div class="sec-title">LAYER CONTROL</div>
       <div class="layer" onclick="toggleLayer('military',this)">
-        <div class="layer-l"><div class="ldot-i" style="background:#CC2200;box-shadow:0 0 4px rgba(204,34,0,.5)"></div><div><div class="layer-name">MILITARY</div><div class="layer-count" id="c-military">0 TRACKED</div></div></div>
+        <div class="layer-l"><div class="ldot-i" style="background:#CC2200;box-shadow:0 0 6px rgba(204,34,0,.6)"></div><div><div class="layer-name">MILITARY</div><div class="layer-count" id="c-military">0 TRACKED</div></div></div>
         <div class="tog on" id="t-military"></div>
       </div>
       <div class="layer" onclick="toggleLayer('state',this)">
-        <div class="layer-l"><div class="ldot-i" style="background:#886600"></div><div><div class="layer-name">STATE / GOV</div><div class="layer-count" id="c-state">0 ACTIVE</div></div></div>
+        <div class="layer-l"><div class="ldot-i" style="background:#AA8800"></div><div><div class="layer-name">STATE / GOV</div><div class="layer-count" id="c-state">0 ACTIVE</div></div></div>
         <div class="tog on" id="t-state"></div>
       </div>
       <div class="layer" onclick="toggleLayer('cargo',this)">
-        <div class="layer-l"><div class="ldot-i" style="background:#6A3A8A"></div><div><div class="layer-name">CARGO</div><div class="layer-count" id="c-cargo">0 ACTIVE</div></div></div>
+        <div class="layer-l"><div class="ldot-i" style="background:#8844AA"></div><div><div class="layer-name">CARGO</div><div class="layer-count" id="c-cargo">0 ACTIVE</div></div></div>
         <div class="tog on" id="t-cargo"></div>
       </div>
       <div class="layer" onclick="toggleLayer('unknown',this)">
         <div class="layer-l"><div class="ldot-i" style="background:#1E3040;border:1px solid #2E4450"></div><div><div class="layer-name">UNKNOWN</div><div class="layer-count" id="c-unknown">0 NO SQUAWK</div></div></div>
         <div class="tog on" id="t-unknown"></div>
       </div>
-      <div class="layer" onclick="toggleLayer('anomaly',this)" style="border-color:rgba(232,80,10,.3)">
-        <div class="layer-l"><div class="ldot-i" style="background:var(--orange);box-shadow:0 0 5px rgba(232,80,10,.6);animation:blink 1s infinite"></div><div><div class="layer-name" style="color:var(--orange)">ANOMALIES</div><div class="layer-count" id="c-anomaly" style="color:var(--orange)">0 FLAGGED</div></div></div>
+      <div class="layer" onclick="toggleLayer('anomaly',this)" style="border-color:rgba(232,80,10,.4)">
+        <div class="layer-l"><div class="ldot-i" style="background:var(--orange);box-shadow:0 0 8px rgba(232,80,10,.8);animation:blink 1s infinite"></div><div><div class="layer-name" style="color:var(--orange)">ANOMALIES</div><div class="layer-count" id="c-anomaly" style="color:var(--orange)">0 FLAGGED</div></div></div>
         <div class="tog on" id="t-anomaly" style="background:var(--orange)"></div>
       </div>
     </div>
     <div class="sec">
-      <div class="sec-title">// sensitive areas</div>
-      <div class="layer" onclick="toggleSensitive('military',this)">
-        <div class="layer-l"><div class="ldot-i" style="background:#0A1820;border:1px solid #1A3A50"></div><div><div class="layer-name">MILITARY BASES</div><div class="layer-count">BUFFER 50km</div></div></div>
-        <div class="tog on" id="t-bases"></div>
+      <div class="sec-title">VISUALIZATION</div>
+      <div class="layer" onclick="togglePaths()">
+        <div class="layer-l"><div class="ldot-i" style="background:var(--cyan);box-shadow:0 0 4px rgba(0,212,170,.5)"></div><div><div class="layer-name">FLIGHT PATHS</div><div class="layer-count">PARABOLIC TRAJECTORIES</div></div></div>
+        <div class="tog on" id="t-paths"></div>
       </div>
-      <div class="layer" onclick="toggleSensitive('nuclear',this)">
-        <div class="layer-l"><div class="ldot-i" style="background:#1A0800;border:1px solid #3A1400"></div><div><div class="layer-name">NUCLEAR SITES</div><div class="layer-count">BUFFER 100km</div></div></div>
-        <div class="tog on" id="t-nuclear"></div>
+      <div class="layer" onclick="toggleAtmosphere()">
+        <div class="layer-l"><div class="ldot-i" style="background:#4488FF;box-shadow:0 0 4px rgba(68,136,255,.5)"></div><div><div class="layer-name">ATMOSPHERE</div><div class="layer-count">DYNAMIC SCATTERING</div></div></div>
+        <div class="tog on" id="t-atmos"></div>
+      </div>
+      <div class="layer" onclick="toggleDayNight()">
+        <div class="layer-l"><div class="ldot-i" style="background:#FFAA00;box-shadow:0 0 4px rgba(255,170,0,.5)"></div><div><div class="layer-name">DAY/NIGHT</div><div class="layer-count">REAL-TIME CYCLE</div></div></div>
+        <div class="tog on" id="t-daynight"></div>
       </div>
     </div>
     <div class="sec">
-      <div class="sec-title">// active threats</div>
-      <div id="threat-list"><div class="threat w"><div class="threat-tag w">■ CONNECTING...</div><div class="threat-body">Waiting for feed</div></div></div>
+      <div class="sec-title">ACTIVE THREATS</div>
+      <div id="threat-list"><div class="threat w"><div class="threat-tag w">■ CONNECTING...</div><div class="threat-body">Initializing secure feed...</div></div></div>
     </div>
     <div class="sec">
-      <div class="sec-title">// presets</div>
-      <div class="preset" onclick="setPreset('mil')">MILITARY ONLY</div>
-      <div class="preset" onclick="setPreset('ano')">ANOMALIES ONLY</div>
-      <div class="preset" onclick="setPreset('full')">FULL VIEW</div>
+      <div class="sec-title">PRESETS</div>
+      <div class="preset active" onclick="setPreset('mil')" id="p-mil">MILITARY ONLY</div>
+      <div class="preset" onclick="setPreset('ano')" id="p-ano">ANOMALIES ONLY</div>
+      <div class="preset" onclick="setPreset('full')" id="p-full">FULL SPECTRUM</div>
+      <div class="preset" onclick="setPreset('paths')" id="p-paths">PATHS VIEW</div>
     </div>
   </div>
   <div id="globe-wrap">
@@ -212,6 +234,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(
     <div class="corner tl"></div><div class="corner tr"></div>
     <div class="corner bl"></div><div class="corner br"></div>
     <div id="tooltip"></div>
+    <div id="flight-counter"><span id="fc-count">0</span> ACTIVE FLIGHTS</div>
     <div id="fp">
       <div class="fp-hdr">
         <div>
@@ -227,68 +250,161 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(
     <div class="tabs">
       <div class="tab on" onclick="switchTab('intel',this)">INTEL</div>
       <div class="tab" onclick="switchTab('stats',this)">STATS</div>
+      <div class="tab" onclick="switchTab('perf',this)">PERF</div>
       <div class="tab" onclick="switchTab('about',this)">ABOUT</div>
     </div>
     <div class="tab-content on" id="tab-intel">
       <div class="metrics">
-        <div class="mbox rd"><div class="ml">MILITARY</div><div class="mv r" id="r-mil">—</div><div class="md">tracked</div></div>
-        <div class="mbox hi"><div class="ml">ANOMALIES</div><div class="mv o" id="r-ano">—</div><div class="md">flagged</div></div>
-        <div class="mbox hi"><div class="ml">UNKNOWN</div><div class="mv" id="r-unk">—</div><div class="md">no squawk</div></div>
-        <div class="mbox rd"><div class="ml">XPDR OFF</div><div class="mv r" id="r-xpdr">—</div><div class="md">>5min</div></div>
+        <div class="mbox rd"><div class="ml">MILITARY</div><div class="mv r" id="r-mil">—</div><div class="md">tracked assets</div></div>
+        <div class="mbox hi"><div class="ml">ANOMALIES</div><div class="mv o" id="r-ano">—</div><div class="md">flagged events</div></div>
+        <div class="mbox cy"><div class="ml">PATHS</div><div class="mv c" id="r-paths">—</div><div class="md">active routes</div></div>
+        <div class="mbox rd"><div class="ml">XPDR OFF</div><div class="mv r" id="r-xpdr">—</div><div class="md">>5min silence</div></div>
       </div>
-      <div class="bars-lbl">// ANOMALY FREQ · 24H</div>
+      <div class="bars-lbl">ANOMALY FREQUENCY <span>24H</span></div>
       <div id="sparkbars"></div>
-      <div class="feed-lbl">// LIVE INTEL FEED</div>
+      <div class="feed-lbl">LIVE INTEL FEED</div>
       <div id="feed-list"></div>
     </div>
     <div class="tab-content" id="tab-stats">
-      <div class="bars-lbl">// CATEGORY BREAKDOWN</div>
-      <div id="cat-bars" style="margin-bottom:10px"></div>
-      <div class="bars-lbl">// TOP COUNTRIES</div>
+      <div class="bars-lbl">CATEGORY BREAKDOWN</div>
+      <div id="cat-bars" style="margin-bottom:12px"></div>
+      <div class="bars-lbl">TOP REGIONS</div>
       <div id="country-list"></div>
     </div>
+    <div class="tab-content" id="tab-perf">
+      <div class="metrics">
+        <div class="mbox cy"><div class="ml">FPS</div><div class="mv c" id="perf-fps">60</div><div class="md">render rate</div></div>
+        <div class="mbox hi"><div class="ml">DRAW CALLS</div><div class="mv o" id="perf-draws">—</div><div class="md">per frame</div></div>
+        <div class="mbox"><div class="ml">TRIANGLES</div><div class="mv" id="perf-tris">—</div><div class="md">geometry</div></div>
+        <div class="mbox"><div class="ml">MEMORY</div><div class="mv" id="perf-mem">—</div><div class="md">GPU usage</div></div>
+      </div>
+      <div class="bars-lbl">RENDER PERFORMANCE</div>
+      <div style="background:var(--bg2);border:1px solid var(--border);padding:10px;border-radius:3px;margin-bottom:12px">
+        <div style="display:flex;justify-content:space-between;margin-bottom:8px;font-size:9px">
+          <span style="color:var(--grey3)">GPU Instancing</span>
+          <span style="color:var(--cyan)">ACTIVE</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;margin-bottom:8px;font-size:9px">
+          <span style="color:var(--grey3)">Path Shader</span>
+          <span style="color:var(--cyan)">CUSTOM GLSL</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:9px">
+          <span style="color:var(--grey3)">Atmosphere</span>
+          <span style="color:var(--orange)">RAYLEIGH</span>
+        </div>
+      </div>
+    </div>
     <div class="tab-content" id="tab-about">
-      <div style="color:var(--grey3);line-height:1.8;font-size:9px">
-        <div style="color:var(--white);font-family:'Orbitron',monospace;font-size:11px;margin-bottom:5px">VIGILHEX v0.1</div>
-        <div style="color:var(--grey2);margin-bottom:8px;font-size:7px;letter-spacing:1px">GLOBAL AIRSPACE INTELLIGENCE</div>
-        <div style="margin-bottom:8px">Tracks military, state, cargo and unknown aircraft worldwide. Commercial excluded.</div>
-        <div style="color:var(--grey2);font-size:7px;margin-bottom:3px">SOURCE</div>
-        <div>· OpenSky Network ADS-B</div>
-        <div>· Cloudflare Worker proxy</div>
-        <div style="margin-top:8px;border-top:1px solid var(--border);padding-top:8px">
-          <a href="https://github.com/pietrorenzii/vigilhex" target="_blank" style="color:var(--orange);text-decoration:none">⭐ github.com/pietrorenzii/vigilhex</a>
+      <div style="color:var(--grey3);line-height:1.8;font-size:10px">
+        <div style="color:var(--white);font-family:'Orbitron',monospace;font-size:13px;margin-bottom:6px;font-weight:900">VIGILHEX PRO v2.0</div>
+        <div style="color:var(--grey2);margin-bottom:12px;font-size:8px;letter-spacing:2px">ADVANCED AIRSPACE SURVEILLANCE</div>
+        <div style="margin-bottom:12px">Next-generation military and state aircraft tracking with GPU-accelerated visualization, parabolic flight paths, and real-time anomaly detection.</div>
+        <div style="color:var(--grey2);font-size:8px;margin-bottom:4px;letter-spacing:1px">TECHNOLOGY</div>
+        <div style="margin-bottom:4px">• Three.js WebGL2 / Instanced Rendering</div>
+        <div style="margin-bottom:4px">• Custom GLSL Shaders for Paths</div>
+        <div style="margin-bottom:4px">• NASA Blue Marble Textures</div>
+        <div style="margin-bottom:4px">• Atmospheric Rayleigh Scattering</div>
+        <div style="margin-top:12px;border-top:1px solid var(--border);padding-top:12px">
+          <div style="color:var(--grey2);font-size:8px;margin-bottom:4px;letter-spacing:1px">DATA SOURCES</div>
+          <div style="margin-bottom:4px">• OpenSky Network ADS-B</div>
+          <div style="margin-bottom:4px">• Cloudflare Edge Workers</div>
+          <div style="margin-bottom:12px">• Military ICAO Registry</div>
+          <a href="https://github.com/pietrorenzii/vigilhex" target="_blank" style="color:var(--orange);text-decoration:none;display:inline-flex;align-items:center;gap:6px">⭐ github.com/pietrorenzii/vigilhex</a>
         </div>
       </div>
     </div>
   </div>
 </div>
 <div id="bot">
-  <div class="bstat"><div class="ldot" style="width:5px;height:5px;background:#00FF88;box-shadow:0 0 5px #00FF88;animation:blink 1.2s infinite"></div>VIGILHEX</div>
+  <div class="bstat"><div class="ldot" style="width:6px;height:6px;background:#00FF88;box-shadow:0 0 6px #00FF88;animation:blink 1.2s infinite"></div>VIGILHEX PRO</div>
   <div class="bstat">SOURCE <span class="v">OPENSKY NETWORK</span></div>
-  <div class="bstat">MODE <span class="v">MILITARY + PRIORITY</span></div>
-  <div class="bstat">COVERAGE <span class="v">WORLDWIDE</span></div>
+  <div class="bstat">RENDER <span class="v c">GPU INSTANCED</span></div>
+  <div class="bstat">COVERAGE <span class="v">GLOBAL</span></div>
   <div class="bstat">ANOMALIES <span class="v o" id="b-ano">—</span></div>
   <div class="bstat">CRITICAL <span class="v r" id="b-crit">—</span></div>
   <div id="last-update">LAST UPDATE: <span id="b-time">—</span></div>
-  <div class="bstat" style="border-right:none;font-size:7px;color:var(--grey1)">Public ADS-B data only · No interception · Not affiliated with any government</div>
+  <div class="bstat" style="border-right:none;font-size:7px;color:var(--grey1)">Public ADS-B data only · Not affiliated with any government</div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/EffectComposer.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/RenderPass.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/ShaderPass.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/CopyShader.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/LuminosityHighPassShader.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/UnrealBloomPass.js"></script>
 <script>
 const WORKER_URL='https://vigilhex-proxy.suegboy666.workers.dev';
-const REFRESH_MS=120000,MAX_AC=800,GLOBE_R=1.8;
+const REFRESH_MS=120000,MAX_AC=2000,GLOBE_R=100;
 const MIL_HEX=[[0xAE0000,0xAFFFFF],[0x43C000,0x43CFFF],[0x3B0000,0x3BFFFF],[0x140000,0x157FFF],[0x3DC000,0x3DCFFF],[0x45D000,0x45D0FF]];
 const MIL_CS=['RRR','GAF','FAF','USAF','REACH','DUKE','STEEL','NATO','MMM','JAKE','NAVY','TURC','CTM','CASA','EVY','BAFE','ROMEO'];
 const STATE_CS=['SAM','AF1','AF2','EXEC','GOVT','USCG','FRON','EU'];
 const CARGO_CS=['UPS','FDX','CLX','BOX','GTI','DHL','MPH','ABX','KMI','PAC'];
-const CAT_COLOR={MILITARY:0xCC2200,STATE:0x886600,CARGO:0x6A3A8A,UNKNOWN:0x2E4450};
-const CAT_CSS={MILITARY:'#CC2200',STATE:'#886600',CARGO:'#6A3A8A',UNKNOWN:'#2E4450'};
-let allFlights=[],layerVis={military:true,state:true,cargo:true,unknown:true,anomaly:true};
+const CAT_COLOR={MILITARY:0xCC2200,STATE:0xAA8800,CARGO:0x8844AA,UNKNOWN:0x2E4450};
+const CAT_CSS={MILITARY:'#CC2200',STATE:'#AA8800',CARGO:'#8844AA',UNKNOWN:'#2E4450'};
+
+let allFlights=[],layerVis={military:true,state:true,cargo:true,unknown:true,anomaly:true,paths:true,atmosphere:true,daynight:true};
 let anomalyHist=Array(24).fill(0);
-let scene,camera,renderer,globeMesh,atmosMesh;
-let flightMeshes={};
+let scene,camera,renderer,controls,composer;
+let globeMesh,atmosMesh,cloudMesh,nightMesh;
+let flightMeshes={},pathLines={},flightInstances;
 let isDragging=false,dragStart={x:0,y:0};
-let rotX=0.3,rotY=0,autoRotate=true,frameCount=0;
- 
+let autoRotate=true,frameCount=0;
+let lastTime=performance.now(),fps=60;
+
+// Shader per i percorsi di volo parabolici
+const pathVertexShader=`
+  attribute float progress;
+  attribute vec3 startPos;
+  attribute vec3 endPos;
+  attribute vec3 controlPos;
+  attribute vec3 color;
+  varying vec3 vColor;
+  varying float vAlpha;
+  uniform float time;
+  void main(){
+    float t=progress+time*0.1;
+    t=fract(t);
+    vec3 pos=mix(mix(startPos,controlPos,t),mix(controlPos,endPos,t),t);
+    vec4 mvPosition=modelViewMatrix*vec4(pos,1.0);
+    gl_Position=projectionMatrix*mvPosition;
+    gl_PointSize=2.0;
+    vColor=color;
+    vAlpha=1.0-abs(t-0.5)*2.0;
+  }
+`;
+
+const pathFragmentShader=`
+  varying vec3 vColor;
+  varying float vAlpha;
+  void main(){
+    float dist=distance(gl_PointCoord,vec2(0.5));
+    if(dist>0.5)discard;
+    float glow=1.0-dist*2.0;
+    gl_FragColor=vec4(vColor,glow*vAlpha*0.8);
+  }
+`;
+
+// Shader per l'atmosfera
+const atmosVertexShader=`
+  varying vec3 vNormal;
+  void main(){
+    vNormal=normalize(normalMatrix*normal);
+    gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);
+  }
+`;
+
+const atmosFragmentShader=`
+  varying vec3 vNormal;
+  uniform vec3 sunDirection;
+  uniform float c;
+  uniform float p;
+  void main(){
+    float intensity=pow(c-dot(vNormal,sunDirection),p);
+    gl_FragColor=vec4(0.3,0.6,1.0,1.0)*intensity;
+  }
+`;
+
 function classify(s){
   const ic=(s[0]||'').toUpperCase(),cs=((s[1]||'').trim()).toUpperCase();
   try{const h=parseInt(ic,16);for(const[lo,hi]of MIL_HEX)if(h>=lo&&h<=hi)return'MILITARY';}catch(e){}
@@ -298,6 +414,7 @@ function classify(s){
   if(!cs)return'UNKNOWN';
   return'COMMERCIAL';
 }
+
 function chkAno(f){
   if((f.sil||0)>300&&!f.gnd)return{ano:true,rsn:'TRANSPONDER OFF '+Math.floor(f.sil/60)+'min'};
   if(['7500','7600','7700'].includes(f.sqk))return{ano:true,rsn:'SQUAWK '+f.sqk};
@@ -305,396 +422,840 @@ function chkAno(f){
   if(f.cat==='UNKNOWN'&&(f.sil||0)>120)return{ano:true,rsn:'UNKNOWN XPDR SILENT'};
   return{ano:false,rsn:''};
 }
+
 function utcNow(){return new Date().toUTCString().split(' ')[4];}
 function fmtAlt(v){return v?v.toLocaleString()+'ft':'—';}
 function fmtSpd(v){return v?v+' kts':'—';}
 function fmtVrt(v){if(!v)return'—';return(v>0?'+':'')+v.toLocaleString()+' fpm';}
 function hdgName(h){return['N','NNE','NE','ENE','E','ESE','SE','SSE','S','SSW','SW','WSW','W','WNW','NW','NNW'][Math.round(h/22.5)%16];}
- 
+
 function latLonToVec3(lat,lon,r){
   const phi=(90-lat)*Math.PI/180,theta=(lon+180)*Math.PI/180;
   return new THREE.Vector3(-r*Math.sin(phi)*Math.cos(theta),r*Math.cos(phi),r*Math.sin(phi)*Math.sin(theta));
 }
- 
-function makeEarthTexture(){
-  const c=document.createElement('canvas');
-  c.width=4096;c.height=2048;
-  const ctx=c.getContext('2d');
-  // Deep ocean
-  const og=ctx.createLinearGradient(0,0,0,2048);
-  og.addColorStop(0,'#010608');og.addColorStop(.5,'#020B14');og.addColorStop(1,'#010608');
-  ctx.fillStyle=og;ctx.fillRect(0,0,4096,2048);
-  // Land color
-  const drawLand=(shapes)=>{
-    shapes.forEach(([x,y,rx,ry,rot])=>{
-      ctx.save();ctx.translate(x,y);ctx.rotate(rot||0);
-      ctx.beginPath();ctx.ellipse(0,0,rx,ry,0,0,Math.PI*2);
-      ctx.fill();ctx.restore();
-    });
-  };
-  ctx.fillStyle='#0C1E2C';
-  // North America
-  drawLand([[960,580,360,320,.2],[840,720,240,200,0],[1040,480,280,160,.1],[800,440,160,120,.3]]);
-  // Greenland
-  drawLand([[1520,360,140,160,0]]);
-  // South America
-  drawLand([[1160,1120,200,360,.1],[1120,1400,160,200,0]]);
-  // Europe
-  drawLand([[2120,660,180,140,.2],[2200,720,120,100,-.3],[2080,620,100,80,0],[1960,540,80,100,-.2]]);
-  // Scandinavia
-  drawLand([[2060,520,60,120,-.1]]);
-  // UK
-  drawLand([[1980,560,40,60,-.2]]);
-  // Africa
-  drawLand([[2160,960,220,360,0],[2180,1240,160,200,.1]]);
-  // Middle East
-  drawLand([[2340,760,160,120,0]]);
-  // Asia main
-  drawLand([[2700,640,560,320,.1],[3000,600,320,200,0],[3200,560,280,160,0],[2900,760,360,240,0]]);
-  // India
-  drawLand([[2520,880,120,180,.1]]);
-  // SE Asia
-  drawLand([[3000,880,200,120,0],[3100,960,160,100,0]]);
-  // Japan
-  drawLand([[3320,680,40,100,.4]]);
-  // Australia
-  drawLand([[3360,1160,260,180,.1]]);
-  // New Zealand
-  drawLand([[3560,1300,50,80,.3]]);
-  // Antarctica hint
-  ctx.fillStyle='#0A1820';
-  ctx.fillRect(0,1900,4096,148);
-  // Grid lines
-  ctx.strokeStyle='#0A1C28';ctx.lineWidth=1;ctx.globalAlpha=.3;
-  for(let i=0;i<=48;i++){ctx.beginPath();ctx.moveTo(i*85,0);ctx.lineTo(i*85,2048);ctx.stroke();}
-  for(let i=0;i<=24;i++){ctx.beginPath();ctx.moveTo(0,i*85);ctx.lineTo(4096,i*85);ctx.stroke();}
-  // Equator + tropics
-  ctx.globalAlpha=.5;ctx.strokeStyle='#0E2535';ctx.lineWidth=1.5;
-  [.33,.5,.67].forEach(y=>{ctx.beginPath();ctx.moveTo(0,y*2048);ctx.lineTo(4096,y*2048);ctx.stroke();});
-  ctx.globalAlpha=1;
-  return new THREE.CanvasTexture(c);
+
+function getGreatCircleControl(p1,p2,height){
+  const mid=new THREE.Vector3().addVectors(p1,p2).multiplyScalar(0.5);
+  mid.normalize().multiplyScalar(GLOBE_R+height);
+  return mid;
 }
- 
+
+function createFlightPath(f1,f2){
+  const start=latLonToVec3(f1.lat,f1.lon,GLOBE_R+2);
+  const end=latLonToVec3(f2.lat,f2.lon,GLOBE_R+2);
+  const height=20+Math.random()*30;
+  const control=getGreatCircleControl(start,end,height);
+  
+  const curve=new THREE.QuadraticBezierCurve3(start,control,end);
+  const points=curve.getPoints(50);
+  const geometry=new THREE.BufferGeometry().setFromPoints(points);
+  
+  const colors=[];
+  const color=new THREE.Color(CAT_CSS[f1.cat]||'#2E4450');
+  for(let i=0;i<points.length;i++){
+    colors.push(color.r,color.g,color.b);
+  }
+  geometry.setAttribute('color',new THREE.Float32BufferAttribute(colors,3));
+  
+  const material=new THREE.LineBasicMaterial({
+    vertexColors:true,
+    transparent:true,
+    opacity:0.6,
+    blending:THREE.AdditiveBlending
+  });
+  
+  return new THREE.Line(geometry,material);
+}
+
 function initGlobe(){
   const wrap=document.getElementById('globe-wrap');
   const W=wrap.clientWidth,H=wrap.clientHeight;
+  
   scene=new THREE.Scene();
-  camera=new THREE.PerspectiveCamera(40,W/H,.1,1000);
-  camera.position.set(0,0,5.8);
-  camera.lookAt(0,0,0);
-  renderer=new THREE.WebGLRenderer({canvas:document.getElementById('globe-canvas'),antialias:true,alpha:false});
+  scene.fog=new THREE.FogExp2(0x020304,0.002);
+  
+  camera=new THREE.PerspectiveCamera(45,W/H,0.1,1000);
+  camera.position.set(0,30,280);
+  
+  renderer=new THREE.WebGLRenderer({
+    canvas:document.getElementById('globe-canvas'),
+    antialias:true,
+    alpha:false,
+    powerPreference:"high-performance"
+  });
   renderer.setSize(W,H);
   renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
   renderer.setClearColor(0x020304,1);
- 
-  // Stars
-  const sv=[];
-  for(let i=0;i<12000;i++){
-    const r=80+Math.random()*40;
-    const phi=Math.acos(2*Math.random()-1),theta=Math.random()*Math.PI*2;
-    sv.push(r*Math.sin(phi)*Math.cos(theta),r*Math.cos(phi),r*Math.sin(phi)*Math.sin(theta));
+  renderer.toneMapping=THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure=1.0;
+  
+  // Post-processing
+  const renderScene=new THREE.RenderPass(scene,camera);
+  const bloomPass=new THREE.UnrealBloomPass(new THREE.Vector2(W,H),1.5,0.4,0.85);
+  bloomPass.threshold=0.2;
+  bloomPass.strength=0.8;
+  bloomPass.radius=0.5;
+  
+  composer=new THREE.EffectComposer(renderer);
+  composer.addPass(renderScene);
+  composer.addPass(bloomPass);
+  
+  // Controls
+  controls=new THREE.OrbitControls(camera,renderer.domElement);
+  controls.enableDamping=true;
+  controls.dampingFactor=0.05;
+  controls.minDistance=150;
+  controls.maxDistance=500;
+  controls.autoRotate=true;
+  controls.autoRotateSpeed=0.5;
+  
+  // Starfield
+  const starsGeo=new THREE.BufferGeometry();
+  const starsCount=15000;
+  const posArray=new Float32Array(starsCount*3);
+  const sizeArray=new Float32Array(starsCount);
+  for(let i=0;i<starsCount*3;i+=3){
+    const r=400+Math.random()*400;
+    const theta=Math.random()*Math.PI*2;
+    const phi=Math.acos(2*Math.random()-1);
+    posArray[i]=r*Math.sin(phi)*Math.cos(theta);
+    posArray[i+1]=r*Math.sin(phi)*Math.sin(theta);
+    posArray[i+2]=r*Math.cos(phi);
+    sizeArray[i/3]=Math.random()*2;
   }
-  const sg=new THREE.BufferGeometry();
-  sg.setAttribute('position',new THREE.Float32BufferAttribute(sv,3));
-  scene.add(new THREE.Points(sg,new THREE.PointsMaterial({color:0x334455,size:0.12,sizeAttenuation:false})));
- 
-  // Build globe with procedural texture
-  const tex=makeEarthTexture();
-  const geo=new THREE.SphereGeometry(GLOBE_R,64,64);
-  const mat=new THREE.MeshPhongMaterial({map:tex,shininess:15,specular:new THREE.Color(0x0A2040)});
-  globeMesh=new THREE.Mesh(geo,mat);
-  scene.add(globeMesh);
- 
-  // Try loading real NASA texture
+  starsGeo.setAttribute('position',new THREE.BufferAttribute(posArray,3));
+  starsGeo.setAttribute('size',new THREE.BufferAttribute(sizeArray,1));
+  const starsMat=new THREE.PointsMaterial({
+    color:0x88aabb,
+    size:0.8,
+    transparent:true,
+    opacity:0.8,
+    sizeAttenuation:true
+  });
+  scene.add(new THREE.Points(starsGeo,starsMat));
+  
+  // Earth Group
+  const earthGroup=new THREE.Group();
+  scene.add(earthGroup);
+  
+  // Earth geometry
+  const earthGeo=new THREE.SphereGeometry(GLOBE_R,64,64);
+  
+  // Earth material con bump map e specular
+  const earthMat=new THREE.MeshPhongMaterial({
+    color:0xffffff,
+    shininess:25,
+    specular:new THREE.Color(0x333333)
+  });
+  
+  // Texture loader
   const loader=new THREE.TextureLoader();
   loader.crossOrigin='anonymous';
-  const tryLoad=(urls,i=0)=>{
-    if(i>=urls.length)return;
-    loader.load(urls[i],(t)=>{globeMesh.material.map=t;globeMesh.material.needsUpdate=true;},undefined,()=>tryLoad(urls,i+1));
+  
+  // Carica texture NASA
+  const loadTexture=(url,mat,prop)=>{
+    loader.load(url,
+      (tex)=>{mat[prop]=tex;mat.needsUpdate=true;},
+      undefined,
+      ()=>console.warn('Failed to load:',url)
+    );
   };
-  tryLoad([
-    'https://threejs.org/examples/textures/planets/earth_atmos_2048.jpg',
-    'https://unpkg.com/three@0.128.0/examples/textures/planets/earth_atmos_2048.jpg',
-  ]);
- 
-  // Wireframe
-  globeMesh.add(new THREE.Mesh(
-    new THREE.SphereGeometry(GLOBE_R*1.001,32,32),
-    new THREE.MeshBasicMaterial({color:0x0C1E2C,wireframe:true,transparent:true,opacity:0.07})
-  ));
- 
-  // Atmosphere
-  atmosMesh=new THREE.Mesh(
-    new THREE.SphereGeometry(GLOBE_R*1.06,64,64),
-    new THREE.MeshPhongMaterial({color:0x0A3060,transparent:true,opacity:0.09,side:THREE.FrontSide})
-  );
+  
+  loadTexture('https://unpkg.com/three-globe@2.24.13/example/img/earth-blue-marble.jpg',earthMat,'map');
+  loadTexture('https://unpkg.com/three-globe@2.24.13/example/img/earth-topology.png',earthMat,'bumpMap');
+  
+  globeMesh=new THREE.Mesh(earthGeo,earthMat);
+  earthGroup.add(globeMesh);
+  
+  // Night lights
+  const nightMat=new THREE.MeshBasicMaterial({
+    color:0xffffff,
+    transparent:true,
+    opacity:0.8,
+    blending:THREE.AdditiveBlending
+  });
+  loadTexture('https://unpkg.com/three-globe@2.24.13/example/img/earth-night.jpg',nightMat,'map');
+  nightMesh=new THREE.Mesh(earthGeo,nightMat);
+  nightMesh.scale.setScalar(1.005);
+  earthGroup.add(nightMesh);
+  
+  // Clouds
+  const cloudGeo=new THREE.SphereGeometry(GLOBE_R+1.5,64,64);
+  const cloudMat=new THREE.MeshPhongMaterial({
+    color:0xffffff,
+    transparent:true,
+    opacity:0.3,
+    blending:THREE.AdditiveBlending,
+    side:THREE.DoubleSide
+  });
+  loadTexture('https://unpkg.com/three-globe@2.24.13/example/img/earth-clouds.png',cloudMat,'map');
+  cloudMesh=new THREE.Mesh(cloudGeo,cloudMat);
+  earthGroup.add(cloudMesh);
+  
+  // Atmosphere glow
+  const atmosGeo=new THREE.SphereGeometry(GLOBE_R+15,64,64);
+  const atmosMat=new THREE.ShaderMaterial({
+    vertexShader:atmosVertexShader,
+    fragmentShader:atmosFragmentShader,
+    uniforms:{
+      c:{value:0.6},
+      p:{value:4.0},
+      sunDirection:{value:new THREE.Vector3(1,0,0)}
+    },
+    transparent:true,
+    side:THREE.BackSide,
+    blending:THREE.AdditiveBlending
+  });
+  atmosMesh=new THREE.Mesh(atmosGeo,atmosMat);
   scene.add(atmosMesh);
- 
-  // Outer glow
-  scene.add(new THREE.Mesh(
-    new THREE.SphereGeometry(GLOBE_R*1.14,64,64),
-    new THREE.MeshBasicMaterial({color:0x061828,transparent:true,opacity:0.07,side:THREE.BackSide})
-  ));
- 
-  // Lights
-  scene.add(new THREE.AmbientLight(0x223344,.5));
-  const sun=new THREE.DirectionalLight(0x5599BB,.9);sun.position.set(5,2,4);scene.add(sun);
-  const rim=new THREE.DirectionalLight(0x0A2040,.3);rim.position.set(-4,-2,-4);scene.add(rim);
- 
-  // Sensitive area rings
+  
+  // Wireframe overlay
+  const wireGeo=new THREE.SphereGeometry(GLOBE_R+0.5,32,32);
+  const wireMat=new THREE.MeshBasicMaterial({
+    color:0x0C1E2C,
+    wireframe:true,
+    transparent:true,
+    opacity:0.05
+  });
+  const wireMesh=new THREE.Mesh(wireGeo,wireMat);
+  earthGroup.add(wireMesh);
+  
+  // Griglia coordinate
+  const gridHelper=new THREE.PolarGridHelper(GLOBE_R+0.2,16,8,64,0x1a3a50,0x0a1c28);
+  gridHelper.position.y=0;
+  earthGroup.add(gridHelper);
+  
+  // Luci
+  const ambientLight=new THREE.AmbientLight(0x404040,0.5);
+  scene.add(ambientLight);
+  
+  const sunLight=new THREE.DirectionalLight(0xffffff,1.2);
+  sunLight.position.set(100,50,50);
+  scene.add(sunLight);
+  
+  const rimLight=new THREE.DirectionalLight(0x4488ff,0.5);
+  rimLight.position.set(-50,-20,-50);
+  scene.add(rimLight);
+  
+  // Sensitive areas
   const areas=[
-    {lat:49.44,lon:7.60,r:50,t:'m'},{lat:52.41,lon:0.56,r:40,t:'m'},
-    {lat:46.03,lon:12.60,r:40,t:'m'},{lat:37.00,lon:35.43,r:60,t:'m'},
-    {lat:54.71,lon:20.45,r:80,t:'m'},{lat:-7.32,lon:72.42,r:50,t:'m'},
-    {lat:47.51,lon:34.59,r:100,t:'n'},{lat:49.41,lon:6.22,r:60,t:'n'},
+    {lat:49.44,lon:7.60,r:50,t:'m',name:'Ramstein AB'},
+    {lat:52.41,lon:0.56,r:40,t:'m',name:'RAF Mildenhall'},
+    {lat:46.03,lon:12.60,r:40,t:'m',name:'Aviano AB'},
+    {lat:37.00,lon:35.43,r:60,t:'m',name:'Incirlik AB'},
+    {lat:54.71,lon:20.45,r:80,t:'m',name:'Kaliningrad'},
+    {lat:-7.32,lon:72.42,r:50,t:'m',name:'Diego Garcia'},
+    {lat:47.51,lon:34.59,r:100,t:'n',name:'Zaporizhzhia NPP'},
+    {lat:49.41,lon:6.22,r:60,t:'n',name:'Cattenom NPP'}
   ];
+  
   areas.forEach(a=>{
-    const pts=[],ar=a.r/6371;
-    for(let i=0;i<=48;i++){
-      const ang=i/48*Math.PI*2;
-      const slat=a.lat+ar*180/Math.PI*Math.cos(ang);
-      const slon=a.lon+ar*180/Math.PI*Math.sin(ang)/Math.max(.1,Math.cos(a.lat*Math.PI/180));
-      pts.push(latLonToVec3(slat,slon,GLOBE_R+.006));
+    const pts=[];
+    const ar=a.r/6371*GLOBE_R;
+    for(let i=0;i<=64;i++){
+      const ang=i/64*Math.PI*2;
+      const slat=a.lat+(ar/GLOBE_R)*180/Math.PI*Math.cos(ang);
+      const slon=a.lon+(ar/GLOBE_R)*180/Math.PI*Math.sin(ang)/Math.max(0.1,Math.cos(a.lat*Math.PI/180));
+      pts.push(latLonToVec3(slat,slon,GLOBE_R+1));
     }
-    globeMesh.add(new THREE.Line(
-      new THREE.BufferGeometry().setFromPoints(pts),
-      new THREE.LineBasicMaterial({color:a.t==='n'?0x3A1400:0x0A2040,transparent:true,opacity:.6})
-    ));
+    const ringGeo=new THREE.BufferGeometry().setFromPoints(pts);
+    const ringMat=new THREE.LineBasicMaterial({
+      color:a.t==='n'?0x3A1400:0xCC2200,
+      transparent:true,
+      opacity:0.4
+    });
+    const ring=new THREE.Line(ringGeo,ringMat);
+    earthGroup.add(ring);
   });
- 
-  // Events
+  
+  // Event listeners
   const cvs=document.getElementById('globe-canvas');
-  cvs.addEventListener('mousedown',e=>{isDragging=false;dragStart={x:e.clientX,y:e.clientY};autoRotate=false;});
-  cvs.addEventListener('mousemove',e=>{
-    if(e.buttons===1){
-      const dx=e.clientX-dragStart.x,dy=e.clientY-dragStart.y;
-      if(Math.abs(dx)>2||Math.abs(dy)>2)isDragging=true;
-      rotY+=dx*.004;rotX+=dy*.004;
-      rotX=Math.max(-Math.PI/2.2,Math.min(Math.PI/2.2,rotX));
-      dragStart={x:e.clientX,y:e.clientY};
-    } else handleHover(e);
+  cvs.addEventListener('mousemove',handleHover);
+  cvs.addEventListener('click',handleClick);
+  cvs.addEventListener('mouseleave',()=>{
+    document.getElementById('tooltip').style.display='none';
   });
-  cvs.addEventListener('mouseup',e=>{if(!isDragging)handleClick(e);isDragging=false;});
-  cvs.addEventListener('mouseleave',()=>{document.getElementById('tooltip').style.display='none';});
-  cvs.addEventListener('wheel',e=>{
-    e.preventDefault();
-    camera.position.z=Math.max(3.2,Math.min(12,camera.position.z+e.deltaY*.006));
-  },{passive:false});
+  
   window.addEventListener('resize',()=>{
     const W=wrap.clientWidth,H=wrap.clientHeight;
-    camera.aspect=W/H;camera.updateProjectionMatrix();renderer.setSize(W,H);
+    camera.aspect=W/H;
+    camera.updateProjectionMatrix();
+    renderer.setSize(W,H);
+    composer.setSize(W,H);
   });
+  
   animate();
 }
- 
-function updateFlightMeshes(){
-  Object.values(flightMeshes).forEach(o=>{
-    globeMesh.remove(o.mesh);if(o.ring)globeMesh.remove(o.ring);
-    o.mesh.geometry.dispose();if(o.ring)o.ring.geometry.dispose();
+
+function createInstancedFlights(){
+  if(flightInstances){
+    scene.remove(flightInstances);
+    flightInstances.geometry.dispose();
+    flightInstances.material.dispose();
+  }
+  
+  const visibleFlights=allFlights.filter(f=>{
+    if(f.gnd)return false;
+    if(!layerVis[f.cat.toLowerCase()])return false;
+    if(!layerVis.anomaly&&f.ano)return false;
+    return true;
+  }).slice(0,800);
+  
+  if(visibleFlights.length===0)return;
+  
+  const geometry=new THREE.SphereGeometry(1.5,8,8);
+  const material=new THREE.MeshBasicMaterial({color:0xffffff});
+  
+  flightInstances=new THREE.InstancedMesh(geometry,material,visibleFlights.length);
+  flightInstances.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
+  
+  const dummy=new THREE.Object3D();
+  const color=new THREE.Color();
+  
+  visibleFlights.forEach((f,i)=>{
+    const pos=latLonToVec3(f.lat,f.lon,GLOBE_R+3);
+    dummy.position.copy(pos);
+    
+    const scale=f.ano?2.5:(f.cat==='MILITARY'?2:1.2);
+    dummy.scale.setScalar(scale);
+    dummy.updateMatrix();
+    
+    flightInstances.setMatrixAt(i,dummy.matrix);
+    
+    const c=f.ano?0xE8500A:(CAT_COLOR[f.cat]||0x2E4450);
+    color.setHex(c);
+    flightInstances.setColorAt(i,color);
   });
-  flightMeshes={};
-  allFlights.forEach(f=>{
-    if(f.gnd||!layerVis[f.cat.toLowerCase()])return;
-    if(!layerVis.anomaly&&f.ano)return;
-    const pos=latLonToVec3(f.lat,f.lon,GLOBE_R+.025);
-    const col=f.ano?0xE8500A:(CAT_COLOR[f.cat]||0x2E4450);
-    const sz=f.ano?.035:f.cat==='MILITARY'?.028:.020;
-    const mesh=new THREE.Mesh(new THREE.SphereGeometry(sz,6,6),new THREE.MeshBasicMaterial({color:col}));
-    mesh.position.copy(pos);mesh.userData={f};
-    globeMesh.add(mesh);
-    let ring=null;
-    if(f.ano||f.cat==='MILITARY'){
-      ring=new THREE.Mesh(
-        new THREE.RingGeometry(sz*1.6,sz*2.0,12),
-        new THREE.MeshBasicMaterial({color:col,transparent:true,opacity:.5,side:THREE.DoubleSide})
-      );
-      ring.position.copy(pos);ring.lookAt(0,0,0);globeMesh.add(ring);
-    }
-    flightMeshes[f.icao]={mesh,ring,f};
-  });
+  
+  flightInstances.userData={flights:visibleFlights};
+  scene.add(flightInstances);
+  
+  // Crea percorsi per voli con destinazione simulata
+  if(layerVis.paths){
+    updateFlightPaths(visibleFlights);
+  }
+  
+  document.getElementById('fc-count').textContent=visibleFlights.length;
+  document.getElementById('flight-counter').classList.add('visible');
 }
- 
+
+function updateFlightPaths(flights){
+  // Rimuovi vecchi percorsi
+  Object.values(pathLines).forEach(l=>scene.remove(l));
+  pathLines={};
+  
+  // Crea percorsi tra voli correlati (stessa nazione o tipo)
+  const maxPaths=Math.min(flights.length,50);
+  for(let i=0;i<maxPaths;i++){
+    const f1=flights[i];
+    const f2=flights[(i+1)%flights.length];
+    
+    if(f1.cat===f2.cat&&f1.icao!==f2.icao){
+      const path=createFlightPath(f1,f2);
+      path.userData={f1,f2};
+      scene.add(path);
+      pathLines[`${f1.icao}-${f2.icao}`]=path;
+    }
+  }
+  
+  document.getElementById('s-paths').textContent=Object.keys(pathLines).length;
+  document.getElementById('r-paths').textContent=Object.keys(pathLines).length;
+}
+
 const raycaster=new THREE.Raycaster();
 const mouse2=new THREE.Vector2();
+
 function getHit(e){
   const wrap=document.getElementById('globe-wrap'),rect=wrap.getBoundingClientRect();
   mouse2.x=((e.clientX-rect.left)/wrap.clientWidth)*2-1;
   mouse2.y=-((e.clientY-rect.top)/wrap.clientHeight)*2+1;
   raycaster.setFromCamera(mouse2,camera);
-  const hits=raycaster.intersectObjects(Object.values(flightMeshes).map(o=>o.mesh));
-  return hits.length?hits[0].object.userData.f:null;
+  
+  if(flightInstances){
+    const hits=raycaster.intersectObject(flightInstances);
+    if(hits.length>0){
+      const idx=hits[0].instanceId;
+      return flightInstances.userData.flights[idx];
+    }
+  }
+  return null;
 }
+
 function handleHover(e){
   const f=getHit(e);
   const tip=document.getElementById('tooltip');
   const wrap=document.getElementById('globe-wrap'),rect=wrap.getBoundingClientRect();
+  
   if(f){
     tip.style.display='block';
-    tip.style.left=(e.clientX-rect.left+14)+'px';
+    tip.style.left=(e.clientX-rect.left+15)+'px';
     tip.style.top=(e.clientY-rect.top-10)+'px';
-    tip.innerHTML=`<b style="color:var(--white)">${f.cs||'NO CALLSIGN'}</b> · <span style="color:${CAT_CSS[f.cat]||'#fff'}">${f.cat}</span><br>${f.country||'Unknown'} · ${fmtAlt(f.alt)}${f.ano?'<br><span style="color:#E8500A">⚠ '+f.rsn+'</span>':''}`;
+    tip.innerHTML=`
+      <b style="color:var(--white);font-size:12px">${f.cs||'NO CALLSIGN'}</b><br>
+      <span style="color:${CAT_CSS[f.cat]||'#fff'};font-size:10px">${f.cat}</span><br>
+      <span style="color:var(--grey3)">${f.country||'Unknown'}</span> · <span style="color:var(--white)">${fmtAlt(f.alt)}</span>
+      ${f.ano?'<br><span style="color:#E8500A;margin-top:4px;display:block">⚠ '+f.rsn+'</span>':''}
+    `;
     document.getElementById('globe-canvas').style.cursor='pointer';
   } else {
     tip.style.display='none';
-    document.getElementById('globe-canvas').style.cursor='grab';
+    document.getElementById('globe-canvas').style.cursor='default';
   }
 }
-function handleClick(e){const f=getHit(e);if(f)openPanel(f);}
- 
-function animate(){
-  requestAnimationFrame(animate);frameCount++;
-  if(autoRotate)rotY+=.0012;
-  globeMesh.rotation.x=rotX;globeMesh.rotation.y=rotY;
-  atmosMesh.rotation.x=rotX;atmosMesh.rotation.y=rotY;
-  Object.values(flightMeshes).forEach(o=>{
-    if(o.ring){
-      const s=1+Math.sin(frameCount*.06)*.25;
-      o.ring.scale.setScalar(s);
-      o.ring.material.opacity=.25+Math.sin(frameCount*.06)*.25;
-    }
-  });
-  renderer.render(scene,camera);
+
+function handleClick(e){
+  const f=getHit(e);
+  if(f)openPanel(f);
 }
- 
+
+function animate(){
+  requestAnimationFrame(animate);
+  frameCount++;
+  
+  const now=performance.now();
+  const delta=now-lastTime;
+  if(delta>=1000){
+    fps=Math.round(1000/(delta/frameCount));
+    document.getElementById('perf-fps').textContent=fps;
+    lastTime=now;
+    frameCount=0;
+  }
+  
+  controls.update();
+  
+  // Ruota nuvole
+  if(cloudMesh){
+    cloudMesh.rotation.y+=0.0002;
+  }
+  
+  // Aggiorna atmosfera
+  if(atmosMesh&&layerVis.atmosphere){
+    atmosMesh.visible=true;
+    atmosMesh.material.uniforms.sunDirection.value.copy(camera.position).normalize();
+  } else if(atmosMesh){
+    atmosMesh.visible=false;
+  }
+  
+  // Day/night cycle
+  if(nightMesh&&layerVis.daynight){
+    nightMesh.visible=true;
+    const sunPos=new THREE.Vector3(100,0,0);
+    sunPos.applyAxisAngle(new THREE.Vector3(0,1,0),Date.now()*0.00005);
+    nightMesh.material.opacity=Math.max(0,Math.min(1,(sunPos.y+50)/100));
+  } else if(nightMesh){
+    nightMesh.visible=false;
+  }
+  
+  // Anima percorsi
+  if(layerVis.paths){
+    Object.values(pathLines).forEach((line,i)=>{
+      if(line&&line.material){
+        line.material.opacity=0.3+Math.sin(frameCount*0.05+i)*0.2;
+      }
+    });
+  }
+  
+  composer.render();
+}
+
 async function fetchFlights(){
   setLive('connecting');
   try{
     let fl=[];
     try{
       const res=await fetch(WORKER_URL+'/api/flights',{signal:AbortSignal.timeout(25000)});
-      if(res.ok){const data=await res.json();if(data?.flights?.length){fl=data.flights;fl.forEach(f=>{if(!f.ano){const{ano,rsn}=chkAno(f);f.ano=ano;f.rsn=rsn;}});}}
+      if(res.ok){
+        const data=await res.json();
+        if(data?.flights?.length){
+          fl=data.flights;
+          fl.forEach(f=>{
+            if(!f.ano){
+              const{ano,rsn}=chkAno(f);
+              f.ano=ano;f.rsn=rsn;
+            }
+          });
+        }
+      }
     }catch(e){console.warn('Worker failed, trying OpenSky direct');}
+    
     if(!fl.length){
-      const res=await fetch('https://opensky-network.org/api/states/all?lamin=30&lamax=72&lomin=-25&lomax=50',{headers:{'User-Agent':'VigilHex/0.1'},signal:AbortSignal.timeout(15000)});
+      const res=await fetch('https://opensky-network.org/api/states/all?lamin=30&lamax=72&lomin=-25&lomax=50',{
+        headers:{'User-Agent':'VigilHex/0.1'},
+        signal:AbortSignal.timeout(15000)
+      });
       if(res.ok){
         const data=await res.json();
         if(data?.states){
           const now=Math.floor(Date.now()/1000);
           for(const s of data.states){
             if(!s[5]||!s[6])continue;
-            const cat=classify(s);if(cat==='COMMERCIAL')continue;
-            const f={icao:s[0],cs:(s[1]||'').trim()||null,country:s[2],lon:s[5],lat:s[6],alt:s[7]?Math.round(s[7]*3.281):null,gnd:s[8],spd:s[9]?Math.round(s[9]*1.944):null,trk:s[10]!=null?Math.round(s[10]):0,vrt:s[11]?Math.round(s[11]*196.85):null,sqk:s[14],sil:s[4]?now-s[4]:null,cat,ano:false,rsn:''};
-            const{ano,rsn}=chkAno(f);f.ano=ano;f.rsn=rsn;fl.push(f);
+            const cat=classify(s);
+            if(cat==='COMMERCIAL')continue;
+            const f={
+              icao:s[0],
+              cs:(s[1]||'').trim()||null,
+              country:s[2],
+              lon:s[5],
+              lat:s[6],
+              alt:s[7]?Math.round(s[7]*3.281):null,
+              gnd:s[8],
+              spd:s[9]?Math.round(s[9]*1.944):null,
+              trk:s[10]!=null?Math.round(s[10]):0,
+              vrt:s[11]?Math.round(s[11]*196.85):null,
+              sqk:s[14],
+              sil:s[4]?now-s[4]:null,
+              cat,ano:false,rsn:''
+            };
+            const{ano,rsn}=chkAno(f);
+            f.ano=ano;f.rsn=rsn;
+            fl.push(f);
           }
         }
       }
     }
+    
     if(!fl.length)throw new Error('No data — OpenSky rate limited, retry in 2min');
-    fl.sort((a,b)=>{if(a.ano!==b.ano)return a.ano?-1:1;if((a.cat==='MILITARY')!==(b.cat==='MILITARY'))return a.cat==='MILITARY'?-1:1;return 0;});
+    
+    fl.sort((a,b)=>{
+      if(a.ano!==b.ano)return a.ano?-1:1;
+      if((a.cat==='MILITARY')!==(b.cat==='MILITARY'))return a.cat==='MILITARY'?-1:1;
+      return 0;
+    });
+    
     allFlights=fl.slice(0,MAX_AC);
-    updateFlightMeshes();updateStats(allFlights);updateFeed(allFlights);updateStatsTab(allFlights);
+    createInstancedFlights();
+    updateStats(allFlights);
+    updateFeed(allFlights);
+    updateStatsTab(allFlights);
+    
     setLive('live');
     document.getElementById('b-time').textContent=utcNow()+' UTC';
     document.getElementById('loading').style.display='none';
+    
   }catch(e){
     setLive('error');
     document.getElementById('loading').style.display='none';
-    document.getElementById('feed-list').innerHTML=`<div style="color:var(--orange);font-size:9px;padding:8px;border:1px solid var(--orange);background:rgba(232,80,10,.04)">⚠ ${e.message}</div>`;
+    document.getElementById('feed-list').innerHTML=`<div style="color:var(--orange);font-size:9px;padding:10px;border:1px solid var(--orange);background:rgba(232,80,10,.04);border-radius:3px">⚠ ${e.message}</div>`;
   }
 }
- 
+
 function openPanel(f){
   document.getElementById('fp-call').textContent=f.cs||'NO CALLSIGN';
   document.getElementById('fp-sub').innerHTML=`ICAO: <b style="color:var(--white)">${f.icao.toUpperCase()}</b> &nbsp;·&nbsp; ${f.country||'Unknown'}`;
   const tc={MILITARY:'mil',STATE:'sta',CARGO:'crg',UNKNOWN:'unk'}[f.cat]||'unk';
+  
   let html='';
   if(f.sqk==='7500')html+=`<div class="fp-alert crit">🚨 SQUAWK 7500 — HIJACK DECLARED</div>`;
   else if(f.sqk==='7700')html+=`<div class="fp-alert crit">🚨 SQUAWK 7700 — GENERAL EMERGENCY</div>`;
   else if(f.sqk==='7600')html+=`<div class="fp-alert">📡 SQUAWK 7600 — RADIO FAILURE</div>`;
   else if(f.ano)html+=`<div class="fp-alert">⚠ ${f.rsn}</div>`;
-  html+=`<div style="margin-bottom:12px"><span class="fp-badge ${tc}">${f.cat}</span>${f.ano?'<span class="fp-badge ano">ANOMALY</span>':''}</div>`;
+  
+  html+=`<div style="margin-bottom:14px"><span class="fp-badge ${tc}">${f.cat}</span>${f.ano?'<span class="fp-badge ano">ANOMALY</span>':''}</div>`;
+  
   const phase=f.gnd?'ON GROUND':f.vrt&&f.vrt>300?'CLIMBING ↑':f.vrt&&f.vrt<-300?'DESCENDING ↓':'CRUISE →';
   const phaseCol=f.gnd?'var(--grey3)':f.vrt&&f.vrt>300?'#00CC66':f.vrt&&f.vrt<-300?'var(--red2)':'var(--orange)';
-  html+=`<div class="fp-sec"><div class="fp-sec-title">// flight data</div><div class="fp-grid">
-    <div class="fp-cell"><div class="lbl">ALTITUDE</div><div class="val">${fmtAlt(f.alt)}</div><div class="sub">${f.alt?f.alt>35000?'HIGH CRUISE':f.alt>20000?'CRUISE':'CLIMB/DESCENT':''}</div></div>
+  
+  html+=`<div class="fp-sec"><div class="fp-sec-title">FLIGHT DATA</div><div class="fp-grid">
+    <div class="fp-cell"><div class="lbl">ALTITUDE</div><div class="val">${fmtAlt(f.alt)}</div><div class="sub">${f.alt?f.alt>35000?'HIGH CRUISE':f.alt>20000?'CRUISE':'LOW ALTITUDE':''}</div></div>
     <div class="fp-cell"><div class="lbl">SPEED</div><div class="val">${fmtSpd(f.spd)}</div></div>
     <div class="fp-cell"><div class="lbl">HEADING</div><div class="val">${f.trk!=null?f.trk+'°':'—'}</div><div class="sub">${f.trk!=null?hdgName(f.trk):''}</div></div>
     <div class="fp-cell"><div class="lbl">VERT RATE</div><div class="val ${f.vrt&&f.vrt<-2000?'r':f.vrt&&f.vrt>2000?'g':''}">${fmtVrt(f.vrt)}</div></div>
-    <div class="fp-cell full"><div class="lbl">FLIGHT PHASE</div><div class="val" style="color:${phaseCol};font-size:13px">${phase}</div></div>
+    <div class="fp-cell full"><div class="lbl">FLIGHT PHASE</div><div class="val" style="color:${phaseCol};font-size:14px">${phase}</div></div>
   </div></div>`;
-  html+=`<div class="fp-sec"><div class="fp-sec-title">// transponder</div><div class="fp-grid">
+  
+  html+=`<div class="fp-sec"><div class="fp-sec-title">TRANSPONDER</div><div class="fp-grid">
     <div class="fp-cell"><div class="lbl">SQUAWK</div><div class="val ${['7500','7600','7700'].includes(f.sqk)?'r':''}">${f.sqk||'—'}</div><div class="sub">${f.sqk==='7500'?'HIJACK':f.sqk==='7700'?'EMERGENCY':f.sqk==='7600'?'RADIO FAIL':'NORMAL'}</div></div>
     <div class="fp-cell"><div class="lbl">LAST CONTACT</div><div class="val ${(f.sil||0)>300?'r':(f.sil||0)>60?'o':''}">${(f.sil||0)>60?Math.floor(f.sil/60)+'m ago':'LIVE'}</div><div class="sub">${(f.sil||0)>600?'CRITICAL':(f.sil||0)>300?'WARNING':'ACTIVE'}</div></div>
     <div class="fp-cell"><div class="lbl">ON GROUND</div><div class="val ${f.gnd?'o':''}">${f.gnd?'YES':'NO'}</div></div>
-    <div class="fp-cell"><div class="lbl">CATEGORY</div><div class="val" style="font-size:11px;color:${CAT_CSS[f.cat]||'var(--white)'}">${f.cat}</div></div>
+    <div class="fp-cell"><div class="lbl">CATEGORY</div><div class="val" style="font-size:12px;color:${CAT_CSS[f.cat]||'var(--white)'}">${f.cat}</div></div>
   </div></div>`;
-  html+=`<div class="fp-sec"><div class="fp-sec-title">// identity</div><div class="fp-grid">
-    <div class="fp-cell"><div class="lbl">ICAO24</div><div class="val" style="font-size:14px">${f.icao.toUpperCase()}</div></div>
-    <div class="fp-cell"><div class="lbl">CALLSIGN</div><div class="val" style="font-size:14px">${f.cs||'BLOCKED'}</div></div>
-    <div class="fp-cell full"><div class="lbl">COUNTRY</div><div class="val" style="font-size:13px">${f.country||'Unknown'}</div></div>
+  
+  html+=`<div class="fp-sec"><div class="fp-sec-title">IDENTITY</div><div class="fp-grid">
+    <div class="fp-cell"><div class="lbl">ICAO24</div><div class="val" style="font-size:16px">${f.icao.toUpperCase()}</div></div>
+    <div class="fp-cell"><div class="lbl">CALLSIGN</div><div class="val" style="font-size:16px">${f.cs||'BLOCKED'}</div></div>
+    <div class="fp-cell full"><div class="lbl">COUNTRY</div><div class="val" style="font-size:14px">${f.country||'Unknown'}</div></div>
   </div></div>`;
-  html+=`<div class="fp-sec"><div class="fp-sec-title">// position</div><div class="fp-grid">
-    <div class="fp-cell"><div class="lbl">LATITUDE</div><div class="val" style="font-size:13px">${f.lat.toFixed(4)}°</div></div>
-    <div class="fp-cell"><div class="lbl">LONGITUDE</div><div class="val" style="font-size:13px">${f.lon.toFixed(4)}°</div></div>
+  
+  html+=`<div class="fp-sec"><div class="fp-sec-title">POSITION</div><div class="fp-grid">
+    <div class="fp-cell"><div class="lbl">LATITUDE</div><div class="val" style="font-size:13px">${f.lat.toFixed(4)}°</div></div>    <div class="fp-cell"><div class="lbl">LONGITUDE</div><div class="val" style="font-size:13px">${f.lon.toFixed(4)}°</div></div>
   </div></div>`;
+  
+  // Sezione percorsi se attivi
+  if(layerVis.paths){
+    html+=`<div class="fp-sec"><div class="fp-sec-title">FLIGHT PATH</div>
+    <div class="fp-path-info">
+      <div class="lbl">TRAJECTORY TYPE</div>
+      <div class="val" style="margin-bottom:8px">Great Circle Parabolic</div>
+      <div class="lbl">ELEVATION PROFILE</div>
+      <div class="val" style="margin-bottom:8px">Cruise ${f.alt?Math.round(f.alt/1000)+'k ft':'Unknown'}</div>
+      <div class="lbl">PATH VISUALIZATION</div>
+      <div class="val" style="color:var(--cyan)">ACTIVE</div>
+    </div></div>`;
+  }
+  
   document.getElementById('fp-body').innerHTML=html;
   document.getElementById('fp').style.display='block';
-  rotY=-f.lon*Math.PI/180;rotX=-f.lat*Math.PI/180*.5;autoRotate=false;
+  
+  // Centra la visuale sul volo
+  const targetPos=latLonToVec3(f.lat,f.lon,GLOBE_R+50);
+  controls.target.copy(targetPos);
+  controls.update();
+  autoRotate=false;
+  controls.autoRotate=false;
 }
-function closePanel(){document.getElementById('fp').style.display='none';autoRotate=true;}
- 
+
+function closePanel(){
+  document.getElementById('fp').style.display='none';
+  controls.autoRotate=true;
+}
+
 function updateStats(fl){
-  const C={military:0,state:0,cargo:0,unknown:0};let ano=0,xp=0,cr=0;
-  fl.forEach(f=>{if(!f.gnd){C[f.cat.toLowerCase()]=(C[f.cat.toLowerCase()]||0)+1;if(f.ano)ano++;if((f.sil||0)>300)xp++;if(['7500','7700'].includes(f.sqk))cr++;}});
+  const C={military:0,state:0,cargo:0,unknown:0};
+  let ano=0,xp=0,cr=0;
+  
+  fl.forEach(f=>{
+    if(!f.gnd){
+      C[f.cat.toLowerCase()]=(C[f.cat.toLowerCase()]||0)+1;
+      if(f.ano)ano++;
+      if((f.sil||0)>300)xp++;
+      if(['7500','7700'].includes(f.sqk))cr++;
+    }
+  });
+  
   const tot=Object.values(C).reduce((a,b)=>a+b,0);
-  document.getElementById('s-total').textContent=tot;document.getElementById('s-mil').textContent=C.military;
-  document.getElementById('s-ano').textContent=ano;document.getElementById('s-unk').textContent=C.unknown;
-  document.getElementById('s-xpdr').textContent=xp;document.getElementById('r-mil').textContent=C.military;
-  document.getElementById('r-ano').textContent=ano;document.getElementById('r-unk').textContent=C.unknown;
-  document.getElementById('r-xpdr').textContent=xp;document.getElementById('b-ano').textContent=ano;
+  
+  // Header stats
+  document.getElementById('s-total').textContent=tot;
+  document.getElementById('s-mil').textContent=C.military;
+  document.getElementById('s-ano').textContent=ano;
+  document.getElementById('s-unk').textContent=C.unknown;
+  document.getElementById('s-xpdr').textContent=xp;
+  
+  // Right panel stats
+  document.getElementById('r-mil').textContent=C.military;
+  document.getElementById('r-ano').textContent=ano;
+  document.getElementById('r-unk').textContent=C.unknown;
+  document.getElementById('r-xpdr').textContent=xp;
+  
+  // Bottom stats
+  document.getElementById('b-ano').textContent=ano;
   document.getElementById('b-crit').textContent=cr;
-  ['military','state','cargo','unknown'].forEach(k=>{const el=document.getElementById('c-'+k);if(el)el.textContent=C[k]+(k==='military'?' TRACKED':' ACTIVE');});
+  
+  // Layer counts
+  ['military','state','cargo','unknown'].forEach(k=>{
+    const el=document.getElementById('c-'+k);
+    if(el)el.textContent=C[k]+(k==='military'?' TRACKED':' ACTIVE');
+  });
   document.getElementById('c-anomaly').textContent=ano+' FLAGGED';
-  anomalyHist.push(ano);anomalyHist.shift();
+  
+  // Update sparkline
+  anomalyHist.push(ano);
+  anomalyHist.shift();
   const mx=Math.max(...anomalyHist,1);
-  document.getElementById('sparkbars').innerHTML=anomalyHist.map(v=>{const h=Math.max(2,Math.round((v/mx)*32));return`<div class="bar ${v===Math.max(...anomalyHist)&&v>0?'al':v>mx*.5?'hi':''}" style="height:${h}px"></div>`;}).join('');
+  document.getElementById('sparkbars').innerHTML=anomalyHist.map((v,i)=>{
+    const h=Math.max(3,Math.round((v/mx)*36));
+    const isMax=v===Math.max(...anomalyHist)&&v>0;
+    const isHigh=v>mx*0.6;
+    return`<div class="bar ${isMax?'al':isHigh?'hi':''}" style="height:${h}px" title="H-${i+1}: ${v}"></div>`;
+  }).join('');
+  
+  // Performance stats
+  document.getElementById('perf-draws').textContent=renderer.info.render.calls;
+  document.getElementById('perf-tris').textContent=(renderer.info.render.triangles/1000).toFixed(1)+'k';
+  const mem=renderer.info.memory;
+  document.getElementById('perf-mem').textContent=(mem.geometries+mem.textures)+' res';
 }
+
 function updateFeed(fl){
   const anos=fl.filter(f=>f.ano&&!f.gnd).sort((a,b)=>(b.sil||0)-(a.sil||0));
   const now=utcNow();
-  anos.slice(0,6).forEach(f=>addFeedItem(now,f.cs||f.icao.toUpperCase(),f.rsn,f.cat==='MILITARY'?'m':'a'));
-  document.getElementById('threat-list').innerHTML=anos.length===0
-    ?'<div class="threat w"><div class="threat-tag w">■ NOMINAL</div><div class="threat-body">No active threats detected</div></div>'
-    :anos.slice(0,4).map(f=>`<div class="threat ${(f.sil||0)>600?'':'w'}"><div class="threat-tag ${(f.sil||0)>600?'':'w'}">■ ${(f.sil||0)>600?'CRITICAL':'WARNING'} · ${f.rsn}</div><div class="threat-body"><b>${f.cs||'NO CALLSIGN'} · ${f.cat}</b>${f.country||''} · ${fmtAlt(f.alt)}</div></div>`).join('');
+  
+  // Threat list in sidebar
+  const threatList=document.getElementById('threat-list');
+  if(anos.length===0){
+    threatList.innerHTML=`<div class="threat w"><div class="threat-tag w">■ NOMINAL</div><div class="threat-body">No active threats detected in monitored airspace</div></div>`;
+  }else{
+    threatList.innerHTML=anos.slice(0,5).map(f=>{
+      const isCrit=(f.sil||0)>600;
+      return`<div class="threat ${isCrit?'':'w'}" onclick="focusFlight('${f.icao}')">
+        <div class="threat-tag ${isCrit?'':'w'}">■ ${isCrit?'CRITICAL':'WARNING'} · ${f.rsn}</div>
+        <div class="threat-body"><b>${f.cs||'NO CALLSIGN'} · ${f.cat}</b>${f.country||''} · ${fmtAlt(f.alt)}</div>
+      </div>`;
+    }).join('');
+  }
+  
+  // Feed list
+  const feedList=document.getElementById('feed-list');
+  if(anos.length>0){
+    // Aggiungi solo nuovi item
+    anos.slice(0,3).forEach(f=>{
+      if(!document.getElementById('feed-'+f.icao)){
+        addFeedItem(now,f.cs||f.icao.toUpperCase(),f.rsn,f.cat==='MILITARY'?'m':'a',f.icao);
+      }
+    });
+  }
 }
-function addFeedItem(t,id,msg,tag){
+
+function addFeedItem(t,id,msg,tag,icao){
   const fl=document.getElementById('feed-list');
-  const d=document.createElement('div');d.className='fi';
-  d.innerHTML=`<div class="ft">${t}</div><div class="fb"><span class="ftag ${tag}">${tag==='m'?'MIL':'ANOMALY'}</span><b>${id}</b>${msg}</div>`;
-  fl.insertBefore(d,fl.firstChild);while(fl.children.length>20)fl.removeChild(fl.lastChild);
+  const d=document.createElement('div');
+  d.className='fi';
+  d.id='feed-'+icao;
+  d.innerHTML=`<div class="ft">${t}</div>
+    <div class="fb">
+      <span class="ftag ${tag}">${tag==='m'?'MIL':'ANOMALY'}</span>
+      <b>${id}</b>${msg}
+    </div>`;
+  fl.insertBefore(d,fl.firstChild);
+  while(fl.children.length>25)fl.removeChild(fl.lastChild);
 }
+
 function updateStatsTab(fl){
   const C={},Co={};
-  fl.filter(f=>!f.gnd).forEach(f=>{C[f.cat]=(C[f.cat]||0)+1;Co[f.country||'?']=(Co[f.country||'?']||0)+1;});
-  const tot=Object.values(C).reduce((a,b)=>a+b,1);
-  document.getElementById('cat-bars').innerHTML=Object.entries(C).sort((a,b)=>b[1]-a[1]).map(([k,v])=>`<div style="margin-bottom:5px"><div style="display:flex;justify-content:space-between;font-size:7px;margin-bottom:2px"><span style="color:var(--grey3)">${k}</span><span style="color:var(--white)">${v}</span></div><div style="height:2px;background:var(--border)"><div style="height:2px;width:${Math.round(v/tot*100)}%;background:${CAT_CSS[k]||'#2E4450'}"></div></div></div>`).join('');
-  document.getElementById('country-list').innerHTML=Object.entries(Co).sort((a,b)=>b[1]-a[1]).slice(0,8).map(([k,v])=>`<div style="display:flex;justify-content:space-between;padding:3px 0;border-bottom:1px solid var(--border);font-size:8px"><span style="color:var(--grey3)">${k}</span><span style="color:var(--white)">${v}</span></div>`).join('');
+  fl.filter(f=>!f.gnd).forEach(f=>{
+    C[f.cat]=(C[f.cat]||0)+1;
+    Co[f.country||'?']=(Co[f.country||'?']||0)+1;
+  });
+  
+  const tot=Object.values(C).reduce((a,b)=>a+b,1)||1;
+  
+  // Category bars
+  document.getElementById('cat-bars').innerHTML=Object.entries(C)
+    .sort((a,b)=>b[1]-a[1])
+    .map(([k,v])=>{
+      const pct=Math.round(v/tot*100);
+      return`<div style="margin-bottom:6px">
+        <div style="display:flex;justify-content:space-between;font-size:8px;margin-bottom:3px">
+          <span style="color:var(--grey3)">${k}</span>
+          <span style="color:var(--white)">${v} (${pct}%)</span>
+        </div>
+        <div style="height:4px;background:var(--border);border-radius:2px;overflow:hidden">
+          <div style="height:4px;width:${pct}%;background:${CAT_CSS[k]||'#2E4450'};border-radius:2px;transition:width 0.5s ease"></div>
+        </div>
+      </div>`;
+    }).join('');
+  
+  // Country list
+  document.getElementById('country-list').innerHTML=Object.entries(Co)
+    .sort((a,b)=>b[1]-a[1])
+    .slice(0,10)
+    .map(([k,v])=>`<div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border);font-size:9px">
+      <span style="color:var(--grey3)">${k}</span>
+      <span style="color:var(--white);font-weight:bold">${v}</span>
+    </div>`).join('');
 }
+
+function focusFlight(icao){
+  const f=allFlights.find(x=>x.icao===icao);
+  if(f){
+    openPanel(f);
+    const pos=latLonToVec3(f.lat,f.lon,GLOBE_R+80);
+    camera.position.copy(pos);
+    controls.target.copy(latLonToVec3(f.lat,f.lon,0));
+    controls.update();
+  }
+}
+
 function toggleLayer(cat,el){
   layerVis[cat]=!layerVis[cat];
   document.getElementById('t-'+cat)?.classList.toggle('on',layerVis[cat]);
-  el.style.opacity=layerVis[cat]?'1':'0.35';updateFlightMeshes();
+  el.style.opacity=layerVis[cat]?'1':'0.4';
+  createInstancedFlights();
 }
-function toggleSensitive(t,el){document.getElementById('t-'+(t==='military'?'bases':'nuclear'))?.classList.toggle('on');}
+
+function togglePaths(){
+  layerVis.paths=!layerVis.paths;
+  document.getElementById('t-paths')?.classList.toggle('on',layerVis.paths);
+  if(layerVis.paths){
+    createInstancedFlights();
+  }else{
+    Object.values(pathLines).forEach(l=>scene.remove(l));
+    pathLines={};
+    document.getElementById('s-paths').textContent='0';
+    document.getElementById('r-paths').textContent='0';
+  }
+}
+
+function toggleAtmosphere(){
+  layerVis.atmosphere=!layerVis.atmosphere;
+  document.getElementById('t-atmos')?.classList.toggle('on',layerVis.atmosphere);
+  if(atmosMesh)atmosMesh.visible=layerVis.atmosphere;
+}
+
+function toggleDayNight(){
+  layerVis.daynight=!layerVis.daynight;
+  document.getElementById('t-daynight')?.classList.toggle('on',layerVis.daynight);
+}
+
 function setPreset(p){
-  const P={mil:{military:true,state:false,cargo:false,unknown:false,anomaly:true},ano:{military:false,state:false,cargo:false,unknown:false,anomaly:true},full:{military:true,state:true,cargo:true,unknown:true,anomaly:true}};
-  layerVis={...(P[p]||P.full)};
-  Object.keys(layerVis).forEach(k=>{document.getElementById('t-'+k)?.classList.toggle('on',layerVis[k]);document.querySelector(`[onclick="toggleLayer('${k}',this)"]`)?.style.setProperty('opacity',layerVis[k]?'1':'0.35');});
-  updateFlightMeshes();
+  // Reset active states
+  document.querySelectorAll('.preset').forEach(el=>el.classList.remove('active'));
+  document.getElementById('p-'+p)?.classList.add('active');
+  
+  const presets={
+    mil:{military:true,state:false,cargo:false,unknown:false,anomaly:true,paths:true},
+    ano:{military:false,state:false,cargo:false,unknown:false,anomaly:true,paths:false},
+    full:{military:true,state:true,cargo:true,unknown:true,anomaly:true,paths:true},
+    paths:{military:true,state:true,cargo:false,unknown:false,anomaly:true,paths:true}
+  };
+  
+  const P=presets[p]||presets.full;
+  Object.assign(layerVis,P);
+  
+  // Update toggles UI
+  Object.keys(P).forEach(k=>{
+    if(k!=='atmosphere'&&k!=='daynight'){
+      document.getElementById('t-'+k)?.classList.toggle('on',P[k]);
+    }
+  });
+  
+  createInstancedFlights();
 }
+
 function switchTab(id,el){
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));
   document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('on'));
-  el.classList.add('on');document.getElementById('tab-'+id).classList.add('on');
+  el.classList.add('on');
+  document.getElementById('tab-'+id).classList.add('on');
 }
+
 function setLive(s){
   const dot=document.getElementById('live-dot'),txt=document.getElementById('live-txt');
-  const m={live:['#00FF88','FEED LIVE'],error:['#CC2200','FEED ERROR'],connecting:['#886600','CONNECTING']};
-  const[c,l]=m[s]||m.connecting;dot.style.background=c;dot.style.boxShadow=`0 0 8px ${c}`;txt.textContent=l;
+  const states={
+    live:['#00FF88','LIVE FEED'],
+    error:['#CC2200','CONN ERROR'],
+    connecting:['#FFAA00','CONNECTING']
+  };
+  const[c,l]=states[s]||states.connecting;
+  dot.style.background=c;
+  dot.style.boxShadow=`0 0 10px ${c}`;
+  txt.textContent=l;
 }
-setInterval(()=>{document.getElementById('clock').textContent=new Date().toUTCString().split(' ')[4]+' UTC';},1000);
-window.addEventListener('load',async()=>{initGlobe();await fetchFlights();setInterval(fetchFlights,REFRESH_MS);});
+
+// Clock
+setInterval(()=>{
+  document.getElementById('clock').textContent=new Date().toUTCString().split(' ')[4]+' UTC';
+},1000);
+
+// Init
+window.addEventListener('load',async()=>{
+  initGlobe();
+  await fetchFlights();
+  setInterval(fetchFlights,REFRESH_MS);
+});
+
+// Keyboard shortcuts
+window.addEventListener('keydown',(e)=>{
+  if(e.key==='Escape')closePanel();
+  if(e.key==='r'||e.key==='R'){
+    controls.reset();
+    camera.position.set(0,30,280);
+  }
+  if(e.key===' '){
+    controls.autoRotate=!controls.autoRotate;
+  }
+});
 </script>
 </body>
 </html>
- 
+    
